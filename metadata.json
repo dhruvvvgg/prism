@@ -1,0 +1,6 @@
+{
+  "name": "Prism",
+  "description": "A retail investor super app for the Indian securities market, offering aggregated portfolio views, governance tracking, suitability coaching, and instrument discovery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

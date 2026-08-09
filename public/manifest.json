@@ -1,0 +1,28 @@
+{
+  "name": "Prism",
+  "short_name": "Prism",
+  "description": "Retail investor super app for the Indian securities market.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF9",
+  "theme_color": "#2563EB",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/192/triangle.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/triangle.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/triangle.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+}
