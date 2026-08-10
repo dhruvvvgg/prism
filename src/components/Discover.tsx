@@ -163,6 +163,14 @@ export default function Discover({ initialSelectedId, permissions }: DiscoverPro
     }
   };
 
+  // Feature 2: 2D Risk-vs-Yield Matrix View State
+  const [viewMode, setViewMode] = useState<'grid' | 'matrix'>('grid');
+
+  // Feature 7: SIP & Post-Tax Calculator State
+  const [sipAmount, setSipAmount] = useState<number>(10000);
+  const [sipYears, setSipYears] = useState<number>(5);
+  const [taxSlab, setTaxSlab] = useState<number>(30);
+
   return (
     <div className="max-w-5xl mx-auto bg-[#FAF9F6] dark:bg-[#121212] min-h-screen pb-32 transition-colors duration-300">
       
@@ -170,13 +178,84 @@ export default function Discover({ initialSelectedId, permissions }: DiscoverPro
       {!selectedInstrument ? (
         <div className="animate-fadeIn">
           {/* Sub Header */}
-          <div className="border-b border-[#E2E8F0] dark:border-slate-800 px-6 py-5 bg-white/45 dark:bg-transparent backdrop-blur-sm">
-            <h1 className="text-xl font-display font-black text-[#0F172A] dark:text-slate-50 tracking-tight">
-              Alternative Securities
-            </h1>
-            <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1">
-              Discover yield and inflation-hedging asset classes in India
-            </p>
+          <div className="border-b border-[#E2E8F0] dark:border-slate-800 px-6 py-5 bg-white/45 dark:bg-transparent backdrop-blur-sm flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-display font-black text-[#0F172A] dark:text-slate-50 tracking-tight">
+                Alternative Securities
+              </h1>
+              <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1">
+                Discover yield and inflation-hedging asset classes in India
+              </p>
+            </div>
+            <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
+              SEBI Asset Directory
+            </span>
+          </div>
+
+          {/* Feature 2: 2D Risk-vs-Yield Matrix Component */}
+          <div className="px-6 pt-6">
+            <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800 rounded-[24px] p-6 space-y-6 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
+                    2D Risk vs. Yield Quadrant Matrix Grid
+                  </h3>
+                  <p className="text-xs text-[#64748B] dark:text-slate-400">
+                    Visual comparison of expected returns against SEBI risk levels
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                  Interactive Matrix Grid
+                </span>
+              </div>
+
+              {/* 2D Graph Canvas */}
+              <div className="relative h-72 w-full border border-[#E2E8F0] dark:border-slate-800 rounded-2xl bg-[#FAF9F6]/50 dark:bg-[#121212]/50 p-4 flex flex-col justify-between overflow-hidden">
+                {/* Y-Axis Label */}
+                <div className="absolute top-3 left-3 text-[9px] font-mono text-[#64748B] dark:text-slate-400 font-bold uppercase">
+                  ↑ Expected Yield (%)
+                </div>
+
+                {/* X-Axis Label */}
+                <div className="absolute bottom-3 right-3 text-[9px] font-mono text-[#64748B] dark:text-slate-400 font-bold uppercase">
+                  SEBI Risk Level →
+                </div>
+
+                {/* Matrix Axis Lines */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-full border-t border-dashed border-[#E2E8F0] dark:border-slate-800/80" />
+                  <div className="h-full border-l border-dashed border-[#E2E8F0] dark:border-slate-800/80" />
+                </div>
+
+                {/* Plotted Asset Points */}
+                {[
+                  { id: 'gsecs', name: 'G-Secs (7.2%)', x: '15%', y: '70%', color: 'bg-emerald-500', risk: 'Low Risk', yield: '7.2%' },
+                  { id: 'gold', name: 'SGB Gold (9.5%)', x: '25%', y: '45%', color: 'bg-amber-500', risk: 'Low Risk', yield: '9.5%' },
+                  { id: 'debt-etf', name: 'Debt ETFs (7.5%)', x: '35%', y: '65%', color: 'bg-teal-500', risk: 'Moderate Risk', yield: '7.5%' },
+                  { id: 'corp-bonds', name: 'Corp Bonds (10.5%)', x: '60%', y: '35%', color: 'bg-blue-500', risk: 'Moderate Risk', yield: '10.5%' },
+                  { id: 'reits', name: 'REITs (8.8%)', x: '75%', y: '50%', color: 'bg-indigo-500', risk: 'High Risk', yield: '8.8%' },
+                  { id: 'invits', name: 'InvITs (11.2%)', x: '85%', y: '25%', color: 'bg-rose-500', risk: 'High Risk', yield: '11.2%' }
+                ].map((pt) => (
+                  <motion.div
+                    key={pt.id}
+                    whileHover={{ scale: 1.15 }}
+                    onClick={() => setSelectedId(pt.id)}
+                    style={{ left: pt.x, top: pt.y }}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group z-10"
+                  >
+                    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold text-white shadow-md ${pt.color}`}>
+                      <span>{pt.name}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-4 justify-between text-[10px] text-[#64748B] dark:text-slate-400 font-mono">
+                <span>🟢 Sovereign / G-Secs (Absolute Zero Credit Risk)</span>
+                <span>🔵 High-Yield Corporate Debt & InvITs</span>
+                <span>🟡 Inflation-Hedging Gold SGBs</span>
+              </div>
+            </div>
           </div>
 
           <motion.div 
@@ -313,6 +392,96 @@ export default function Discover({ initialSelectedId, permissions }: DiscoverPro
                       {currentInstrument.riskLabel}
                     </span>
                   </div>
+                </div>
+              </div>
+
+              {/* Feature 7: Post-Tax Yield & SIP Compound Growth Calculator */}
+              <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800 rounded-[24px] p-6 space-y-4 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Percent className="h-4 w-4 text-emerald-500" />
+                    <h3 className="text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
+                      Post-Tax Yield & SIP Compound Calculator
+                    </h3>
+                  </div>
+                  <span className="text-[9px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    Tax Adjusted
+                  </span>
+                </div>
+
+                <div className="space-y-4 pt-1">
+                  {/* SIP Monthly Amount Slider */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-bold text-[#51504B] dark:text-[#D2CFC9]">
+                      <span>Monthly Investment:</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-mono">₹{sipAmount.toLocaleString('en-IN')} / mo</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="5000"
+                      max="100000"
+                      step="5000"
+                      value={sipAmount}
+                      onChange={(e) => setSipAmount(parseInt(e.target.value))}
+                      className="w-full h-2 bg-[#E2E8F0] dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                    />
+                  </div>
+
+                  {/* Duration & Tax Slab Selection */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 block uppercase">Duration:</span>
+                      <select
+                        value={sipYears}
+                        onChange={(e) => setSipYears(parseInt(e.target.value))}
+                        className="w-full bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-bold text-[#0F172A] dark:text-slate-100"
+                      >
+                        <option value={3}>3 Years</option>
+                        <option value={5}>5 Years</option>
+                        <option value={8}>8 Years (SGB Maturity)</option>
+                        <option value={10}>10 Years</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 block uppercase">Income Tax Slab:</span>
+                      <select
+                        value={taxSlab}
+                        onChange={(e) => setTaxSlab(parseInt(e.target.value))}
+                        className="w-full bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-bold text-[#0F172A] dark:text-slate-100"
+                      >
+                        <option value={10}>10% Slab</option>
+                        <option value={20}>20% Slab</option>
+                        <option value={30}>30% Slab (Highest)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Results Callout */}
+                  {(() => {
+                    const baseYield = currentInstrument.id === 'gold' ? 0.095 : currentInstrument.id === 'invits' ? 0.112 : currentInstrument.id === 'corp-bonds' ? 0.105 : 0.075;
+                    const totalInvested = sipAmount * 12 * sipYears;
+                    const effectiveYield = currentInstrument.id === 'gold' ? baseYield : baseYield * (1 - taxSlab / 100 * 0.3);
+                    const estFutureVal = totalInvested * Math.pow(1 + effectiveYield, sipYears);
+                    const postTaxProfit = estFutureVal - totalInvested;
+
+                    return (
+                      <div className="p-3.5 bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl space-y-2 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-[#64748B] font-semibold">Total Outflow:</span>
+                          <span className="font-bold text-[#0F172A] dark:text-slate-100">₹{totalInvested.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#64748B] font-semibold">Est. Post-Tax Value:</span>
+                          <span className="font-bold text-emerald-600 dark:text-emerald-400">₹{Math.round(estFutureVal).toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="flex justify-between border-t border-[#E2E8F0] dark:border-slate-800 pt-1.5 text-[11px]">
+                          <span className="text-emerald-700 dark:text-emerald-400 font-bold">Estimated Net Gains:</span>
+                          <span className="font-extrabold text-emerald-600 dark:text-emerald-400">+₹{Math.round(postTaxProfit).toLocaleString('en-IN')}</span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 

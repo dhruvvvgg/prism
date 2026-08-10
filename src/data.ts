@@ -461,3 +461,63 @@ export const personasData: Persona[] = [
     ]
   }
 ];
+
+export interface SEBICircularInfo {
+  code: string;
+  title: string;
+  category: string;
+  summary: string;
+  year: string;
+  link: string;
+}
+
+export const sebiCircularsData: Record<string, SEBICircularInfo> = {
+  'reit-90-ndcf': {
+    code: 'SEBI/HO/IMD/DF2/CIR/P/2019/57',
+    title: 'SEBI REIT Net Distributable Cash Flows (NDCF) Regulations',
+    category: 'REIT Compliance',
+    summary: 'Mandates that Real Estate Investment Trusts must distribute at least 90% of their net distributable cash flows to unit holders at least semi-annually (quarterly for top tier REITs).',
+    year: '2019',
+    link: 'https://www.sebi.gov.in/legal/circulars/apr-2019/guidelines-for-reits-and-invits_42751.html'
+  },
+  'invit-leverage-70': {
+    code: 'SEBI/HO/DDHS/DDHS_Div1/P/CIR/2021/653',
+    title: 'SEBI InvIT Borrowing & Leverage Framework',
+    category: 'InvIT Compliance',
+    summary: 'Cap total consolidated borrowings and leverage of Infrastructure Investment Trusts at 70% of total Enterprise Value, requiring credit rating of AAA for leverage >50%.',
+    year: '2021',
+    link: 'https://www.sebi.gov.in/legal/circulars/nov-2021/framework-for-invits-and-reits_53912.html'
+  },
+  'board-independence': {
+    code: 'SEBI/HO/CFD/CMD1/CIR/P/2020/84',
+    title: 'SEBI LODR Board Independence Rules',
+    category: 'Corporate Governance',
+    summary: 'Requires listed entities & REIT asset managers to maintain minimum 50% independent directors when the Chairman is non-executive or promoter-affiliated.',
+    year: '2020',
+    link: 'https://www.sebi.gov.in/legal/circulars/may-2020/board-independence-norms_46682.html'
+  },
+  'sgb-tax-exemption': {
+    code: 'RBI/2023-24/114 FIDD.MSME.REC.BC.No.12',
+    title: 'RBI Sovereign Gold Bond Tax Exemption (Sec 47(viib))',
+    category: 'Sovereign Debt',
+    summary: 'Section 47(viib) of the Income Tax Act provides 100% Capital Gains Tax exemption for individual investors redeeming SGBs at maturity after 8 years.',
+    year: '2023',
+    link: 'https://www.rbi.org.in/scripts/BS_ViewMasCirculardetails.aspx?id=12550'
+  },
+  'corporate-bond-rating': {
+    code: 'SEBI/HO/DDHS/P/CIR/2022/104',
+    title: 'SEBI High Yield Corporate Bond Disclosure Norms',
+    category: 'Bonds',
+    summary: 'Mandates transparent credit rating disclosures, debenture trustee oversight, and escrow monitoring for all corporate debt rated BBB- or above.',
+    year: '2022',
+    link: 'https://www.sebi.gov.in/legal/circulars/aug-2022/operational-circular-for-issue-and-listing-of-non-convertible-securities_61814.html'
+  },
+  'mf-promoter-pledge': {
+    code: 'SEBI/HO/IMD/DF3/CIR/P/2020/229',
+    title: 'SEBI Risk-o-meter & Promoter Pledge Restrictions',
+    category: 'Equities',
+    summary: 'Restricts mutual funds from holding excessive promoter-pledged shares and mandates monthly Risk-o-meter disclosures based on underlying asset volatility.',
+    year: '2020',
+    link: 'https://www.sebi.gov.in/legal/circulars/oct-2020/risk-o-meter-for-mutual-fund-schemes_47796.html'
+  }
+};

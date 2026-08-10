@@ -79,17 +79,17 @@ export default function IntakeView({
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
-      className="max-w-2xl mx-auto space-y-6 py-6 select-none transition-colors duration-300"
+      className="max-w-5xl lg:max-w-6xl mx-auto space-y-6 py-6 select-none transition-colors duration-300"
     >
       {/* Title */}
       <div className="space-y-2 text-center">
-        <span className="text-[10px] font-sans font-black uppercase tracking-wider text-blue-500">
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-500">
           Account Aggregator Setup
         </span>
-        <h2 className="text-3xl font-serif font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+        <h2 className="text-2xl sm:text-3xl font-serif font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
           Link Your Alternative Assets
         </h2>
-        <p className="text-sm text-[#71706C] dark:text-[#A19F9A] max-w-md mx-auto transition-colors duration-300">
+        <p className="text-sm sm:text-base text-[#71706C] dark:text-[#A19F9A] max-w-2xl mx-auto transition-colors duration-300 leading-relaxed">
           Establish a secure, encrypted consent artifact via the Account Aggregator framework Sandbox to fetch your bank deposits, mutual funds, REITs, and corporate bonds.
         </p>
       </div>

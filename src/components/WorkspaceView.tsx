@@ -3,11 +3,13 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { 
   TrendingUp, TrendingDown, Building2, Radio, ShieldCheck, ShieldAlert,
   Percent, Coins, HelpCircle, MessageSquare, Send, RefreshCw, 
-  ExternalLink, CheckSquare, Settings, Compass, Info, Check, AlertTriangle, LogOut
+  ExternalLink, CheckSquare, Settings, Compass, Info, Check, AlertTriangle, LogOut,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
-import { instrumentsData, personasData, mockPortfolioAssets, mockTotalValue, mockTotalChange24h } from '../data';
-import { Instrument, Persona, ConsentPermissions } from '../types';
+import { instrumentsData, personasData, mockPortfolioAssets, mockTotalValue, mockTotalChange24h, sebiCircularsData } from '../data';
+import { Instrument, Persona, ConsentPermissions, SEBICircularInfo } from '../types';
 import SettingsTabContent from './Settings';
+import InteractiveDonutChart from './DonutChart';
 
 interface WorkspaceViewProps {
   selectedPersonaName: 'Rajesh' | 'Ananya' | null;
@@ -31,6 +33,19 @@ export default function WorkspaceView({
   const shouldReduceMotion = useReducedMotion();
   // Tabs: 'dashboard' | 'discover' | 'coach' | 'checklist' | 'settings'
   const [activeTab, setActiveTab] = useState<'dashboard' | 'discover' | 'coach' | 'checklist' | 'settings'>('dashboard');
+
+  // Feature 1: Donut Chart Hover State
+  const [hoveredSlice, setHoveredSlice] = useState<{ name: string; pct: number; color: string } | null>(null);
+
+  // Feature 5: Stress Test Simulator Sliders
+  const [stressRate, setStressRate] = useState<number>(0);
+  const [stressInflation, setStressInflation] = useState<number>(0);
+
+  // Sidebar Collapse / Shrink State
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Feature 10: SEBI Circular Popup State
+  const [activeCircular, setActiveCircular] = useState<SEBICircularInfo | null>(null);
   
   // Local permissions fallback sync with external prop
   const [localPermissions, setLocalPermissions] = useState<ConsentPermissions>(
@@ -59,16 +74,44 @@ export default function WorkspaceView({
   const [isChatLoading, setIsChatLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  // Helper to render bold markdown syntax (**text**) cleanly
+  const renderChatMessageText = (text: string) => {
+    if (!text) return null;
+    const parts = [];
+    const boldRegex = /\*\*(.*?)\*\*/g;
+    let match;
+    let lastIndex = 0;
+    
+    while ((match = boldRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+      parts.push(
+        <strong key={match.index} className="font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0]">
+          {match[1]}
+        </strong>
+      );
+      lastIndex = boldRegex.lastIndex;
+    }
+    
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+    
+    return parts.length > 0 ? parts : text;
+  };
+
   // Sync active persona and reset chat history for current persona
   useEffect(() => {
     if (selectedPersonaName) {
       const found = personasData.find(p => p.persona_name === selectedPersonaName);
       setActivePersona(found || null);
+      const fullName = found?.persona_name || selectedPersonaName;
       setChatHistory([
         {
           id: `init-${selectedPersonaName}`,
           role: 'model',
-          text: `Welcome to the Prism Suitability Coach. I have initialized the grounded audit context for **${selectedPersonaName}** (${found?.persona_tagline || 'Investor Profile'}). I am referencing verified SEBI & RBI regulatory guidelines to evaluate risk exposure and suitability.`
+          text: `Welcome to the Prism Suitability Coach. I have initialized the grounded audit context for **${fullName}** (${found?.persona_tagline || 'Investor Profile'}). I am referencing verified SEBI & RBI regulatory guidelines to evaluate risk exposure and suitability.`
         }
       ]);
     } else {
@@ -192,55 +235,154 @@ export default function WorkspaceView({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:h-[calc(100vh-140px)] lg:min-h-[600px] select-none py-2 font-sans transition-colors duration-300"
+      className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-140px)] lg:min-h-[600px] select-none py-2 font-sans"
     >
-      {/* LEFT COLUMN: Sidebar Navigation Panel */}
-      <div className="lg:col-span-3 bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-6 flex flex-col justify-between h-auto lg:h-full ballpark-shadow transition-all duration-300">
-        <div className="space-y-6">
-          {/* Active Profile Info */}
-          <div className="border-b border-[#FAF9F6] dark:border-[#2E2D2A] pb-4">
-            <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block mb-1">
-              Active Investment Profile
-            </span>
-            <h3 className="text-xl font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
-              {activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Linked Portfolio'}
-            </h3>
-            <p className="text-xs text-[#71706C] dark:text-[#A19F9A] mt-1 leading-relaxed">
-              {activePersona ? activePersona.persona_tagline : 'Linked via Account Aggregator secure Sandbox mode.'}
-            </p>
-          </div>
+      {/* LEFT COLUMN: Sidebar Navigation Panel with Fluid Motion Sizing */}
+      <motion.div 
+        animate={{ width: isSidebarCollapsed ? 80 : 280 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 flex flex-col justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
+      >
+        <AnimatePresence mode="wait">
+          {isSidebarCollapsed ? (
+            /* COLLAPSED RAIL VIEW (Compact Icon Mode) */
+            <motion.div
+              key="collapsed-rail"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="flex flex-col items-center justify-between h-full w-full py-2 space-y-6"
+            >
+              <div className="flex flex-col items-center space-y-5">
+                {/* Profile Avatar Badge */}
+                <motion.div 
+                  whileHover={{ scale: 1.1 }}
+                  className="h-10 w-10 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer"
+                  title={activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Portfolio'}
+                >
+                  {activePersona ? activePersona.persona_name[0] : 'P'}
+                </motion.div>
 
-          {/* Navigation Tabs */}
-          <nav className="flex flex-col gap-2">
-            {[
-              { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-4 h-4" /> },
-              { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-4 h-4" /> },
-              { id: 'coach' as const, label: 'Suitability Coach', icon: <MessageSquare className="w-4 h-4" /> },
-              { id: 'checklist' as const, label: 'Compliance Checklist', icon: <CheckSquare className="w-4 h-4" /> },
-              { id: 'settings' as const, label: 'Privacy & Settings', icon: <Settings className="w-4 h-4" /> }
-            ].map((tab) => (
+                {/* Compact Nav Icon Rail */}
+                <nav className="flex flex-col gap-3">
+                  {[
+                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-5 h-5" /> },
+                    { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-5 h-5" /> },
+                    { id: 'coach' as const, label: 'Suitability Coach', icon: <MessageSquare className="w-5 h-5" /> },
+                    { id: 'checklist' as const, label: 'Compliance Checklist', icon: <CheckSquare className="w-5 h-5" /> },
+                    { id: 'settings' as const, label: 'Privacy & Settings', icon: <Settings className="w-5 h-5" /> }
+                  ].map((tab) => (
+                    <motion.button
+                      key={tab.id}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setActiveTab(tab.id)}
+                      title={tab.label}
+                      className={`p-3 rounded-xl transition-all cursor-pointer ${
+                        activeTab === tab.id
+                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-sm'
+                          : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
+                      }`}
+                    >
+                      {tab.icon}
+                    </motion.button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Expand Sidebar Button at the bottom of compact rail */}
               <motion.button
-                key={tab.id}
-                whileHover={{ x: shouldReduceMotion ? 0 : 3 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.15, ease: 'easeOut' }}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === tab.id
-                    ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-l-2 border-blue-500 shadow-sm'
-                    : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
-                }`}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsSidebarCollapsed(false)}
+                className="p-3 rounded-xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
+                title="Expand Sidebar"
               >
-                {tab.icon}
-                <span>{tab.label}</span>
+                <ChevronRight className="w-5 h-5" />
               </motion.button>
-            ))}
-          </nav>
-        </div>
-      </div>
+            </motion.div>
+          ) : (
+            /* EXPANDED FULL SIDEBAR VIEW */
+            <motion.div
+              key="expanded-sidebar"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="flex flex-col justify-between h-full space-y-5"
+            >
+              <div className="space-y-5">
+                {/* Active Profile Info Card (Matching Tab Button & Bottom Bar Inset) */}
+                <div className="p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
+                  <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
+                    Active Investment Profile
+                  </span>
+                  <h3 className="text-lg font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+                    {activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Linked Portfolio'}
+                  </h3>
+                  <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-relaxed transition-colors duration-300">
+                    {activePersona ? activePersona.persona_tagline : 'Linked via Account Aggregator secure Sandbox mode.'}
+                  </p>
+                </div>
+
+                {/* Navigation Tabs */}
+                <nav className="flex flex-col gap-2">
+                  {[
+                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-4 h-4" /> },
+                    { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-4 h-4" /> },
+                    { id: 'coach' as const, label: 'Suitability Coach', icon: <MessageSquare className="w-4 h-4" /> },
+                    { id: 'checklist' as const, label: 'Compliance Checklist', icon: <CheckSquare className="w-4 h-4" /> },
+                    { id: 'settings' as const, label: 'Privacy & Settings', icon: <Settings className="w-4 h-4" /> }
+                  ].map((tab) => (
+                    <motion.button
+                      key={tab.id}
+                      whileHover={{ x: shouldReduceMotion ? 0 : 4 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        activeTab === tab.id
+                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-l-2 border-blue-500 shadow-sm'
+                          : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
+                      }`}
+                    >
+                      {tab.icon}
+                      <span>{tab.label}</span>
+                    </motion.button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Clean Minimalist Regulatory Footer & Bottom Shrink Sidebar Button */}
+              <div className="space-y-3.5 pt-4 border-t border-[#FAF9F6] dark:border-[#2E2D2A]">
+                <div className="px-3 text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A] flex items-center justify-between">
+                  <span>SEBI & RBI Framework</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">● Active</span>
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setIsSidebarCollapsed(true)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
+                  title="Shrink sidebar for wider right content view"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Shrink Sidebar</span>
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
       {/* RIGHT COLUMN: Dynamic Active Screen View Container */}
-      <div className="lg:col-span-9 border border-[#E6E5E0] dark:border-[#2E2D2A] bg-white dark:bg-[#1C1B19] rounded-[2rem] flex flex-col h-[500px] md:h-[600px] lg:h-full overflow-hidden ballpark-shadow transition-colors duration-300">
+      <motion.div 
+        layout="position"
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="flex-1 min-w-0 border border-[#E6E5E0] dark:border-[#2E2D2A] bg-white dark:bg-[#1C1B19] rounded-[2rem] flex flex-col h-[500px] md:h-[600px] lg:h-full overflow-hidden ballpark-shadow transition-colors duration-300"
+      >
         
         {/* HEADER BAR FOR ACTIVE SCREEN */}
         <div className="border-b border-[#FAF9F6] dark:border-[#2E2D2A] bg-[#FAF9F6]/60 dark:bg-[#252422]/60 px-6 py-4 flex items-center justify-between transition-colors duration-300">
@@ -256,13 +398,6 @@ export default function WorkspaceView({
                 {activePersona ? `Seeded Profile: ${activePersona.persona_name}` : 'Sandbox Live Account Aggregator Feed'}
               </p>
             </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full px-2.5 py-1 text-[9px] font-sans font-bold uppercase tracking-wider animate-pulse">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Live Audit Secure
-            </span>
           </div>
         </div>
 
@@ -325,11 +460,20 @@ export default function WorkspaceView({
                       <div style={{ width: '10%' }} className="bg-blue-500 h-full rounded-r-full" title="Corporate Bonds (10%)" />
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-between text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A] pt-1">
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Govt Sec (40%)</span>
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-teal-500" /> Debt ETFs (20%)</span>
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-indigo-500" /> Equities (15%)</span>
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" /> SGB Gold (15%)</span>
+                    {/* Horizontal Inline Legend Line (Matching User Screenshot Exactly) */}
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2.5 text-xs sm:text-sm font-mono font-semibold text-[#51504B] dark:text-[#D2CFC9]">
+                      {[
+                        { name: 'Govt Sec', pct: 40, color: 'bg-emerald-500' },
+                        { name: 'Debt ETFs', pct: 20, color: 'bg-teal-500' },
+                        { name: 'Equities', pct: 15, color: 'bg-indigo-500' },
+                        { name: 'SGB Gold', pct: 15, color: 'bg-amber-500' },
+                        { name: 'Corp Bonds', pct: 10, color: 'bg-blue-500' }
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <span className={`w-2.5 h-2.5 rounded-full ${item.color} shrink-0`} />
+                          <span>{item.name} ({item.pct}%)</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </motion.div>
@@ -375,79 +519,119 @@ export default function WorkspaceView({
                     )}
                   </div>
 
-                  <p className="text-xs text-[#71706C] dark:text-[#A19F9A] leading-relaxed mt-4 pt-4 border-t border-[#E6E5E0]/60 dark:border-[#2E2D2A]">
-                    {permissions.analysePortfolio
-                      ? 'Measures structural compliance, lock-in safety weights, and liquidity ratings as guided by SEBI regulations.'
-                      : 'Permission required — enable "Analyse Portfolio" in Privacy & Settings to unlock structural audit scoring.'}
-                  </p>
+                  <div className="mt-4 pt-4 border-t border-[#E6E5E0]/60 dark:border-[#2E2D2A]">
+                    <p className="text-xs text-[#71706C] dark:text-[#A19F9A] leading-relaxed">
+                      {permissions.analysePortfolio
+                        ? 'Measures structural compliance, lock-in safety weights, and liquidity ratings as guided by SEBI regulations.'
+                        : 'Permission required — enable "Analyse Portfolio" in Privacy & Settings to unlock structural audit scoring.'}
+                    </p>
+                  </div>
                 </motion.div>
               </div>
 
-              {/* Asset Allocation Grid */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-serif font-bold text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
-                  Asset Class Allocations
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {portfolioAssets.map((asset, idx) => (
-                    <motion.div 
-                      key={idx}
-                      variants={{
-                        hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 12 },
-                        show: { opacity: 1, y: 0, transition: { duration: 0.3 } }
-                      }}
-                      whileHover={shouldReduceMotion ? {} : { scale: 1.015, y: -2 }}
-                      whileTap={shouldReduceMotion ? {} : { scale: 0.985 }}
-                      className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="bg-[#FAF9F6] dark:bg-[#252422] p-2.5 rounded-lg border border-[#E6E5E0]/60 dark:border-[#2E2D2A]/60">
-                          {getAssetIcon(asset.icon)}
-                        </div>
-                        <div>
-                          <span className="text-xs font-serif font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0] block">
-                            {asset.name}
-                          </span>
-                          <span className="text-[9px] text-[#71706C] dark:text-[#A19F9A]">
-                            {asset.count} instruments
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xs font-bold text-[#1C1C1A] dark:text-[#F5F4F0] block">
-                          ₹{asset.value.toLocaleString('en-IN')}
-                        </span>
-                        <span className="text-[10px] text-blue-500 font-bold">
-                          {asset.percentage}%
-                        </span>
-                      </div>
-                    </motion.div>
-                  ))}
+              {/* Feature 5: What-If Macro Stress Test & Inflation Simulator */}
+              <div className="bg-[#FAF9F6] dark:bg-[#252422] border-2 border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-4 shadow-sm transition-colors duration-300">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <RefreshCw className="w-4 h-4 text-blue-500" />
+                    <h4 className="text-sm font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
+                      Interactive "What-If" Macro Stress Test Simulator
+                    </h4>
+                  </div>
+                  <span className="text-[9px] font-mono font-bold text-blue-500 uppercase bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                    Real-Time Simulation
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                  {/* Interest Rate Delta Slider */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-bold text-[#51504B] dark:text-[#D2CFC9]">
+                      <span>RBI Repo Rate Change:</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-mono">{stressRate > 0 ? `+${stressRate}%` : `${stressRate}%`}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="-2"
+                      max="3"
+                      step="0.5"
+                      value={stressRate}
+                      onChange={(e) => setStressRate(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-[#E6E5E0] dark:bg-[#1C1B19] rounded-lg appearance-none cursor-pointer accent-blue-600"
+                    />
+                    <div className="flex justify-between text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A]">
+                      <span>-2% (Rate Cuts)</span>
+                      <span>0% (Baseline)</span>
+                      <span>+3% (Tightening)</span>
+                    </div>
+                  </div>
+
+                  {/* Inflation Delta Slider */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-bold text-[#51504B] dark:text-[#D2CFC9]">
+                      <span>Inflation Shock Expectation:</span>
+                      <span className="text-amber-600 dark:text-amber-400 font-mono">+{stressInflation}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="6"
+                      step="1"
+                      value={stressInflation}
+                      onChange={(e) => setStressInflation(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-[#E6E5E0] dark:bg-[#1C1B19] rounded-lg appearance-none cursor-pointer accent-amber-600"
+                    />
+                    <div className="flex justify-between text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A]">
+                      <span>0% (4% CPI target)</span>
+                      <span>+3% (Moderate)</span>
+                      <span>+6% (High CPI)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Simulated Outcome Banner */}
+                <div className="p-4 bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                  <div>
+                    <span className="text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase block">
+                      SIMULATED PORTFOLIO YIELD IMPACT
+                    </span>
+                    <span className="font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0] text-sm">
+                      Projected Annual Return: {(7.8 - stressRate * 0.4 + stressInflation * 0.25).toFixed(2)}%
+                    </span>
+                  </div>
+
+                  <div className="text-right">
+                    <span className={`font-extrabold text-xs px-2.5 py-1 rounded-full border inline-block ${
+                      stressInflation > 2 ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                    }`}>
+                      {stressInflation > 2 ? '✓ SGBs & REITs Actively Hedging Inflation' : '✓ Standard Stable Payouts'}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               {/* Detailed Holdings List */}
               <div className="space-y-3">
-                <h4 className="text-sm font-serif font-bold text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+                <h4 className="text-base font-serif font-bold text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
                   Individual Holdings Audit
                 </h4>
                 <div className="border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl overflow-hidden bg-[#FAF9F6]/20 dark:bg-[#1C1B19]/20">
-                  <table className="w-full text-left border-collapse text-xs">
+                  <table className="w-full text-left border-collapse text-sm">
                     <thead>
-                      <tr className="bg-[#FAF9F6] dark:bg-[#252422] border-b border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] font-bold">
-                        <th className="p-3">Instrument</th>
-                        <th className="p-3">Category</th>
-                        <th className="p-3 text-right">Holdings</th>
-                        <th className="p-3 text-right">Value</th>
+                      <tr className="bg-[#FAF9F6] dark:bg-[#252422] border-b border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] font-bold text-xs uppercase tracking-wider">
+                        <th className="p-3.5">Instrument</th>
+                        <th className="p-3.5">Category</th>
+                        <th className="p-3.5 text-right">Holdings</th>
+                        <th className="p-3.5 text-right">Value</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#E6E5E0] dark:divide-[#2E2D2A] text-[#51504B] dark:text-[#D2CFC9]">
                       {holdingsList.map((h, i) => (
                         <tr key={i} className="hover:bg-[#FAF9F6]/50 dark:hover:bg-[#252422]/50 transition-colors">
-                          <td className="p-3 font-semibold text-[#1C1C1A] dark:text-[#F5F4F0]">{h.instrument_name}</td>
-                          <td className="p-3 text-neutral-500 dark:text-neutral-400">{h.category}</td>
-                          <td className="p-3 text-right font-mono text-[10px]">{h.units_or_quantity}</td>
-                          <td className="p-3 text-right font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">₹{h.value.toLocaleString('en-IN')}</td>
+                          <td className="p-3.5 font-bold text-[#1C1C1A] dark:text-[#F5F4F0] text-sm">{h.instrument_name}</td>
+                          <td className="p-3.5 text-neutral-500 dark:text-neutral-400 text-xs font-semibold">{h.category}</td>
+                          <td className="p-3.5 text-right font-mono text-xs font-medium">{h.units_or_quantity}</td>
+                          <td className="p-3.5 text-right font-bold text-[#1C1C1A] dark:text-[#F5F4F0] text-sm">₹{h.value.toLocaleString('en-IN')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -676,7 +860,7 @@ export default function WorkspaceView({
                       <span className={`text-[8px] uppercase font-bold block mb-1 ${msg.role === 'user' ? 'text-blue-200' : 'text-blue-500'}`}>
                         {msg.role === 'user' ? 'You' : 'Suitability Coach'}
                       </span>
-                      <p className="whitespace-pre-wrap leading-relaxed">{msg.text}</p>
+                      <p className="whitespace-pre-wrap leading-relaxed">{renderChatMessageText(msg.text)}</p>
                     </motion.div>
                   ))}
                   
@@ -689,72 +873,75 @@ export default function WorkspaceView({
                       <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-500" />
                       <span>Analyzing SEBI & RBI regulatory guidelines...</span>
                       <div className="flex items-center space-x-1 ml-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                       </div>
                     </motion.div>
                   )}
                   <div ref={chatEndRef} />
                 </div>
 
-                {/* Persona-Isolated Suggestions pills */}
-                <div className="flex flex-wrap items-center gap-2 py-2.5 border-t border-[#E6E5E0] dark:border-[#2E2D2A] transition-colors duration-300">
-                  <span className="text-[10px] font-bold text-[#71706C] dark:text-[#A19F9A] uppercase tracking-wider shrink-0 mr-1 select-none">
-                    Quick Audits:
-                  </span>
-                  {(
-                    (activePersona?.persona_name === 'Rajesh' || selectedPersonaName === 'Rajesh')
-                      ? [
-                          { label: "💼 Retirement Audit", text: "Audit my retirement asset allocation against standard capital preservation goals." },
-                          { label: "🛡️ Gold & G-Sec Safety", text: "How do Sovereign Gold Bonds and G-Secs protect capital safety for my profile?" },
-                          { label: "💰 REIT Tax Exemption", text: "Explain Section 115UA tax exemptions on REIT dividends for conservative investors." },
-                          { label: "📊 Debt vs Bonds Yield", text: "Compare corporate bond ratings vs G-Sec yields for a capital preservation portfolio." }
-                        ]
-                      : (activePersona?.persona_name === 'Ananya' || selectedPersonaName === 'Ananya')
-                      ? [
-                          { label: "🔥 Growth & Yield Audit", text: "Check my aggressive allocation. Am I holding too much infrastructure leverage?" },
-                          { label: "🏗️ REITs vs InvITs", text: "Can you compare REITs and InvITs in the context of my aggressive holdings?" },
-                          { label: "💰 InvIT Distribution Tax", text: "Explain Section 115UA tax exemptions on InvIT cash distributions." },
-                          { label: "⚡ Leverage Risk Balance", text: "How can I balance high-yield InvITs with debt capital safety?" }
-                        ]
-                      : [
-                          { label: "💼 Audit Profile", text: "Audit current asset allocation against standard capital preservation goals." },
-                          { label: "💰 REIT Tax Exemption", text: "Explain Section 115UA tax exemptions on REIT dividends for Indian residents." },
-                          { label: "🛡️ Sovereign Gold Bonds", text: "Are Sovereign Gold Bonds completely exempt from Capital Gains at maturity?" }
-                        ]
-                  ).map((s, idx) => (
-                    <motion.button
-                      key={idx}
-                      type="button"
-                      whileHover={{ scale: 1.02, y: -1 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.15 }}
-                      onClick={() => handleSendChat(s.text)}
-                      className="inline-flex items-center text-[10px] font-bold leading-none px-3 py-2 rounded-full bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] hover:border-blue-500 dark:hover:border-blue-500 hover:bg-white dark:hover:bg-[#1C1B19] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] cursor-pointer transition-all shadow-sm shrink-0"
-                    >
-                      {s.label}
-                    </motion.button>
-                  ))}
-                </div>
+                {/* Bottom Controls Region: Single Divider Line with Balanced Spacing */}
+                <div className="border-t border-[#E6E5E0] dark:border-[#2E2D2A] pt-3.5 space-y-3 mt-auto transition-colors duration-300">
+                  {/* Persona-Isolated Suggestions pills */}
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                    <span className="text-[10px] font-bold text-[#71706C] dark:text-[#A19F9A] uppercase tracking-wider shrink-0 mr-1 select-none">
+                      Quick Audits:
+                    </span>
+                    {(
+                      (activePersona?.persona_name === 'Rajesh' || selectedPersonaName === 'Rajesh')
+                        ? [
+                            { label: "💼 Retirement Audit", text: "Audit my retirement asset allocation against standard capital preservation goals." },
+                            { label: "🛡️ Gold & G-Sec Safety", text: "How do Sovereign Gold Bonds and G-Secs protect capital safety for my profile?" },
+                            { label: "💰 REIT Tax Exemption", text: "Explain Section 115UA tax exemptions on REIT dividends for conservative investors." },
+                            { label: "📊 Debt vs Bonds Yield", text: "Compare corporate bond ratings vs G-Sec yields for a capital preservation portfolio." }
+                          ]
+                        : (activePersona?.persona_name === 'Ananya' || selectedPersonaName === 'Ananya')
+                        ? [
+                            { label: "🔥 Growth & Yield Audit", text: "Check my aggressive allocation. Am I holding too much infrastructure leverage?" },
+                            { label: "🏗️ REITs vs InvITs", text: "Can you compare REITs and InvITs in the context of my aggressive holdings?" },
+                            { label: "💰 InvIT Distribution Tax", text: "Explain Section 115UA tax exemptions on InvIT cash distributions." },
+                            { label: "⚡ Leverage Risk Balance", text: "How can I balance high-yield InvITs with debt capital safety?" }
+                          ]
+                        : [
+                            { label: "💼 Audit Profile", text: "Audit current asset allocation against standard capital preservation goals." },
+                            { label: "💰 REIT Tax Exemption", text: "Explain Section 115UA tax exemptions on REIT dividends for Indian residents." },
+                            { label: "🛡️ Sovereign Gold Bonds", text: "Are Sovereign Gold Bonds completely exempt from Capital Gains at maturity?" }
+                          ]
+                    ).map((s, idx) => (
+                      <motion.button
+                        key={idx}
+                        type="button"
+                        whileHover={{ scale: 1.02, y: -1 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ duration: 0.15 }}
+                        onClick={() => handleSendChat(s.text)}
+                        className="inline-flex items-center text-[10px] font-bold leading-none px-3.5 py-2 rounded-full bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] hover:border-blue-500 dark:hover:border-blue-500 hover:bg-white dark:hover:bg-[#1C1B19] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] cursor-pointer transition-all shadow-sm shrink-0"
+                      >
+                        {s.label}
+                      </motion.button>
+                    ))}
+                  </div>
 
-                {/* Chat input box */}
-                <div className="flex items-center gap-2 pt-2 border-t border-[#E6E5E0] dark:border-[#2E2D2A] mt-auto">
-                  <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    placeholder="Ask about compliance ratings, portfolio suitabilities, or Indian taxation slabs..."
-                    className="flex-1 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-xl px-4 py-3 text-xs text-[#1C1C1A] dark:text-[#F5F4F0] placeholder-[#A19F9A] dark:placeholder-[#5E5D59] focus:outline-none focus:border-blue-500 transition-colors duration-300"
-                  />
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleSendChat()}
-                    disabled={!chatInput.trim() || isChatLoading}
-                    className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-all cursor-pointer shadow-sm"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                  </motion.button>
+                  {/* Chat input box */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                      placeholder="Ask about compliance ratings, portfolio suitabilities, or Indian taxation slabs..."
+                      className="flex-1 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-xl px-4 py-3 text-xs text-[#1C1C1A] dark:text-[#F5F4F0] placeholder-[#A19F9A] dark:placeholder-[#5E5D59] focus:outline-none focus:border-blue-500 transition-colors duration-300"
+                    />
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleSendChat()}
+                      disabled={!chatInput.trim() || isChatLoading}
+                      className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-all cursor-pointer shadow-sm"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                    </motion.button>
+                  </div>
                 </div>
               </motion.div>
             )
@@ -808,9 +995,24 @@ export default function WorkspaceView({
                         <span className={`text-xs font-bold transition-all duration-200 ${item.checked ? 'text-emerald-800 dark:text-emerald-400 line-through opacity-70' : 'text-[#1C1C1A] dark:text-[#F5F4F0]'}`}>
                           {item.text}
                         </span>
-                        <span className="text-[8px] font-mono font-bold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded">
-                          {item.category}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[8px] font-mono font-bold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded">
+                            {item.category}
+                          </span>
+                          {/* Feature 10: Interactive SEBI Circular Tooltip Button */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const keys = Object.keys(sebiCircularsData);
+                              const matchKey = keys.find(k => sebiCircularsData[k].category.toLowerCase().includes(item.category.toLowerCase())) || keys[0];
+                              setActiveCircular(sebiCircularsData[matchKey]);
+                            }}
+                            className="text-[9px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full hover:bg-amber-500/20 transition-all"
+                          >
+                            SEBI Circular 📜
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -841,7 +1043,63 @@ export default function WorkspaceView({
           )}
 
         </div>
-      </div>
+      </motion.div>
+
+
+
+      {/* Feature 10: Interactive SEBI Circular Popup Modal */}
+      <AnimatePresence>
+        {activeCircular && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setActiveCircular(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 10 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-3">
+                <span className="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                  {activeCircular.category} ({activeCircular.year})
+                </span>
+                <button
+                  onClick={() => setActiveCircular(null)}
+                  className="p-1 text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
+                  {activeCircular.title}
+                </h3>
+                <p className="text-[11px] font-mono text-[#71706C] dark:text-[#A19F9A]">
+                  Official Circular ID: {activeCircular.code}
+                </p>
+                <p className="text-xs text-[#51504B] dark:text-[#D2CFC9] leading-relaxed pt-2">
+                  {activeCircular.summary}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-[#E6E5E0] dark:border-[#2E2D2A] flex items-center justify-between text-xs">
+                <span className="text-[10px] font-mono text-[#71706C] dark:text-[#A19F9A]">
+                  SEBI Regulatory Reference
+                </span>
+                <span className="font-mono font-bold text-[#1C1C1A] dark:text-[#F5F4F0] bg-[#FAF9F6] dark:bg-[#252422] px-2.5 py-1 rounded-lg border border-[#E6E5E0] dark:border-[#2E2D2A]">
+                  {activeCircular.code}
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

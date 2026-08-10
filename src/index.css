@@ -1,35 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1;1,600;1,700;1,800;1,900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 @import "tailwindcss";
 
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-serif: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-sans: "Poppins", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-}
-
-@utility font-serif {
-  font-family: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
-}
-
-@utility font-display {
-  font-family: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 @utility font-sans {
-  font-family: "Poppins", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  font-family: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility font-serif {
+  font-family: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility font-display {
+  font-family: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 @utility font-mono {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  font-family: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 html, body {
   background-color: #F6F5F0;
   color: #1F1E1A;
-  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+  font-family: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
   min-height: 100vh;
   transition: background-color 300ms ease, color 300ms ease;
 }
@@ -37,6 +37,23 @@ html, body {
 html.dark, html.dark body {
   background-color: #121211;
   color: #F5F4F0;
+}
+
+/* Custom Theme Accent Classes */
+html[data-accent="cobalt"] {
+  --accent-primary: #0066ff;
+}
+
+html[data-accent="emerald"] {
+  --accent-primary: #059669;
+}
+
+html[data-accent="gold"] {
+  --accent-primary: #d97706;
+}
+
+html[data-accent="onyx"] {
+  --accent-primary: #334155;
 }
 
 /* Custom Scrollbar */
@@ -214,5 +231,51 @@ html.dark .animate-shimmer {
 
 @utility border-everyday-border {
   border-color: #38bdf8;
+}
+
+/* Universal Custom Scrollbar Styling (Fits Prism Aesthetic) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4D3CD;
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A19F9A;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #3E3D3A;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #71706C;
+}
+
+/* Firefox scrollbar compatibility */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #D4D3CD transparent;
+}
+
+html.dark * {
+  scrollbar-color: #3E3D3A transparent;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 

@@ -181,7 +181,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 pt-28 md:pt-32 pb-16 md:px-12 flex flex-col justify-center relative z-10">
+      <main className="flex-1 max-w-[1680px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-10 pt-28 md:pt-32 pb-16 flex flex-col justify-center relative z-10">
         
         <AnimatePresence mode="wait">
           

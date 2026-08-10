@@ -188,3 +188,14 @@ export interface CompletedSession {
   outcome: 'Success' | 'Aborted';
   debriefData: Debrief;
 }
+
+export type AccentTheme = 'cobalt' | 'emerald' | 'gold' | 'onyx';
+
+export interface SEBICircularInfo {
+  code: string;
+  title: string;
+  category: string;
+  summary: string;
+  year: string;
+  link: string;
+}

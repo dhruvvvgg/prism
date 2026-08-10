@@ -42,13 +42,13 @@ export default function AssessmentView({
     >
       {/* Title */}
       <div className="space-y-2 text-center">
-        <span className="text-[10px] font-sans font-black uppercase tracking-wider text-[#D95D39]">
+        <span className="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#D95D39]">
           {isPlanMode ? 'Proactive Strategy Prepared' : 'Mission Parameters Staged'}
         </span>
-        <h2 className="text-3xl font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+        <h2 className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
           {isPlanMode ? 'Proactive Readiness & Planning Brief' : 'Strategic Feasibility Assessment'}
         </h2>
-        <p className="text-sm text-[#71706C] dark:text-[#A19F9A] max-w-md mx-auto transition-colors duration-300">
+        <p className="text-xs sm:text-sm text-[#71706C] dark:text-[#A19F9A] max-w-md mx-auto transition-colors duration-300 leading-relaxed">
           {isPlanMode 
             ? 'We have assessed your timeline and compiled optimal proactive blocks to establish strategic safety buffers.' 
             : 'We have calculated the complexity, remaining hours, and output constraints to outline your tactical path.'}

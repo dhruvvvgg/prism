@@ -163,10 +163,10 @@ export default function Coach({ permissions }: CoachProps) {
   };
 
   const quickStarts = [
-    { label: 'Steady Income', prompt: 'Which alternative assets provide the steadiest passive income for my profile?' },
-    { label: 'Inflation Hedging', prompt: 'How can I protect my purchasing power from inflation with alternative assets?' },
-    { label: 'Capital Safety', prompt: 'Which debt or bond categories offer the absolute highest capital safety for me?' },
-    { label: 'REITs vs InvITs', prompt: 'Can you compare REITs and InvITs in the context of my current holdings?' }
+    { label: '📊 Audit REIT Tax Efficiency', prompt: 'Audit the 90% NDCF tax efficiency and distribution schedule of my REIT holdings.' },
+    { label: '🛡️ Rate Hike Shield', prompt: 'Is my debt portfolio safe from interest rate hikes by the RBI?' },
+    { label: '🌟 SGB 8-Yr Maturity Rules', prompt: 'Verify Section 47(viib) capital gains tax exemption for my Sovereign Gold Bonds.' },
+    { label: '⚖️ Board Independence Audit', prompt: 'Check if the board independence of my holdings meets the 50% SEBI LODR threshold.' }
   ];
 
   const renderFormattedText = (text: string) => {
@@ -280,7 +280,7 @@ export default function Coach({ permissions }: CoachProps) {
           <div className="md:col-span-4 flex flex-col gap-6 md:sticky md:top-24">
             {/* Grounded Profile card */}
             <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800/80 p-5 rounded-[24px] shadow-sm transition-colors duration-300">
-              <span className="text-[9px] font-bold tracking-widest text-[#64748B] dark:text-slate-400 uppercase block mb-3">
+              <span className="text-xs font-bold tracking-widest text-[#64748B] dark:text-slate-400 uppercase block mb-3">
                 ACTIVE GROUNDING DATA
               </span>
               <div className="flex items-center space-x-3 mb-4">
@@ -288,24 +288,24 @@ export default function Coach({ permissions }: CoachProps) {
                   {activePersona.persona_name[0]}
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#0F172A] dark:text-slate-100">{activePersona.persona_name}</h4>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold leading-tight mt-0.5">{activePersona.persona_tagline}</p>
+                  <h4 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">{activePersona.persona_name}</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-bold leading-tight mt-0.5">{activePersona.persona_tagline}</p>
                 </div>
               </div>
 
               <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4 space-y-4">
                 <div>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-400 font-bold block">Aggregated Value</span>
-                  <span className="text-sm font-bold text-[#0F172A] dark:text-slate-50 mt-1 block">{formatINR(activePersona.total_portfolio_value)}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-400 font-bold block">Aggregated Value</span>
+                  <span className="text-base font-extrabold text-[#0F172A] dark:text-slate-50 mt-1 block">{formatINR(activePersona.total_portfolio_value)}</span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-400 font-bold block mb-2">Portfolio Mix</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-400 font-bold block mb-2">Portfolio Mix</span>
                   <div className="space-y-1.5">
                     {activePersona.asset_allocation.map((asset, idx) => {
                       const colors = getAssetColors(asset.name);
                       return (
-                        <div key={idx} className={`flex items-center justify-between p-2.5 rounded-xl border text-[11px] font-bold ${colors.lightBg} ${colors.border} ${colors.text}`}>
+                        <div key={idx} className={`flex items-center justify-between p-2.5 rounded-xl border text-xs font-bold ${colors.lightBg} ${colors.border} ${colors.text}`}>
                           <span>{asset.name}</span>
                           <span>{asset.percentage}%</span>
                         </div>
@@ -318,11 +318,11 @@ export default function Coach({ permissions }: CoachProps) {
 
             {/* Static Coach Intro Card */}
             <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800/80 p-5 rounded-[24px] shadow-sm">
-              <h3 className="text-xs font-bold text-[#0F172A] dark:text-slate-200 mb-2 flex items-center space-x-2">
+              <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-200 mb-2 flex items-center space-x-2">
                 <ShieldCheck className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Regulatory Safety Rails</span>
               </h3>
-              <p className="text-[11px] text-[#64748B] dark:text-slate-400 leading-relaxed font-medium">
+              <p className="text-xs text-[#64748B] dark:text-slate-400 leading-relaxed font-medium">
                 Prism Suitability Coach offers category-level suitability guidance based on SEBI distribution frameworks and Indian regulatory guidelines. We never suggest or broker specific commercial securities.
               </p>
             </div>
@@ -352,7 +352,7 @@ export default function Coach({ permissions }: CoachProps) {
                       </div>
 
                       {/* Bubble content */}
-                      <div className={`p-4 rounded-[20px] text-xs shadow-sm ${
+                      <div className={`p-4 rounded-[20px] text-sm leading-relaxed shadow-sm ${
                         msg.sender === 'user' 
                           ? 'bg-everyday text-white font-semibold' 
                           : 'bg-[#F8FAFC] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 text-[#0F172A] dark:text-slate-100'
@@ -428,27 +428,30 @@ export default function Coach({ permissions }: CoachProps) {
             {/* Input & Quickstart region */}
             <div className="p-4 bg-white dark:bg-[#1E1E1E] border-t border-[#E2E8F0] dark:border-slate-800 space-y-3">
               {/* Quickstart suggestions */}
-              <div className="flex flex-wrap items-center gap-2 py-1">
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider shrink-0 mr-1 select-none">
-                  Quick Audits:
-                </span>
-                {quickStarts.map((item, idx) => (
-                  <motion.button
-                    key={idx}
-                    type="button"
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      if (!isTyping) {
-                        handleSendMessage(item.prompt);
-                      }
-                    }}
-                    disabled={isTyping}
-                    className="inline-flex items-center text-[10px] font-bold leading-none px-3 py-2 bg-[#F1F5F9] dark:bg-[#262626] hover:bg-blue-50 dark:hover:bg-blue-950/20 border border-slate-200 dark:border-slate-800 text-[#334155] dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 rounded-full transition-all cursor-pointer disabled:opacity-50 shrink-0"
-                  >
-                    {item.label}
-                  </motion.button>
-                ))}
+              <div className="space-y-1.5 py-1">
+                <div className="flex items-center justify-between text-[10px] font-bold text-[#71706C] dark:text-[#A19F9A] uppercase tracking-wider select-none px-1">
+                  <span>Quick Audit Prompts</span>
+                  <span>Click to query Coach</span>
+                </div>
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 scrollbar-none">
+                  {quickStarts.map((item, idx) => (
+                    <motion.button
+                      key={idx}
+                      type="button"
+                      whileHover={{ scale: 1.02, y: -1 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        if (!isTyping) {
+                          handleSendMessage(item.prompt);
+                        }
+                      }}
+                      disabled={isTyping}
+                      className="inline-flex items-center h-8 text-[11px] font-bold whitespace-nowrap px-3.5 bg-[#FAF9F6] dark:bg-[#252422] hover:bg-blue-50 dark:hover:bg-blue-950/30 border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#1C1C1A] dark:text-[#F5F4F0] hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all cursor-pointer disabled:opacity-50 shrink-0 shadow-sm"
+                    >
+                      {item.label}
+                    </motion.button>
+                  ))}
+                </div>
               </div>
 
               {/* Chat Input form */}

@@ -59,174 +59,196 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] dark:bg-[#121212] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        {/* Elegant Minimalist App branding (Wordmark alone in Fraunces, NO logo/icon next to it) */}
-        <h2 className="text-4xl font-display font-black text-[#0F172A] dark:text-slate-50 tracking-tight">
+    <div className="min-h-screen bg-[#FAF9F6] dark:bg-[#121212] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
+      <div className="sm:mx-auto sm:w-full sm:max-w-3xl text-center mb-8">
+        {/* Elegant Minimalist App branding */}
+        <h2 className="text-3xl sm:text-4xl font-display font-bold text-[#0F172A] dark:text-slate-50 tracking-tight">
           Prism
         </h2>
-        <p className="mt-2 text-sm font-semibold text-[#64748B] dark:text-slate-400">
-          Alternative Asset Governance & Analytics
+        <p className="mt-2 text-xs sm:text-sm font-semibold text-[#64748B] dark:text-slate-400">
+          Alternative Asset Governance & Account Aggregator Linking
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
+      <div className="sm:mx-auto sm:w-full sm:max-w-3xl">
         <div className="bg-white dark:bg-[#1E1E1E] py-8 px-6 border border-[#E2E8F0] dark:border-slate-800 shadow-sm rounded-[24px] sm:px-10 transition-colors duration-300">
-          
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-xs font-bold tracking-wider text-[#475569] dark:text-slate-300 uppercase">
-                Email Address
-              </label>
-              <div className="mt-1.5 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail className="h-4 w-4 text-[#94A3B8]" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 text-sm bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-[#0F172A] dark:text-slate-50 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
-                  placeholder="name@example.com"
-                />
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+            
+            {/* Left Side: Auth / Linking Form (Span 7) */}
+            <form className="md:col-span-7 space-y-5" onSubmit={handleSubmit}>
+              <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-[#475569] dark:text-slate-300 border-b border-[#E2E8F0] dark:border-slate-800 pb-2">
+                Investor Authentication & AA Fetch
+              </h3>
 
-            <div>
-              <label htmlFor="password" className="block text-xs font-bold tracking-wider text-[#475569] dark:text-slate-300 uppercase">
-                Password
-              </label>
-              <div className="mt-1.5 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock className="h-4 w-4 text-[#94A3B8]" />
+              <div>
+                <label htmlFor="email" className="block text-xs font-bold tracking-wider text-[#475569] dark:text-slate-300 uppercase">
+                  Email Address
+                </label>
+                <div className="mt-1.5 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Mail className="h-4 w-4 text-[#94A3B8]" />
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2.5 text-sm bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-[#0F172A] dark:text-slate-50 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                    placeholder="name@example.com"
+                  />
                 </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-10 py-2.5 text-sm bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-[#0F172A] dark:text-slate-50 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
-                  placeholder="••••••••"
-                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-xs font-bold tracking-wider text-[#475569] dark:text-slate-300 uppercase">
+                  Password
+                </label>
+                <div className="mt-1.5 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Lock className="h-4 w-4 text-[#94A3B8]" />
+                  </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="block w-full pl-10 pr-10 py-2.5 text-sm bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-[#0F172A] dark:text-slate-50 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-[#94A3B8] hover:text-[#475569]" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-[#94A3B8] hover:text-[#475569]" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="pan" className="block text-xs font-bold tracking-wider text-[#475569] dark:text-slate-300 uppercase">
+                    PAN Number
+                  </label>
+                  <div className="mt-1.5 relative rounded-md shadow-sm">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <span className="text-xs font-bold text-[#94A3B8]">PAN</span>
+                    </div>
+                    <input
+                      id="pan"
+                      name="pan"
+                      type="text"
+                      required
+                      value={pan}
+                      onChange={(e) => setPan(e.target.value.toUpperCase())}
+                      className="block w-full pl-12 pr-3 py-2.5 text-sm bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-[#0F172A] dark:text-slate-50 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors uppercase"
+                      placeholder="ABCDE1234F"
+                      maxLength={10}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="mobile" className="block text-xs font-bold tracking-wider text-[#475569] dark:text-slate-300 uppercase">
+                    Mobile (AA Linked)
+                  </label>
+                  <div className="mt-1.5 relative rounded-md shadow-sm">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <span className="text-xs font-bold text-[#94A3B8]">+91</span>
+                    </div>
+                    <input
+                      id="mobile"
+                      name="mobile"
+                      type="tel"
+                      required
+                      value={mobile}
+                      onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
+                      className="block w-full pl-12 pr-3 py-2.5 text-sm bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-[#0F172A] dark:text-slate-50 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                      placeholder="9876543210"
+                      maxLength={10}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {error && (
+                <div className="p-3 bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900 rounded-xl text-xs font-semibold text-rose-700 dark:text-rose-400">
+                  {error}
+                </div>
+              )}
+
+              <div className="pt-2">
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center"
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full flex justify-center items-center py-3.5 px-4 rounded-xl shadow-md text-sm font-bold text-white bg-everyday hover:opacity-90 focus:outline-none transition-all cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-[#94A3B8] hover:text-[#475569]" />
+                  {isLoading ? (
+                    <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
-                    <Eye className="h-4 w-4 text-[#94A3B8] hover:text-[#475569]" />
+                    <>
+                      Sign In & Link Assets
+                      <ArrowRight className="ml-2 h-4 w-4 stroke-[2.5]" />
+                    </>
                   )}
                 </button>
               </div>
-            </div>
+            </form>
 
-            <div>
-              <label htmlFor="pan" className="block text-xs font-bold tracking-wider text-[#475569] dark:text-slate-300 uppercase">
-                Permanent Account Number (PAN)
-              </label>
-              <div className="mt-1.5 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <span className="text-xs font-bold text-[#94A3B8]">PAN</span>
-                </div>
-                <input
-                  id="pan"
-                  name="pan"
-                  type="text"
-                  required
-                  value={pan}
-                  onChange={(e) => setPan(e.target.value.toUpperCase())}
-                  className="block w-full pl-12 pr-3 py-2.5 text-sm bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-[#0F172A] dark:text-slate-50 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors uppercase"
-                  placeholder="ABCDE1234F"
-                  maxLength={10}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="mobile" className="block text-xs font-bold tracking-wider text-[#475569] dark:text-slate-300 uppercase">
-                Mobile Number (Linked to AA)
-              </label>
-              <div className="mt-1.5 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <span className="text-xs font-bold text-[#94A3B8]">+91</span>
-                </div>
-                <input
-                  id="mobile"
-                  name="mobile"
-                  type="tel"
-                  required
-                  value={mobile}
-                  onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
-                  className="block w-full pl-12 pr-3 py-2.5 text-sm bg-[#FAF9F6] dark:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-[#0F172A] dark:text-slate-50 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
-                  placeholder="9876543210"
-                  maxLength={10}
-                />
-              </div>
-            </div>
-
-            {error && (
-              <div className="p-3 bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900 rounded-xl text-xs font-semibold text-rose-700 dark:text-rose-400">
-                {error}
-              </div>
-            )}
-
-            <div>
-              {/* Login submit styled with Everyday gradient */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full flex justify-center items-center py-3.5 px-4 rounded-xl shadow-md text-sm font-bold text-white bg-everyday hover:opacity-90 focus:outline-none transition-all cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <>
-                    Sign In
-                    <ArrowRight className="ml-2 h-4 w-4 stroke-[2.5]" />
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-
-          {/* Preset test credentials */}
-          <div className="mt-6 border-t border-[#F1F5F9] dark:border-slate-800/80 pt-5">
-            <div className="bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100 dark:border-blue-900/35 rounded-xl p-4">
-              <div className="flex items-start">
-                <div className="flex-shrink-0">
-                  <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
-                </div>
-                <div className="ml-3 w-full">
+            {/* Right Side: Demo Credentials & AA Gateway Specs (Span 5) */}
+            <div className="md:col-span-5 space-y-4">
+              <div className="bg-blue-50/40 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/35 rounded-2xl p-5 space-y-3">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0" />
                   <h3 className="text-xs font-bold text-blue-800 dark:text-blue-300 tracking-wider uppercase">
-                    Demo Credentials
+                    Demo Preset Account
                   </h3>
-                  <div className="mt-2 text-xs font-semibold text-blue-700 dark:text-blue-400 space-y-1">
-                    <p>Email: <span className="bg-blue-100/50 dark:bg-blue-950/40 px-1 py-0.5 rounded">{demoEmail}</span></p>
-                    <p>Password: <span className="bg-blue-100/50 dark:bg-blue-950/40 px-1 py-0.5 rounded">{demoPassword}</span></p>
-                  </div>
-                  <div className="mt-3">
-                    <button
-                      type="button"
-                      onClick={handleFillDemo}
-                      className="text-xs font-bold text-blue-800 dark:text-blue-300 hover:text-blue-950 dark:hover:text-blue-100 underline underline-offset-2 cursor-pointer"
-                    >
-                      Auto-fill demo credentials
-                    </button>
-                  </div>
                 </div>
+
+                <p className="text-xs text-[#64748B] dark:text-slate-400 leading-relaxed">
+                  Click below to instantly prefill verified Sandbox credentials and explore alternative asset auditing:
+                </p>
+
+                <div className="text-xs font-mono font-semibold text-blue-700 dark:text-blue-400 space-y-1 bg-white/60 dark:bg-[#121212]/40 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                  <p>Email: <span className="text-[#0F172A] dark:text-slate-200">{demoEmail}</span></p>
+                  <p>Pass: <span className="text-[#0F172A] dark:text-slate-200">{demoPassword}</span></p>
+                  <p>PAN: <span className="text-[#0F172A] dark:text-slate-200">{demoPan}</span></p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleFillDemo}
+                  className="w-full text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-3 rounded-xl transition-all shadow-sm cursor-pointer text-center block"
+                >
+                  Auto-Fill Demo Credentials
+                </button>
+              </div>
+
+              {/* AA Compliance Trust Note */}
+              <div className="bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl p-4 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase">
+                    ● SEBI Sandbox Active
+                  </span>
+                  <span className="text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A]">256-bit AES</span>
+                </div>
+                <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-relaxed">
+                  Read-only consent tokens are issued under the RBI Account Aggregator ecosystem. No transaction rights requested.
+                </p>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </div>

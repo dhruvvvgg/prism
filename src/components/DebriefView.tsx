@@ -31,13 +31,13 @@ export default function DebriefView({
     >
       {/* Title */}
       <div className="space-y-2 text-center">
-        <span className="text-[10px] font-sans font-black uppercase tracking-wider text-[#D95D39]">
+        <span className="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#D95D39]">
           Productive Retrospective
         </span>
-        <h2 className="text-3xl font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+        <h2 className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
           Post-Crisis Debrief
         </h2>
-        <p className="text-sm text-[#71706C] dark:text-[#A19F9A] max-w-md mx-auto transition-colors duration-300">
+        <p className="text-xs sm:text-sm text-[#71706C] dark:text-[#A19F9A] max-w-md mx-auto transition-colors duration-300 leading-relaxed">
           Let’s break the cycle of last-minute stress. We review our processes honestly to build single-action preventive habits.
         </p>
       </div>

@@ -16,13 +16,13 @@ export default function Hero({
   return (
     <HeroParallaxContainer className="space-y-16 transition-colors duration-300">
       {/* Main Hero Copy - Layer 1: Heading & Action CTA */}
-      <HeroParallaxLayer speed={0.35} className="text-center space-y-6 max-w-4xl mx-auto pt-4 select-none">
-        <h1 className="text-4xl sm:text-6xl md:text-8xl font-serif font-black tracking-tighter leading-[0.95] sm:leading-[0.9] text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+      <HeroParallaxLayer speed={0.35} className="text-center space-y-6 max-w-6xl mx-auto pt-4 select-none">
+        <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif font-black tracking-tighter leading-[0.95] sm:leading-[0.9] text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
           Alternative Assets. <br className="hidden md:inline" />
           Fully <span className="animate-shine font-serif">Grounded.</span>
         </h1>
         
-        <p className="text-[#51504B] dark:text-[#A19F9A] text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed font-normal transition-colors duration-300">
+        <p className="text-[#51504B] dark:text-[#A19F9A] text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-normal transition-colors duration-300">
           Prism automates SEBI/RBI compliance monitoring, aggregates holdings via Account Aggregator Sandbox, and verifies suitability with a grounded AI Coach.
         </p>
         
@@ -34,19 +34,20 @@ export default function Hero({
             onClick={onLaunchPrism}
             className="w-full sm:w-auto bg-everyday hover:opacity-90 text-white font-extrabold text-sm sm:text-base px-8 py-4 rounded-full shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer ballpark-shadow"
           >
-            <Sparkles className="w-5 h-5 animate-pulse" />
+            <Sparkles className="w-5 h-5" />
             {selectedPersonaName ? `Return to ${selectedPersonaName}'s Workspace` : 'Link Portfolio (AA Framework)'}
           </motion.button>
         </div>
       </HeroParallaxLayer>
 
       {/* Motion.dev Scroll Parallax Product UI Mockup - Layer 2 */}
-      <HeroParallaxLayer speed={0.5} className="relative max-w-4xl mx-auto py-4 px-4 sm:px-6">
+      <HeroParallaxLayer speed={0.5} className="relative max-w-6xl mx-auto py-4 px-4 sm:px-6">
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.01, transition: { duration: 0.3 } }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          onClick={onLaunchPrism}
           className="relative bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-6 sm:p-8 shadow-[0_24px_60px_rgba(0,0,0,0.06)] ballpark-shadow transition-colors duration-300 overflow-hidden group cursor-pointer"
         >
           {/* Subtle top signature spectrum refraction line */}
@@ -60,8 +61,8 @@ export default function Hero({
               <span className="w-2.5 h-2.5 rounded-full bg-[#E2E1DD] dark:bg-[#2E2D2A]" />
             </div>
             <div className="hidden sm:flex items-center gap-2 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-full py-1 px-4 text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] transition-colors duration-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-              <span>prism.sandbox_sync_active</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span>AA Sandbox Active</span>
             </div>
             <div className="w-8" />
           </div>

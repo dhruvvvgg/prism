@@ -59,16 +59,16 @@ export default function ModesGrid({
   };
 
   return (
-    <div className="space-y-12 select-none max-w-5xl mx-auto transition-colors duration-300">
+    <div className="space-y-12 select-none max-w-7xl mx-auto transition-colors duration-300">
       {/* Conversational Section Header */}
       <div className="space-y-2 border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-6 transition-colors duration-300">
-        <span className="text-[10px] font-mono font-black uppercase tracking-wider text-blue-500">
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-500">
           {isStatic ? 'Core Modules' : 'Choose Your Terminal'}
         </span>
-        <h2 className="text-3xl md:text-4xl font-serif font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+        <h2 className="text-2xl sm:text-3xl font-serif font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
           {isStatic ? 'Comprehensive risk and compliance auditing.' : 'Select a module to explore.'}
         </h2>
-        <p className="text-sm font-sans text-[#71706C] dark:text-[#A19F9A] max-w-2xl transition-colors duration-300">
+        <p className="text-sm sm:text-base font-sans text-[#71706C] dark:text-[#A19F9A] max-w-2xl transition-colors duration-300 leading-relaxed">
           {isStatic 
             ? 'Prism adapts to your investment portfolio—providing deep-dive regulatory auditing, granular asset analysis, and real-time AI suitability checks.' 
             : 'Explore your linked wealth or perform on-the-fly regulatory checkups. We make Indian financial compliance accessible.'}
@@ -100,10 +100,10 @@ export default function ModesGrid({
                 : `cursor-pointer group transition-all duration-300 ballpark-shadow hover:shadow-[0_12px_40px_rgba(0,0,0,0.03)] dark:hover:shadow-[0_12px_40px_rgba(0,0,0,0.2)] ${mode.borderColor}`
             }`}
           >
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Header Icon Block */}
               <div className="flex items-center justify-between">
-                <div className="bg-[#1C1C1A] dark:bg-[#252422] border border-[#2E2D2A] p-3.5 rounded-2xl transition-colors duration-300">
+                <div className="bg-[#1C1C1A] dark:bg-[#252422] border border-[#2E2D2A] p-3 rounded-xl transition-colors duration-300">
                   {mode.icon}
                 </div>
                 {!isStatic && (
@@ -114,16 +114,16 @@ export default function ModesGrid({
               </div>
 
               {/* Text Info */}
-              <div className="space-y-3">
-                <h3 className="text-2xl font-serif font-black tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+              <div className="space-y-2.5">
+                <h3 className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
                   {mode.title}
                 </h3>
                 
-                <p className="text-xs font-semibold italic text-[#71706C] dark:text-[#A19F9A] transition-colors duration-300">
+                <p className="text-xs sm:text-sm font-semibold italic text-[#71706C] dark:text-[#A19F9A] transition-colors duration-300">
                   {mode.subtitle}
                 </p>
                 
-                <p className="text-sm text-[#51504B] dark:text-[#D2CFC9] leading-relaxed font-normal transition-colors duration-300">
+                <p className="text-sm sm:text-base text-[#51504B] dark:text-[#D2CFC9] leading-relaxed font-normal transition-colors duration-300">
                   {mode.description}
                 </p>
               </div>

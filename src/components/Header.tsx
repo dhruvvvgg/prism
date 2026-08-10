@@ -27,12 +27,11 @@ export default function Header({
   onBack,
   backLabel,
   googleUser,
-  onGoogleSignIn,
-  onGoogleSignOut,
   onLogOut,
 }: HeaderProps) {
   return (
-    <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-6xl z-50 rounded-xl bg-white/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border border-[#E6E5E0] dark:border-[#2E2D2A]/50 shadow-[0_8px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.35)] px-4 sm:px-6 py-3.5 flex items-center justify-between transition-all duration-300 select-none">
+    <>
+      <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-[1680px] z-50 rounded-xl bg-white/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border border-[#E6E5E0] dark:border-[#2E2D2A]/50 shadow-[0_8px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.35)] px-4 sm:px-6 py-3.5 flex items-center justify-between transition-all duration-300 select-none">
       {/* Dark/Light Mode Toggle Pill (Left) */}
       <div className="flex items-center gap-2">
         <button
@@ -92,7 +91,7 @@ export default function Header({
             onClick={() => setCurrentView('workspace')}
             className="bg-[#1C1C1A] dark:bg-[#F5F4F0] text-white dark:text-[#121211] hover:bg-[#32312E] dark:hover:bg-[#E2E1DD] font-bold text-xs px-4 sm:px-5 py-2 rounded-lg transition-all ballpark-shadow flex items-center gap-2 border border-transparent cursor-pointer"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
             <span className="hidden xs:inline">Active Dashboard</span>
             <span className="xs:hidden">Dashboard</span>
           </button>
@@ -106,5 +105,50 @@ export default function Header({
         )}
       </div>
     </header>
+
+    {/* Mobile Bottom Navigation Dock (Feature 13 - Visible on mobile screens < sm) */}
+    {hasActiveWorkspace && (
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm sm:hidden z-50 bg-white/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl shadow-2xl px-3 py-2 flex items-center justify-around transition-all select-none">
+        <button
+          onClick={() => setCurrentView('workspace')}
+          className={`flex flex-col items-center gap-1 text-[9px] font-bold transition-colors cursor-pointer ${
+            currentView === 'workspace' ? 'text-blue-600 dark:text-blue-400' : 'text-[#71706C] dark:text-[#A19F9A]'
+          }`}
+        >
+          <span className="text-sm">🏠</span>
+          <span>Dashboard</span>
+        </button>
+
+        <button
+          onClick={() => setCurrentView('discover')}
+          className={`flex flex-col items-center gap-1 text-[9px] font-bold transition-colors cursor-pointer ${
+            currentView === 'discover' ? 'text-blue-600 dark:text-blue-400' : 'text-[#71706C] dark:text-[#A19F9A]'
+          }`}
+        >
+          <span className="text-sm">🧭</span>
+          <span>Discover</span>
+        </button>
+
+        <button
+          onClick={() => setCurrentView('coach')}
+          className={`flex flex-col items-center gap-1 text-[9px] font-bold transition-colors cursor-pointer ${
+            currentView === 'coach' ? 'text-blue-600 dark:text-blue-400' : 'text-[#71706C] dark:text-[#A19F9A]'
+          }`}
+        >
+          <span className="text-sm">💬</span>
+          <span>Coach</span>
+        </button>
+
+        <button
+          onClick={() => setCurrentView('settings')}
+          className={`flex flex-col items-center gap-1 text-[9px] font-bold transition-colors cursor-pointer ${
+            currentView === 'settings' ? 'text-blue-600 dark:text-blue-400' : 'text-[#71706C] dark:text-[#A19F9A]'
+          }`}
+        >
+          <span className="text-sm">⚙️</span>
+        </button>
+      </div>
+    )}
+    </>
   );
 }

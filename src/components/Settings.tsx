@@ -111,22 +111,19 @@ export default function Settings({ permissions, setPermissions, onHardReset, onR
         )}
       </div>
 
-      <div className="flex flex-col gap-6 md:grid md:grid-cols-12 md:gap-8 md:items-stretch animate-fadeIn">
+      <div className="flex flex-col gap-6 md:grid md:grid-cols-12 md:gap-8 items-stretch animate-fadeIn">
         
         {/* Left Column: Linked Identity & Consent Toggles */}
         <div className="flex flex-col gap-6 md:col-span-6 justify-between">
-          <div className="space-y-6 flex-1 flex flex-col justify-start">
-            {/* User Identity Box */}
-            <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800 rounded-[24px] p-6 flex items-center justify-between shadow-sm transition-colors duration-300">
+          {/* User Identity Box */}
+          <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800 rounded-[24px] p-6 space-y-4 shadow-sm transition-colors duration-300">
+            <div className="flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-bold tracking-widest text-[#64748B] dark:text-slate-400 uppercase block">
-                  LINKED depository IDENTITY
+                  LINKED DEPOSITORY IDENTITY
                 </span>
-                <span className="text-sm font-bold text-[#0F172A] dark:text-slate-100 mt-1 block">
+                <span className="text-base font-bold text-[#0F172A] dark:text-slate-100 mt-0.5 block">
                   {displayName}
-                </span>
-                <span className="text-[10px] text-[#64748B] dark:text-slate-400 mt-1 block">
-                  Email: {email} • PAN: {maskedPan} • Mobile: {maskedMobile}
                 </span>
               </div>
               <div className="h-10 w-10 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/35 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xs shrink-0">
@@ -134,81 +131,99 @@ export default function Settings({ permissions, setPermissions, onHardReset, onR
               </div>
             </div>
 
-            {/* Consent Parameters Settings Block */}
-            <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800 rounded-[24px] p-6 space-y-5 shadow-sm flex-1 transition-colors duration-300">
-              <div className="flex items-center space-x-2 pb-2 border-b border-[#E2E8F0] dark:border-slate-800">
+            {/* Clean Identity Metadata Rows - 100% Uniform Horizontal Alignment */}
+            <div className="space-y-2 pt-3 border-t border-[#E2E8F0] dark:border-slate-800 text-xs">
+              <div className="flex items-center justify-between py-1.5 border-b border-[#E2E8F0]/50 dark:border-slate-800/50">
+                <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">Email Address</span>
+                <span className="font-semibold text-[#0F172A] dark:text-slate-200 font-mono select-all">{email}</span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-[#E2E8F0]/50 dark:border-slate-800/50">
+                <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">PAN Number</span>
+                <span className="font-bold text-[#0F172A] dark:text-slate-200 font-mono">{maskedPan}</span>
+              </div>
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">Mobile Number</span>
+                <span className="font-bold text-[#0F172A] dark:text-slate-200 font-mono">{maskedMobile}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Consent Parameters Settings Block - Perfectly balanced height with proportional spacing */}
+          <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800 rounded-[24px] p-6 flex-1 flex flex-col justify-between shadow-sm transition-colors duration-300">
+            <div>
+              <div className="flex items-center space-x-2 pb-2 border-b border-[#E2E8F0] dark:border-slate-800 mb-3">
                 <Shield className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 <h2 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">Consent Parameters</h2>
               </div>
 
-              <p className="text-xs text-[#64748B] dark:text-slate-400 leading-relaxed font-medium">
+              <p className="text-xs text-[#64748B] dark:text-slate-400 leading-relaxed font-medium mb-4">
                 These parameters are enforced at the Account Aggregator (AA) gateway level. Toggling any switch instantly sends a digital revoke certificate to the aggregator node.
               </p>
+            </div>
 
-              <div className="space-y-5 pt-1">
-                {/* View Portfolio */}
-                <div className="flex items-start justify-between space-x-4">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-1.5">
-                      <Eye className="h-4.5 w-4.5 text-blue-600 dark:text-blue-400" />
-                      <span className="text-xs font-bold text-[#0F172A] dark:text-slate-200">View Portfolio</span>
-                    </div>
-                    <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-1 leading-relaxed">
-                      Grants read access to CDSL/NSDL security holdings and balances. Required to run basic portfolio listings.
-                    </p>
+            <div className="space-y-5 flex-1 flex flex-col justify-around py-1">
+              {/* View Portfolio */}
+              <div className="flex items-start justify-between space-x-4">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-1.5">
+                    <Eye className="h-4.5 w-4.5 text-blue-600 dark:text-blue-400" />
+                    <span className="text-xs font-bold text-[#0F172A] dark:text-slate-200">View Portfolio</span>
                   </div>
-                  <button 
-                    type="button"
-                    onClick={() => handleToggle('viewPortfolio')}
-                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${permissions.viewPortfolio ? 'bg-blue-600' : 'bg-[#E2E8F0] dark:bg-slate-700'}`}
-                  >
-                    <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${permissions.viewPortfolio ? 'translate-x-4' : 'translate-x-0'}`} />
-                  </button>
+                  <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-1 leading-relaxed">
+                    Grants read access to CDSL/NSDL security holdings and balances. Required to run basic portfolio listings.
+                  </p>
                 </div>
+                <button 
+                  type="button"
+                  onClick={() => handleToggle('viewPortfolio')}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${permissions.viewPortfolio ? 'bg-blue-600' : 'bg-[#E2E8F0] dark:bg-slate-700'}`}
+                >
+                  <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${permissions.viewPortfolio ? 'translate-x-4' : 'translate-x-0'}`} />
+                </button>
+              </div>
 
-                <hr className="border-t border-[#E2E8F0] dark:border-slate-800" />
+              <hr className="border-t border-[#E2E8F0] dark:border-slate-800" />
 
-                {/* Analyse Portfolio (NO purple/violet!) */}
-                <div className="flex items-start justify-between space-x-4">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-1.5">
-                      <BarChart3 className="h-4.5 w-4.5 text-indigo-600 dark:text-indigo-400" />
-                      <span className="text-xs font-bold text-[#0F172A] dark:text-slate-200">Analyse Portfolio</span>
-                    </div>
-                    <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-1 leading-relaxed">
-                      Grants permission to run metrics on property occupancy schedules, regulatory track records, and corporate credit ratings.
-                    </p>
+              {/* Analyse Portfolio */}
+              <div className="flex items-start justify-between space-x-4">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-1.5">
+                    <BarChart3 className="h-4.5 w-4.5 text-indigo-600 dark:text-indigo-400" />
+                    <span className="text-xs font-bold text-[#0F172A] dark:text-slate-200">Analyse Portfolio</span>
                   </div>
-                  <button 
-                    type="button"
-                    onClick={() => handleToggle('analysePortfolio')}
-                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${permissions.analysePortfolio ? 'bg-blue-600' : 'bg-[#E2E8F0] dark:bg-slate-700'}`}
-                  >
-                    <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${permissions.analysePortfolio ? 'translate-x-4' : 'translate-x-0'}`} />
-                  </button>
+                  <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-1 leading-relaxed">
+                    Grants permission to run metrics on property occupancy schedules, regulatory track records, and corporate credit ratings.
+                  </p>
                 </div>
+                <button 
+                  type="button"
+                  onClick={() => handleToggle('analysePortfolio')}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${permissions.analysePortfolio ? 'bg-blue-600' : 'bg-[#E2E8F0] dark:bg-slate-700'}`}
+                >
+                  <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${permissions.analysePortfolio ? 'translate-x-4' : 'translate-x-0'}`} />
+                </button>
+              </div>
 
-                <hr className="border-t border-[#E2E8F0] dark:border-slate-800" />
+              <hr className="border-t border-[#E2E8F0] dark:border-slate-800" />
 
-                {/* Recommend Products */}
-                <div className="flex items-start justify-between space-x-4">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-1.5">
-                      <Sparkles className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400" />
-                      <span className="text-xs font-bold text-[#0F172A] dark:text-slate-200">Recommend Products</span>
-                    </div>
-                    <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-1 leading-relaxed">
-                      Allows Prism to suggest tailored category-level instruments based on your conservative/aggressive cashflow goals.
-                    </p>
+              {/* Recommend Products */}
+              <div className="flex items-start justify-between space-x-4">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-1.5">
+                    <Sparkles className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400" />
+                    <span className="text-xs font-bold text-[#0F172A] dark:text-slate-200">Recommend Products</span>
                   </div>
-                  <button 
-                    type="button"
-                    onClick={() => handleToggle('recommendProducts')}
-                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${permissions.recommendProducts ? 'bg-blue-600' : 'bg-[#E2E8F0] dark:bg-slate-700'}`}
-                  >
-                    <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${permissions.recommendProducts ? 'translate-x-4' : 'translate-x-0'}`} />
-                  </button>
+                  <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-1 leading-relaxed">
+                    Allows Prism to suggest tailored category-level instruments based on your conservative/aggressive cashflow goals.
+                  </p>
                 </div>
+                <button 
+                  type="button"
+                  onClick={() => handleToggle('recommendProducts')}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${permissions.recommendProducts ? 'bg-blue-600' : 'bg-[#E2E8F0] dark:bg-slate-700'}`}
+                >
+                  <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${permissions.recommendProducts ? 'translate-x-4' : 'translate-x-0'}`} />
+                </button>
               </div>
             </div>
           </div>
@@ -224,24 +239,24 @@ export default function Settings({ permissions, setPermissions, onHardReset, onR
               </span>
               
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-[#FAF9F6] dark:bg-[#262626] rounded-xl border border-[#E2E8F0] dark:border-slate-800">
-                  <span className="text-[#64748B] dark:text-slate-400 block text-[9px] uppercase font-bold">AA Gateway Node</span>
-                  <span className="text-[#0F172A] dark:text-slate-200 font-bold mt-0.5 text-xs block">Anumati AA (SEBI)</span>
+                <div className="p-3.5 bg-[#FAF9F6] dark:bg-[#262626] rounded-xl border border-[#E2E8F0] dark:border-slate-800 flex flex-col justify-between">
+                  <span className="text-[#64748B] dark:text-slate-400 block text-[9px] uppercase font-bold">Data Encryption</span>
+                  <span className="text-[#0F172A] dark:text-slate-200 font-bold mt-1 text-xs block whitespace-nowrap">256-bit AES</span>
                 </div>
-                <div className="p-3 bg-[#FAF9F6] dark:bg-[#262626] rounded-xl border border-[#E2E8F0] dark:border-slate-800">
+                <div className="p-3.5 bg-[#FAF9F6] dark:bg-[#262626] rounded-xl border border-[#E2E8F0] dark:border-slate-800 flex flex-col justify-between">
                   <span className="text-[#64748B] dark:text-slate-400 block text-[9px] uppercase font-bold">Depository Status</span>
-                  <span className="text-emerald-700 dark:text-emerald-400 font-bold mt-0.5 text-xs block flex items-center space-x-1">
+                  <span className="text-emerald-700 dark:text-emerald-400 font-bold mt-1 text-xs block flex items-center space-x-1 whitespace-nowrap">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block mr-1"></span>
-                    <span>Active</span>
+                    <span>Active (Verified)</span>
                   </span>
                 </div>
-                <div className="p-3 bg-[#FAF9F6] dark:bg-[#262626] rounded-xl border border-[#E2E8F0] dark:border-slate-800">
+                <div className="p-3.5 bg-[#FAF9F6] dark:bg-[#262626] rounded-xl border border-[#E2E8F0] dark:border-slate-800 flex flex-col justify-between">
                   <span className="text-[#64748B] dark:text-slate-400 block text-[9px] uppercase font-bold">Sync Frequency</span>
-                  <span className="text-[#0F172A] dark:text-slate-200 font-bold mt-0.5 text-xs block">Periodic (Monthly)</span>
+                  <span className="text-[#0F172A] dark:text-slate-200 font-bold mt-1 text-xs block whitespace-nowrap">Periodic (Monthly)</span>
                 </div>
-                <div className="p-3 bg-[#FAF9F6] dark:bg-[#262626] rounded-xl border border-[#E2E8F0] dark:border-slate-800">
+                <div className="p-3.5 bg-[#FAF9F6] dark:bg-[#262626] rounded-xl border border-[#E2E8F0] dark:border-slate-800 flex flex-col justify-between">
                   <span className="text-[#64748B] dark:text-slate-400 block text-[9px] uppercase font-bold">Consent Expiry</span>
-                  <span className="text-[#0F172A] dark:text-slate-200 font-bold mt-0.5 text-xs block">July 2027</span>
+                  <span className="text-[#0F172A] dark:text-slate-200 font-bold mt-1 text-xs block whitespace-nowrap">July 2027</span>
                 </div>
               </div>
             </div>

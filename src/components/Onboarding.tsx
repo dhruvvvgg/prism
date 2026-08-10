@@ -88,7 +88,7 @@ export default function Onboarding({ onComplete, permissions, setPermissions }: 
   };
 
   return (
-    <div className="max-w-5xl mx-auto bg-[#FAF9F6] dark:bg-[#121212] min-h-screen pb-24 flex flex-col justify-between px-6 pt-8 transition-colors duration-300">
+    <div className="max-w-7xl mx-auto bg-[#FAF9F6] dark:bg-[#121212] min-h-screen pb-24 flex flex-col justify-between px-6 pt-8 transition-colors duration-300">
       <div>
         {/* Header section (Prism Wordmark in Fraunces, NO logo/icon next to it) */}
         <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mb-12">
@@ -127,10 +127,10 @@ export default function Onboarding({ onComplete, permissions, setPermissions }: 
                 <span className="text-xs font-bold tracking-widest text-amber-300 uppercase block">
                   Secure Alternative Investing
                 </span>
-                <h1 className="text-3xl sm:text-5xl font-display font-black text-white leading-none tracking-tight">
+                <h1 className="text-2xl sm:text-4xl font-serif font-extrabold text-white leading-tight tracking-tight">
                   Understand What You Invest In.
                 </h1>
-                <p className="text-sm text-slate-300 leading-relaxed max-w-lg font-medium">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-lg font-medium">
                   The Indian alternative assets market is fragmented. Prism brings institution-grade clarity, governance transparency, and read-only AA data control to your retail portfolio.
                 </p>
               </div>
@@ -205,7 +205,7 @@ export default function Onboarding({ onComplete, permissions, setPermissions }: 
 
         {currentStep === 'persona' && (
           /* ================= STEP 2: PROFILE SELECTION ================= */
-          <div className="max-w-3xl mx-auto flex flex-col gap-6 py-4 animate-fadeIn">
+          <div className="max-w-5xl mx-auto flex flex-col gap-6 py-4 animate-fadeIn">
             <button
               onClick={() => setCurrentStep('intro')}
               className="self-start text-xs font-bold text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-100 flex items-center space-x-1 transition-colors"
@@ -313,7 +313,7 @@ export default function Onboarding({ onComplete, permissions, setPermissions }: 
 
         {currentStep === 'consent' && (
           /* ================= STEP 3: CONSENT CONFIGURATION ================= */
-          <div className="max-w-3xl mx-auto flex flex-col gap-6 py-4 animate-fadeIn">
+          <div className="max-w-5xl mx-auto flex flex-col gap-6 py-4 animate-fadeIn">
             {/* Back to intro trigger */}
             <button
               onClick={() => setCurrentStep('persona')}

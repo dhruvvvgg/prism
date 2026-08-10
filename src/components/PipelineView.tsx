@@ -72,10 +72,10 @@ export default function PipelineView({
           <Loader2 className="w-3 h-3 animate-spin" />
           <span>PRISM SECURE SYNC PIPELINE ACTIVE</span>
         </div>
-        <h2 className="text-3xl font-black tracking-tight transition-colors duration-300">
-          <span className="animate-shine font-black">Executing Linkage...</span>
+        <h2 className="text-xl sm:text-2xl font-serif font-bold tracking-tight transition-colors duration-300">
+          <span className="animate-shine font-bold">Executing Linkage...</span>
         </h2>
-        <p className="text-sm text-[#71706C] dark:text-[#A19F9A] max-w-md mx-auto transition-colors duration-300">
+        <p className="text-xs sm:text-sm text-[#71706C] dark:text-[#A19F9A] max-w-md mx-auto transition-colors duration-300 leading-relaxed">
           Our secure data pipelines are calling Account Aggregator APIs, fetching holding valuations from your FIPs, and evaluating SEBI/RBI regulations in real time.
         </p>
       </div>
