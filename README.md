@@ -1,4 +1,4 @@
-# 💎 Prism — AI-Grounded Alternative Asset Aggregator & Suitability Platform
+# Prism — AI-Grounded Alternative Asset Aggregator & Suitability Platform
 
 [![Live App on Render](https://img.shields.io/badge/Deployment-Render-blueviolet?style=for-the-badge&logo=render)](https://prism-6psq.onrender.com)
 [![React](https://img.shields.io/badge/React-19.0.1-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
