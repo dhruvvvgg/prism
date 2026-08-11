@@ -314,37 +314,45 @@ export default function WorkspaceView({
       >
         <AnimatePresence mode="wait">
           {isSidebarCollapsed ? (
-            /* COLLAPSED RAIL VIEW (Compact Icon Mode for Desktop) */
+            /* COLLAPSED RAIL VIEW (Compact Icon Mode with Matching Baseline) */
             <motion.div
               key="collapsed-rail"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col items-center justify-between h-full py-2 space-y-6"
+              className="flex flex-col items-center justify-between h-full w-full space-y-5"
             >
-              <div className="space-y-6 flex flex-col items-center w-full">
-                {/* Compact Logo Mark */}
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center font-serif font-black text-blue-600 dark:text-blue-400 text-lg">
-                  P
+              <div className="space-y-5 flex flex-col items-center w-full">
+                {/* Persona Profile Avatar Mark matching expanded card height */}
+                <div 
+                  className="w-12 py-3 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl flex flex-col items-center justify-center space-y-1 text-center transition-colors duration-300 shadow-xs cursor-pointer"
+                  title={activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Linked Portfolio'}
+                >
+                  <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center font-serif font-black text-blue-600 dark:text-blue-400 text-xs">
+                    {activePersona ? activePersona.persona_name[0] : 'P'}
+                  </div>
+                  <span className="text-[8px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase tracking-wider block">
+                    AA
+                  </span>
                 </div>
 
-                {/* Vertical Icon Navigation */}
-                <nav className="flex flex-col items-center gap-3 w-full">
+                {/* Vertical Icon Navigation matching expanded nav item heights */}
+                <nav className="flex flex-col items-center gap-2.5 w-full">
                   {[
-                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-5 h-5" /> },
-                    { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-5 h-5" /> },
-                    { id: 'coach' as const, label: 'Suitability Coach', icon: <MessageSquare className="w-5 h-5" /> },
-                    { id: 'checklist' as const, label: 'Compliance Checklist', icon: <CheckSquare className="w-5 h-5" /> },
-                    { id: 'settings' as const, label: 'Privacy & Settings', icon: <Settings className="w-5 h-5" /> }
+                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
+                    { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-4 h-4 shrink-0" /> },
+                    { id: 'coach' as const, label: 'Suitability Coach', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
+                    { id: 'checklist' as const, label: 'Compliance Checklist', icon: <CheckSquare className="w-4 h-4 shrink-0" /> },
+                    { id: 'settings' as const, label: 'Privacy & Settings', icon: <Settings className="w-4 h-4 shrink-0" /> }
                   ].map((tab) => (
                     <motion.button
                       key={tab.id}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.08 }}
+                      whileTap={{ scale: 0.92 }}
                       onClick={() => setActiveTab(tab.id)}
                       title={tab.label}
-                      className={`p-3 rounded-xl transition-all cursor-pointer ${
+                      className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                         activeTab === tab.id
                           ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-sm'
                           : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
@@ -356,16 +364,18 @@ export default function WorkspaceView({
                 </nav>
               </div>
 
-              {/* Expand Sidebar Button (Desktop Only) */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsSidebarCollapsed(false)}
-                className="hidden lg:flex p-3 rounded-xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
-                title="Expand Sidebar"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </motion.button>
+              {/* Expand Sidebar Button Footer matching shrink button baseline */}
+              <div className="hidden lg:flex justify-center pt-2 pb-1 mt-auto w-full">
+                <motion.button
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.92 }}
+                  onClick={() => setIsSidebarCollapsed(false)}
+                  className="w-11 h-11 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] flex items-center justify-center transition-all cursor-pointer shadow-sm"
+                  title="Expand Sidebar"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </motion.button>
+              </div>
             </motion.div>
           ) : (
             /* EXPANDED FULL SIDEBAR VIEW (Responsive Layout) */
@@ -411,7 +421,7 @@ export default function WorkspaceView({
                       whileTap={{ scale: 0.98 }}
                       transition={{ duration: 0.15, ease: 'easeOut' }}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 sm:gap-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                      className={`flex items-center gap-2 sm:gap-3 px-3.5 h-11 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
                         activeTab === tab.id
                           ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 lg:border-none lg:border-l-2 lg:border-blue-500 shadow-sm'
                           : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
@@ -431,7 +441,7 @@ export default function WorkspaceView({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setIsSidebarCollapsed(true)}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 h-11 px-4 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
                   title="Shrink sidebar for wider right content view"
                 >
                   <ChevronLeft className="w-4 h-4" />

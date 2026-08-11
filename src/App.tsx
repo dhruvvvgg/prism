@@ -161,7 +161,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-[#FAF9F6] dark:bg-[#121211] text-[#1C1C1A] dark:text-[#F5F4F0] flex flex-col font-sans antialiased relative transition-colors duration-300 overflow-x-hidden ${currentView === 'workspace' || currentView === 'intake' ? 'lg:h-screen lg:overflow-hidden' : ''}`}>
+    <div className={`min-h-screen bg-[#FAF9F6] dark:bg-[#121211] text-[#1C1C1A] dark:text-[#F5F4F0] flex flex-col font-sans antialiased relative transition-colors duration-300 overflow-x-hidden ${currentView === 'workspace' ? 'lg:h-screen lg:overflow-hidden' : ''}`}>
       
       {/* Decorative Premium Ambient Radial Glows (only on header/hero, desaturated in dark mode) */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-500/[0.02] rounded-full blur-[120px] pointer-events-none z-0" />
