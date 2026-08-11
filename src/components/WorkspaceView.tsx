@@ -44,9 +44,6 @@ export default function WorkspaceView({
   const [stressRate, setStressRate] = useState<number>(0);
   const [stressInflation, setStressInflation] = useState<number>(0);
 
-  // Sidebar Collapse / Shrink State
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
   // Feature 10: SEBI Circular Popup State
   const [activeCircular, setActiveCircular] = useState<SEBICircularInfo | null>(null);
   
@@ -306,154 +303,55 @@ export default function WorkspaceView({
       exit={{ opacity: 0 }}
       className="flex flex-col lg:flex-row gap-6 h-auto lg:h-full min-h-0 select-none py-2 font-sans overflow-visible lg:overflow-hidden"
     >
-      {/* LEFT COLUMN: Sidebar Navigation Panel with Responsive Mobile & Widescreen Motion Sizing */}
-      <motion.div 
-        animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? '100%' : (isSidebarCollapsed ? 80 : 280) }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 sm:p-5 lg:px-5 lg:pt-5 lg:pb-6 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-visible lg:overflow-hidden shrink-0"
-      >
-        <AnimatePresence mode="wait">
-          {isSidebarCollapsed ? (
-            /* COLLAPSED RAIL VIEW (Compact Icon Mode with Matching Baseline) */
-            <motion.div
-              key="collapsed-rail"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col items-center justify-between h-full w-full space-y-5"
+      {/* Left Column: Fixed Width Navigation Sidebar */}
+      <div className="w-full lg:w-[280px] bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 sm:p-5 lg:px-5 lg:pt-5 lg:pb-6 flex flex-col justify-start h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-visible lg:overflow-hidden shrink-0 space-y-5">
+        {/* Active Profile Info Card - Responsive Banner */}
+        <div className="p-3.5 sm:p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
+          <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
+            Active Investment Profile
+          </span>
+          <div className="flex items-center justify-between lg:block">
+            <h3 className="text-base sm:text-lg font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+              {activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Linked Portfolio'}
+            </h3>
+            <span className="lg:hidden text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              AA Verified
+            </span>
+          </div>
+          <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-relaxed transition-colors duration-300">
+            {activePersona ? activePersona.persona_tagline : 'Linked via Account Aggregator secure Sandbox mode.'}
+          </p>
+        </div>
+
+        {/* Navigation Tabs - Mobile & Desktop Responsive */}
+        <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch py-1">
+          {[
+            { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
+            { id: 'risk' as const, label: 'Risk & Exposure', shortLabel: 'Risk', icon: <Activity className="w-4 h-4 shrink-0" /> },
+            { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4 shrink-0" /> },
+            { id: 'coach' as const, label: 'Suitability Coach', shortLabel: 'Coach', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
+            { id: 'checklist' as const, label: 'Compliance Checklist', shortLabel: 'Checklist', icon: <CheckSquare className="w-4 h-4 shrink-0" /> },
+            { id: 'settings' as const, label: 'Privacy & Settings', shortLabel: 'Settings', icon: <Settings className="w-4 h-4 shrink-0" /> }
+          ].map((tab) => (
+            <motion.button
+              key={tab.id}
+              whileHover={{ x: shouldReduceMotion ? 0 : 4 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 sm:gap-3 px-3.5 h-11 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                activeTab === tab.id
+                  ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 lg:border-none lg:border-l-2 lg:border-blue-500 shadow-sm'
+                  : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
+              }`}
             >
-              <div className="space-y-5 flex flex-col items-center w-full">
-                {/* Persona Profile Avatar Mark matching expanded card height */}
-                <div 
-                  className="w-12 py-3 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl flex flex-col items-center justify-center space-y-1 text-center transition-colors duration-300 shadow-xs cursor-pointer"
-                  title={activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Linked Portfolio'}
-                >
-                  <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center font-serif font-black text-blue-600 dark:text-blue-400 text-xs">
-                    {activePersona ? activePersona.persona_name[0] : 'P'}
-                  </div>
-                  <span className="text-[8px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase tracking-wider block">
-                    AA
-                  </span>
-                </div>
-
-                {/* Vertical Icon Navigation matching expanded nav item heights */}
-                <nav className="flex flex-col items-center gap-2.5 w-full">
-                  {[
-                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
-                    { id: 'risk' as const, label: 'Risk & Exposure', icon: <Activity className="w-4 h-4 shrink-0" /> },
-                    { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-4 h-4 shrink-0" /> },
-                    { id: 'coach' as const, label: 'Suitability Coach', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
-                    { id: 'checklist' as const, label: 'Compliance Checklist', icon: <CheckSquare className="w-4 h-4 shrink-0" /> },
-                    { id: 'settings' as const, label: 'Privacy & Settings', icon: <Settings className="w-4 h-4 shrink-0" /> }
-                  ].map((tab) => (
-                    <motion.button
-                      key={tab.id}
-                      whileHover={{ scale: 1.08 }}
-                      whileTap={{ scale: 0.92 }}
-                      onClick={() => setActiveTab(tab.id)}
-                      title={tab.label}
-                      className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
-                        activeTab === tab.id
-                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-sm'
-                          : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
-                      }`}
-                    >
-                      {tab.icon}
-                    </motion.button>
-                  ))}
-                </nav>
-              </div>
-
-              {/* Expand Sidebar Button Footer matching shrink button baseline */}
-              <div className="hidden lg:flex justify-center mt-auto w-full">
-                <motion.button
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.92 }}
-                  onClick={() => setIsSidebarCollapsed(false)}
-                  className="w-11 p-3.5 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] hover:bg-white dark:hover:bg-[#1C1B19] flex items-center justify-center transition-all cursor-pointer shadow-sm"
-                  title="Expand Sidebar"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </motion.button>
-              </div>
-            </motion.div>
-          ) : (
-            /* EXPANDED FULL SIDEBAR VIEW (Responsive Layout) */
-            <motion.div
-              key="expanded-sidebar"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-5"
-            >
-              <div className="space-y-5">
-                {/* Active Profile Info Card - Responsive Banner */}
-                <div className="p-3.5 sm:p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
-                  <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
-                    Active Investment Profile
-                  </span>
-                  <div className="flex items-center justify-between lg:block">
-                    <h3 className="text-base sm:text-lg font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
-                      {activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Linked Portfolio'}
-                    </h3>
-                    <span className="lg:hidden text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                      AA Verified
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-relaxed transition-colors duration-300">
-                    {activePersona ? activePersona.persona_tagline : 'Linked via Account Aggregator secure Sandbox mode.'}
-                  </p>
-                </div>
-
-                {/* Navigation Tabs - Mobile Optimized Proportional Distance */}
-                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch py-1">
-                  {[
-                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
-                    { id: 'risk' as const, label: 'Risk & Exposure', shortLabel: 'Risk', icon: <Activity className="w-4 h-4 shrink-0" /> },
-                    { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4 shrink-0" /> },
-                    { id: 'coach' as const, label: 'Suitability Coach', shortLabel: 'Coach', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
-                    { id: 'checklist' as const, label: 'Compliance Checklist', shortLabel: 'Checklist', icon: <CheckSquare className="w-4 h-4 shrink-0" /> },
-                    { id: 'settings' as const, label: 'Privacy & Settings', shortLabel: 'Settings', icon: <Settings className="w-4 h-4 shrink-0" /> }
-                  ].map((tab) => (
-                    <motion.button
-                      key={tab.id}
-                      whileHover={{ x: shouldReduceMotion ? 0 : 4 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.15, ease: 'easeOut' }}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 sm:gap-3 px-3.5 h-11 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                        activeTab === tab.id
-                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 lg:border-none lg:border-l-2 lg:border-blue-500 shadow-sm'
-                          : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
-                      }`}
-                    >
-                      {tab.icon}
-                      <span className="hidden sm:inline">{tab.label}</span>
-                      <span className="sm:hidden">{tab.shortLabel}</span>
-                    </motion.button>
-                  ))}
-                </nav>
-              </div>
-
-              {/* Shrink Button Footer (Desktop Widescreen Only) - Styled identically to Active Investment Profile subcard */}
-              <div className="hidden lg:block mt-auto w-full">
-                <motion.button
-                  whileHover={{ scale: 1.015 }}
-                  whileTap={{ scale: 0.985 }}
-                  onClick={() => setIsSidebarCollapsed(true)}
-                  className="w-full flex items-center justify-center gap-2 p-3.5 sm:p-4 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] hover:bg-white dark:hover:bg-[#1C1B19] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
-                  title="Shrink sidebar for wider right content view"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Shrink Sidebar</span>
-                </motion.button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+              {tab.icon}
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.shortLabel}</span>
+            </motion.button>
+          ))}
+        </nav>
+      </div>
 
       {/* RIGHT COLUMN: Dynamic Active Screen View Container */}
       <motion.div 

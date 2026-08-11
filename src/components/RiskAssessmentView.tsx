@@ -19,18 +19,18 @@ export default function RiskAssessmentView({
   onBack,
   isSubmitting,
 }: RiskAssessmentViewProps) {
-  // Initialize answers based on selected persona preset or initial profile
+  // Determine target persona key from prop
+  const activePersonaKey = selectedPersonaName === 'Ananya' ? 'Ananya' : 'Rajesh';
+
+  // Initialize answers automatically derived from selected persona preset
   const [riskAnswers, setRiskAnswers] = useState<Record<string, number>>(() => {
-    if (selectedPersonaName === 'Ananya') return PRESET_PERSONA_ANSWERS.Ananya;
-    return PRESET_PERSONA_ANSWERS.Rajesh;
+    return PRESET_PERSONA_ANSWERS[activePersonaKey];
   });
 
-  // Re-sync if persona changes
+  // Re-sync whenever selectedPersonaName prop changes
   useEffect(() => {
-    if (selectedPersonaName === 'Ananya') {
-      setRiskAnswers(PRESET_PERSONA_ANSWERS.Ananya);
-    } else if (selectedPersonaName === 'Rajesh') {
-      setRiskAnswers(PRESET_PERSONA_ANSWERS.Rajesh);
+    if (selectedPersonaName && PRESET_PERSONA_ANSWERS[selectedPersonaName]) {
+      setRiskAnswers(PRESET_PERSONA_ANSWERS[selectedPersonaName]);
     }
   }, [selectedPersonaName]);
 
@@ -68,13 +68,24 @@ export default function RiskAssessmentView({
           Tailor Your Risk & Suitability Framework
         </h2>
         <p className="text-xs sm:text-sm text-[#71706C] dark:text-[#A19F9A] max-w-xl mx-auto transition-colors duration-300 leading-relaxed">
-          Answer 4 quick questions or select a pre-seeded profile. Your answers explicitly ground the AI Suitability Coach in your real financial risk appetite.
+          Your questionnaire choices are pre-filled based on your Step 1 investor profile selection ({selectedPersonaName || 'Rajesh'}). You can review or adjust options below.
         </p>
       </div>
 
       {/* Main Questionnaire Card */}
       <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-5 sm:p-7 space-y-6 ballpark-shadow h-auto shadow-md">
         
+        {/* Step 1 Auto-Selection Derived Banner */}
+        <div className="bg-[#FAF9F6] dark:bg-[#252422] border border-blue-500/20 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+          <span className="font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 shrink-0 text-blue-500" />
+            <span>Questionnaire answers automatically derived from Step 1 selection: <strong>{selectedPersonaName || 'Rajesh'} ({selectedPersonaName === 'Ananya' ? 'Aggressive Growth' : 'Conservative Preservation'})</strong></span>
+          </span>
+          <span className="text-[9px] font-mono font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20 shrink-0">
+            Auto-Derived
+          </span>
+        </div>
+
         {/* Header bar with Live Score Badge & Preset Quick Toggles */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-4">
           <div className="flex items-center gap-2">

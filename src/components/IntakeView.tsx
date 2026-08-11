@@ -106,7 +106,12 @@ export default function IntakeView({
               <input
                 type="email"
                 value={email}
-                onChange={(e) => { setEmail(e.target.value); setSelectedPersona(null); }}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setEmail(val);
+                  if (val.toLowerCase().includes('ananya')) setSelectedPersona('Ananya');
+                  else if (val.toLowerCase().includes('rajesh')) setSelectedPersona('Rajesh');
+                }}
                 disabled={isSubmitting}
                 placeholder="rajesh.gopal@gmail.com"
                 className="w-full bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-xl pl-10 pr-3 py-2 text-xs text-[#1C1C1A] dark:text-[#F5F4F0] focus:outline-none focus:border-blue-500 transition-colors duration-300"
@@ -123,7 +128,7 @@ export default function IntakeView({
               <input
                 type="text"
                 value={phone}
-                onChange={(e) => { setPhone(e.target.value); setSelectedPersona(null); }}
+                onChange={(e) => setPhone(e.target.value)}
                 disabled={isSubmitting}
                 placeholder="+91 98450 12345"
                 className="w-full bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-xl pl-10 pr-3 py-2 text-xs text-[#1C1C1A] dark:text-[#F5F4F0] focus:outline-none focus:border-blue-500 transition-colors duration-300"
@@ -140,7 +145,7 @@ export default function IntakeView({
               <input
                 type="text"
                 value={pan}
-                onChange={(e) => { setPan(e.target.value.toUpperCase()); setSelectedPersona(null); }}
+                onChange={(e) => setPan(e.target.value.toUpperCase())}
                 disabled={isSubmitting}
                 maxLength={10}
                 placeholder="ABCDE1234F"

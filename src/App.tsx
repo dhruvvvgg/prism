@@ -185,7 +185,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className={`flex-1 max-w-[1680px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-10 pt-28 sm:pt-32 relative z-10 ${currentView === 'workspace' ? 'pb-4 lg:pb-3 h-auto lg:h-[calc(100vh-1rem)] lg:overflow-hidden flex flex-col justify-center' : 'pb-16 flex flex-col justify-center'}`}>
+      <main className={`flex-1 max-w-[1680px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-10 pt-20 sm:pt-22 relative z-10 ${currentView === 'workspace' ? 'pb-4 lg:pb-3 h-auto lg:h-[calc(100vh-1rem)] lg:overflow-hidden flex flex-col justify-center' : 'pb-16 flex flex-col justify-center'}`}>
         
         <AnimatePresence mode="wait">
           
