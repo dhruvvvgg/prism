@@ -241,7 +241,7 @@ export default function WorkspaceView({
       <motion.div 
         animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? '100%' : (isSidebarCollapsed ? 80 : 280) }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
+        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 sm:p-5 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
       >
         <AnimatePresence mode="wait">
           {isSidebarCollapsed ? (
@@ -310,9 +310,9 @@ export default function WorkspaceView({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-4"
+              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-5 sm:space-y-6"
             >
-              <div className="space-y-4">
+              <div className="space-y-5 sm:space-y-6">
                 {/* Active Profile Info Card - Responsive Banner */}
                 <div className="p-3.5 sm:p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
                   <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
@@ -331,8 +331,8 @@ export default function WorkspaceView({
                   </p>
                 </div>
 
-                {/* Navigation Tabs - Clean Direct Buttons with Equal 16px Spacing */}
-                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch">
+                {/* Navigation Tabs - Generous Distance from Profile Subcard */}
+                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch pt-1">
                   {[
                     { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
                     { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4 shrink-0" /> },
