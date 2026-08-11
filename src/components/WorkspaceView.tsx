@@ -754,7 +754,7 @@ export default function WorkspaceView({
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-serif font-black text-emerald-600 dark:text-emerald-400">
-                      {sovereignPct}%
+                      {sovereignAlloc}%
                     </span>
                     <span className="text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">of total portfolio</span>
                   </div>
@@ -770,7 +770,7 @@ export default function WorkspaceView({
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-serif font-black text-amber-600 dark:text-amber-400">
-                      {corporatePct}%
+                      {100 - sovereignAlloc}%
                     </span>
                     <span className="text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">of total portfolio</span>
                   </div>
