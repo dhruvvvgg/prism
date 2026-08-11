@@ -310,9 +310,9 @@ export default function WorkspaceView({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-3 lg:space-y-5"
+              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-4 lg:space-y-5"
             >
-              <div className="space-y-3 lg:space-y-5">
+              <div className="space-y-4 lg:space-y-5">
                 {/* Active Profile Info Card - Responsive Banner */}
                 <div className="p-3.5 sm:p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
                   <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
