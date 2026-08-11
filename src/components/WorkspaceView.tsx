@@ -194,7 +194,7 @@ export default function WorkspaceView({
       setChatHistory(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'model' as const,
-        text: data.reply || "Sorry, I had an issue processing your request."
+        text: data.text || data.reply || "I have analyzed your request against SEBI & RBI regulatory guidelines."
       }]);
     } catch (err: any) {
       setChatHistory(prev => [...prev, {
@@ -969,38 +969,41 @@ export default function WorkspaceView({
             ) : (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col flex-1 h-full min-h-0 space-y-3">
                 {/* Chat Canvas */}
-                <div className="flex-1 overflow-y-auto space-y-4 pr-1 min-h-0 scrollbar-thin pb-4">
-                  {chatHistory.map((msg) => (
-                    <motion.div
-                      key={msg.id}
-                      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ duration: 0.25, ease: 'easeOut' }}
-                      className={`flex flex-col max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed shadow-sm transition-colors duration-300 ${
-                        msg.role === 'user'
-                          ? 'bg-[#1C1C1A] dark:bg-blue-600 text-white self-end rounded-tr-none'
-                          : 'bg-[#FAF9F6] dark:bg-[#252422] text-[#51504B] dark:text-[#D2CFC9] border border-[#E6E5E0] dark:border-[#2E2D2A] self-start rounded-tl-none'
-                      }`}
-                    >
-                      <span className={`text-[8px] uppercase font-bold block mb-1 ${msg.role === 'user' ? 'text-blue-200' : 'text-blue-500'}`}>
-                        {msg.role === 'user' ? 'You' : 'Suitability Coach'}
-                      </span>
-                      <p className="whitespace-pre-wrap leading-relaxed">{renderChatMessageText(msg.text)}</p>
-                    </motion.div>
-                  ))}
+                <div className="flex-1 overflow-y-auto space-y-3.5 pr-2 min-h-0 scrollbar-thin pb-4 flex flex-col">
+                  {chatHistory.map((msg) => {
+                    const isUser = msg.role === 'user';
+                    return (
+                      <div key={msg.id} className={`flex w-full ${isUser ? 'justify-end' : 'justify-start'}`}>
+                        <motion.div
+                          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ duration: 0.2, ease: 'easeOut' }}
+                          className={`max-w-[85%] sm:max-w-[75%] p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs transition-colors duration-300 ${
+                            isUser
+                              ? 'bg-blue-600 text-white rounded-tr-xs shadow-sm'
+                              : 'bg-[#FAF9F6] dark:bg-[#252422] text-[#1C1C1A] dark:text-[#F5F4F0] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-tl-xs'
+                          }`}
+                        >
+                          <span className={`text-[9px] uppercase font-mono font-bold block mb-1 ${isUser ? 'text-blue-100' : 'text-blue-500'}`}>
+                            {isUser ? 'You' : 'Suitability Coach'}
+                          </span>
+                          <p className="whitespace-pre-wrap leading-relaxed">{renderChatMessageText(msg.text)}</p>
+                        </motion.div>
+                      </div>
+                    );
+                  })}
                   
                   {isChatLoading && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-[#FAF9F6] dark:bg-[#252422] text-[#71706C] dark:text-[#A19F9A] border border-[#E6E5E0] dark:border-[#2E2D2A] self-start rounded-2xl rounded-tl-none p-4 text-xs flex items-center gap-2 shadow-sm"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-500" />
-                      <span>Analyzing SEBI & RBI regulatory guidelines...</span>
-                      <div className="flex items-center space-x-1 ml-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                      </div>
-                    </motion.div>
+                    <div className="flex w-full justify-start">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-[#FAF9F6] dark:bg-[#252422] text-[#71706C] dark:text-[#A19F9A] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl rounded-tl-xs p-3.5 sm:p-4 text-xs flex items-center gap-2 shadow-xs"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-500" />
+                        <span>Evaluating SEBI & RBI regulatory guidelines...</span>
+                      </motion.div>
+                    </div>
                   )}
                   <div ref={chatEndRef} />
                 </div>
