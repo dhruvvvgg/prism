@@ -74,17 +74,24 @@ export default function WorkspaceView({
   const [isChatLoading, setIsChatLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Helper to render bold markdown syntax (**text**) cleanly
+  // Helper to render bold markdown syntax (**text**) and clean up stray asterisks
   const renderChatMessageText = (text: string) => {
     if (!text) return null;
+    
+    // Clean up bullet asterisks to bullet dots • and strip orphan single asterisks
+    const cleaned = text
+      .replace(/^[\s]*\*\s+/gm, '• ')
+      .replace(/\n[\s]*\*\s+/g, '\n• ')
+      .replace(/([^\*])\*([^\*])/g, '$1$2');
+
     const parts = [];
     const boldRegex = /\*\*(.*?)\*\*/g;
     let match;
     let lastIndex = 0;
     
-    while ((match = boldRegex.exec(text)) !== null) {
+    while ((match = boldRegex.exec(cleaned)) !== null) {
       if (match.index > lastIndex) {
-        parts.push(text.substring(lastIndex, match.index));
+        parts.push(cleaned.substring(lastIndex, match.index));
       }
       parts.push(
         <strong key={match.index} className="font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0]">
@@ -94,11 +101,11 @@ export default function WorkspaceView({
       lastIndex = boldRegex.lastIndex;
     }
     
-    if (lastIndex < text.length) {
-      parts.push(text.substring(lastIndex));
+    if (lastIndex < cleaned.length) {
+      parts.push(cleaned.substring(lastIndex));
     }
     
-    return parts.length > 0 ? parts : text;
+    return parts.length > 0 ? parts : cleaned;
   };
 
   // Compute effective risk profile (from custom onboarding questionnaire, active persona, or pre-seeded preset)

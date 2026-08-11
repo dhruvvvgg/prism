@@ -1335,6 +1335,19 @@ const getRuleBasedFallbackResponse = (
     }
   }
 
+  // Decision query detection logic: outright refusal for buy/sell/hold transaction advice
+  const isDecisionQuery = /\b(should i|can i|ought i|shall i|would you recommend|is it good to|is it wise to|is it safe to|should investor)\b/i.test(norm) && /\b(buy|sell|hold|purchase|invest|accumulate|liquidate|exit)\b/i.test(norm);
+
+  if (isDecisionQuery) {
+    const target = mentionedSecurity ? `**${mentionedSecurity}**` : "specific securities or equities";
+    return {
+      text: `I cannot provide buy, sell, or hold recommendations for ${target}. As an AI Suitability Coach, Prism provides category-level educational analysis under SEBI guidelines. Please consult a SEBI-Registered Investment Adviser (RIA) for personalized transaction decisions.`,
+      groundingSources: [
+        { title: "SEBI Investment Adviser Regulations", url: "https://www.sebi.gov.in/" }
+      ]
+    };
+  }
+
   if (mentionedSecurity) {
     let categoryExplanation = "";
     if (norm.includes("reit") || norm.includes("embassy") || norm.includes("mindspace")) {
@@ -1347,12 +1360,12 @@ const getRuleBasedFallbackResponse = (
       categoryExplanation = `**${mentionedSecurity}** represents a specific financial instrument in your portfolio universe.`;
     }
 
-    let responseText = `Here are the factual characteristics and SEBI regulatory framework governing **${mentionedSecurity}**:\n\n* ${categoryExplanation}\n\n`;
+    let responseText = `Here are the factual characteristics and SEBI regulatory framework governing **${mentionedSecurity}**:\n\n• ${categoryExplanation}\n\n`;
     responseText += `**Grounded Portfolio Context for ${name} (${riskLabel})**:\n`;
-    responseText += `* **Total Portfolio**: ${formatINR(totalValue)}\n`;
-    responseText += `* **REIT & InvIT Allocation**: You hold ${reitPct}% in REITs (${formatINR(reitValue)}) and ${invitPct}% in InvITs (${formatINR(invitValue)}).\n`;
-    responseText += `* **Sovereign & Fixed Income**: You hold ${gsecPct}% in G-Secs (${formatINR(gsecValue)}), ${sgbPct}% in SGBs (${formatINR(sgbValue)}), and ${corpBondPct}% in Corporate Bonds (${formatINR(corpBondValue)}).\n\n`;
-    responseText += `*Note: Prism provides factual structural analysis and regulatory information only. For buy, sell, or portfolio rebalancing decisions regarding specific named securities, please consult a SEBI-Registered Investment Adviser (RIA).*`;
+    responseText += `• **Total Portfolio**: ${formatINR(totalValue)}\n`;
+    responseText += `• **REIT & InvIT Allocation**: You hold ${reitPct}% in REITs (${formatINR(reitValue)}) and ${invitPct}% in InvITs (${formatINR(invitValue)}).\n`;
+    responseText += `• **Sovereign & Fixed Income**: You hold ${gsecPct}% in G-Secs (${formatINR(gsecValue)}), ${sgbPct}% in SGBs (${formatINR(sgbValue)}), and ${corpBondPct}% in Corporate Bonds (${formatINR(corpBondValue)}).\n\n`;
+    responseText += `*Note: Prism provides factual structural analysis and regulatory information only. For transaction decisions, please consult a SEBI-Registered Investment Adviser (RIA).*`;
 
     return {
       text: responseText,
@@ -1369,17 +1382,17 @@ const getRuleBasedFallbackResponse = (
     let responseText = `For your portfolio profile **"${tagline}"**, generating steady, regular passive income is a common objective. Let's analyze how alternative categories fit your exact portfolio:\n\n`;
     
     if (hasReitsOrInvits) {
-      responseText += `* **REITs & InvITs Yields**: You currently hold **${formatINR(reitValue + invitValue)}** in REITs and InvITs (combined **${reitPct + invitPct}%** of your portfolio). Under SEBI guidelines, these trusts are mandated to distribute at least **90% of their Net Distributable Cash Flows (NDCF)** to investors. This typically translates to annual cash yields of 6% to 9% paid out regularly, offering a powerful income engine backed by physical real estate or cash-generating infrastructure assets.\n`;
+      responseText += `• **REITs & InvITs Yields**: You currently hold **${formatINR(reitValue + invitValue)}** in REITs and InvITs (combined **${reitPct + invitPct}%** of your portfolio). Under SEBI guidelines, these trusts are mandated to distribute at least **90% of their Net Distributable Cash Flows (NDCF)** to investors. This typically translates to annual cash yields of 6% to 9% paid out regularly, offering a powerful income engine backed by physical real estate or cash-generating infrastructure assets.\n`;
     } else {
-      responseText += `* **REITs & InvITs (Yield Opportunities)**: Although you currently do not hold REITs or InvITs, these trust assets are mandated by SEBI to distribute at least **90% of their Net Distributable Cash Flows (NDCF)**. They can provide an additional yield channel of 6% to 9% per annum if you are looking to diversify into liquid real estate or infrastructure.\n`;
+      responseText += `• **REITs & InvITs (Yield Opportunities)**: Although you currently do not hold REITs or InvITs, these trust assets are mandated by SEBI to distribute at least **90% of their Net Distributable Cash Flows (NDCF)**. They can provide an additional yield channel of 6% to 9% per annum if you are looking to diversify into liquid real estate or infrastructure.\n`;
     }
 
     if (corpBondPct > 0 || debtEtfPct > 0) {
-      responseText += `* **Corporate Bonds & Debt ETFs**: You hold **${corpBondPct}%** in Corporate Bonds and **${debtEtfPct}%** in Debt ETFs. AAA-rated corporate bonds and target maturity Debt ETFs provide predictable interest/coupon payouts. Corporate bonds offer higher yields than Government Securities, but it's important to stick to high-quality credit (such as AAA-rated PSUs) to prevent credit risk from threatening your principal stability.\n`;
+      responseText += `• **Corporate Bonds & Debt ETFs**: You hold **${corpBondPct}%** in Corporate Bonds and **${debtEtfPct}%** in Debt ETFs. AAA-rated corporate bonds and target maturity Debt ETFs provide predictable interest/coupon payouts. Corporate bonds offer higher yields than Government Securities, but it's important to stick to high-quality credit (such as AAA-rated PSUs) to prevent credit risk from threatening your principal stability.\n`;
     }
 
     if (gsecPct > 0) {
-      responseText += `* **Sovereign Income Safeguard**: Your **${gsecPct}%** allocation to Government Securities offers coupon payments with absolute safety from default, acting as the ultimate conservative income anchor for your portfolio.\n`;
+      responseText += `• **Sovereign Income Safeguard**: Your **${gsecPct}%** allocation to Government Securities offers coupon payments with absolute safety from default, acting as the ultimate conservative income anchor for your portfolio.\n`;
     }
     
     if (isConservative) {
@@ -1401,15 +1414,15 @@ const getRuleBasedFallbackResponse = (
     let responseText = `Protecting the purchasing power of your **${formatINR(totalValue)}** portfolio from inflation is crucial. Here is how your asset classes can act as inflation hedges:\n\n`;
 
     if (sgbPct > 0) {
-      responseText += `* **Sovereign Gold Bonds (SGBs)**: You have a solid **${sgbPct}%** of your portfolio in SGBs. Gold has historically preserved wealth against purchasing power erosion over multi-decade cycles. In addition to gold price movement, SGBs pay a guaranteed **2.5% per annum interest** on the initial investment and enjoy a **complete capital gains tax exemption** at maturity (after 8 years), making them highly efficient hedges under the Income Tax Act.\n`;
+      responseText += `• **Sovereign Gold Bonds (SGBs)**: You have a solid **${sgbPct}%** of your portfolio in SGBs. Gold has historically preserved wealth against purchasing power erosion over multi-decade cycles. In addition to gold price movement, SGBs pay a guaranteed **2.5% per annum interest** on the initial investment and enjoy a **complete capital gains tax exemption** at maturity (after 8 years), making them highly efficient hedges under the Income Tax Act.\n`;
     } else {
-      responseText += `* **Sovereign Gold Bonds (SGBs)**: You currently have 0% in SGBs. For long-term portfolios, a small allocation (e.g., 5-10%) to SGBs acts as a defensive hedge. They track the price of physical gold, offer a guaranteed **2.5% per annum interest**, and have tax-free capital gains at redemption, representing a highly structured alternative to physical gold.\n`;
+      responseText += `• **Sovereign Gold Bonds (SGBs)**: You currently have 0% in SGBs. For long-term portfolios, a small allocation (e.g., 5-10%) to SGBs acts as a defensive hedge. They track the price of physical gold, offer a guaranteed **2.5% per annum interest**, and have tax-free capital gains at redemption, representing a highly structured alternative to physical gold.\n`;
     }
 
     if (reitPct > 0) {
-      responseText += `* **REIT Lease Escalations**: You hold **${reitPct}%** in REITs. Commercial real estate offers an organic inflation hedge because Grade-A office leases typically feature pre-agreed escalation clauses (e.g., 12-15% rent increases every 3 years), allowing the REIT's cash distribution to rise over time in line with economic expansion.\n`;
+      responseText += `• **REIT Lease Escalations**: You hold **${reitPct}%** in REITs. Commercial real estate offers an organic inflation hedge because Grade-A office leases typically feature pre-agreed escalation clauses (e.g., 12-15% rent increases every 3 years), allowing the REIT's cash distribution to rise over time in line with economic expansion.\n`;
     } else {
-      responseText += `* **REITs as Real Estate Hedges**: Commercial real estate represents a solid inflation hedge because lease rentals often have built-in escalations of 12% to 15% every three years. You currently do not hold REITs, but they are a potential tool to shield your portfolio's yield from being inflated away.\n`;
+      responseText += `• **REITs as Real Estate Hedges**: Commercial real estate represents a solid inflation hedge because lease rentals often have built-in escalations of 12% to 15% every three years. You currently do not hold REITs, but they are a potential tool to shield your portfolio's yield from being inflated away.\n`;
     }
 
     if (isConservative) {
@@ -1431,17 +1444,17 @@ const getRuleBasedFallbackResponse = (
     let responseText = `Let's discuss how your portfolio structures capital safety and principal preservation:\n\n`;
 
     if (gsecPct > 0) {
-      responseText += `* **Government Securities (G-Secs)**: You have **${gsecPct}%** in G-Secs. G-Secs carry sovereign backing from the Government of India, representing absolute protection against default or credit risk. Holding G-Secs directly to maturity guarantees 100% principal repayment.\n`;
+      responseText += `• **Government Securities (G-Secs)**: You have **${gsecPct}%** in G-Secs. G-Secs carry sovereign backing from the Government of India, representing absolute protection against default or credit risk. Holding G-Secs directly to maturity guarantees 100% principal repayment.\n`;
     } else {
-      responseText += `* **Government Securities (G-Secs)**: You have 0% in G-Secs. To introduce absolute capital safety, allocating to G-Secs is highly recommended, as they carry the sovereign backing of the Indian government with zero default risk.\n`;
+      responseText += `• **Government Securities (G-Secs)**: You have 0% in G-Secs. To introduce absolute capital safety, allocating to G-Secs is highly recommended, as they carry the sovereign backing of the Indian government with zero default risk.\n`;
     }
 
     if (debtEtfPct > 0) {
-      responseText += `* **Debt ETFs**: You have **${debtEtfPct}%** in Debt ETFs. Target maturity debt ETFs (such as Bharat Bond ETF) or liquid G-Sec ETFs offer low-cost, highly transparent fixed income exposure with high liquidity and negligible credit risk.\n`;
+      responseText += `• **Debt ETFs**: You have **${debtEtfPct}%** in Debt ETFs. Target maturity debt ETFs (such as Bharat Bond ETF) or liquid G-Sec ETFs offer low-cost, highly transparent fixed income exposure with high liquidity and negligible credit risk.\n`;
     }
 
     if (corpBondPct > 0) {
-      responseText += `* **Corporate Bonds**: Your **${corpBondPct}%** in Corporate Bonds yields a premium above sovereign rates. To maintain capital safety, ensure these remain concentrated in AA or AAA-rated bonds, particularly public sector or financial institution issues.\n`;
+      responseText += `• **Corporate Bonds**: Your **${corpBondPct}%** in Corporate Bonds yields a premium above sovereign rates. To maintain capital safety, ensure these remain concentrated in AA or AAA-rated bonds, particularly public sector or financial institution issues.\n`;
     }
 
     if (isConservative) {
@@ -1462,13 +1475,13 @@ const getRuleBasedFallbackResponse = (
   if (norm.includes("reit") || norm.includes("invit") || norm.includes("difference") || norm.includes("compare")) {
     let responseText = `Comparing REITs and InvITs is critical for understanding alternative distribution vehicles in India:\n\n`;
 
-    responseText += `* **Real Estate Investment Trusts (REITs)**: These own and operate Grade-A commercial office parks, malls, and tech hubs. They generate lease rentals, which are distributed to investors. REITs offer moderate initial cash yields (~6-7%) but enjoy higher long-term capital appreciation as commercial real estate values rise.\n`;
-    responseText += `* **Infrastructure Investment Trusts (InvITs)**: These own infrastructure assets like national highways, power transmission lines, and pipelines. They collect toll fees, transmission charges, or transport tariffs. InvITs typically offer higher initial cash yields (~8-10%) but have minimal long-term capital appreciation because the underlying concessions eventually expire or depreciate.\n`;
+    responseText += `• **Real Estate Investment Trusts (REITs)**: These own and operate Grade-A commercial office parks, malls, and tech hubs. They generate lease rentals, which are distributed to investors. REITs offer moderate initial cash yields (~6-7%) but enjoy higher long-term capital appreciation as commercial real estate values rise.\n`;
+    responseText += `• **Infrastructure Investment Trusts (InvITs)**: These own infrastructure assets like national highways, power transmission lines, and pipelines. They collect toll fees, transmission charges, or transport tariffs. InvITs typically offer higher initial cash yields (~8-10%) but have minimal long-term capital appreciation because the underlying concessions eventually expire or depreciate.\n`;
     
     if (reitPct > 0 || invitPct > 0) {
-      responseText += `* **Your Current Position**: You hold **${reitPct}%** in REITs and **${invitPct}%** in InvITs. This allocation provides regular distributed income with partial inflation protection.\n`;
+      responseText += `• **Your Current Position**: You hold **${reitPct}%** in REITs and **${invitPct}%** in InvITs. This allocation provides regular distributed income with partial inflation protection.\n`;
     } else {
-      responseText += `* **Your Current Position**: You currently do not hold REITs or InvITs. If you wish to seek high-yield distributions backed by real physical assets, these categories can serve as excellent satellite holdings.\n`;
+      responseText += `• **Your Current Position**: You currently do not hold REITs or InvITs. If you wish to seek high-yield distributions backed by real physical assets, these categories can serve as excellent satellite holdings.\n`;
     }
 
     if (isConservative) {
@@ -1487,11 +1500,11 @@ const getRuleBasedFallbackResponse = (
   }
 
   // Default general reply
-  let responseText = `Namaste ${name}! Let's review your portfolio suitability and asset structure:\n\n`;
+  let responseText = `Namaste ${name}! Let me review your portfolio suitability and asset structure:\n\n`;
   responseText += `Based on your profile **"${tagline}"** and total portfolio of **${formatINR(totalValue)}**:\n`;
   
   allocation.forEach((alloc: any) => {
-    responseText += `* **${alloc.name}**: ${alloc.percentage}% (${formatINR(alloc.value)})\n`;
+    responseText += `• **${alloc.name}**: ${alloc.percentage}% (${formatINR(alloc.value)})\n`;
   });
 
   responseText += `\nI can help you evaluate how alternative asset classes (REITs, InvITs, Corporate Bonds, G-Secs, SGBs, and Debt ETFs) align with your specific goals, the SEBI distribution frameworks, or the structural taxation of distributions. What question can I answer for you today?`;
