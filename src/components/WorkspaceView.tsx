@@ -945,7 +945,7 @@ export default function WorkspaceView({
 
           {/* TAB 3: CO-PILOT CHAT COACH */}
           {activeTab === 'coach' && (
-            (!permissions.analysePortfolio || !permissions.recommendProducts) ? (
+            !permissions.recommendProducts ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4 my-auto">
                 <div className="w-14 h-14 bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center border border-amber-500/20 shadow-sm">
                   <AlertTriangle className="w-7 h-7" />
@@ -953,7 +953,7 @@ export default function WorkspaceView({
                 <div className="space-y-2 max-w-md">
                   <h3 className="text-base font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0]">Suitability Coach Disabled</h3>
                   <p className="text-xs text-[#71706C] dark:text-[#A19F9A] leading-relaxed">
-                    Permission required — enable <strong>{!permissions.analysePortfolio ? 'Analyse Portfolio' : 'Recommend Products'}</strong> in Privacy & Settings to initialize suitability analysis chats.
+                    Consent required — enable <strong>"Recommend Products"</strong> in Privacy & Settings to initialize suitability guidance chats.
                   </p>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
