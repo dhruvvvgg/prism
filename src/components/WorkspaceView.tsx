@@ -241,7 +241,7 @@ export default function WorkspaceView({
       <motion.div 
         animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? '100%' : (isSidebarCollapsed ? 80 : 280) }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 sm:p-5 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
+        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-3.5 lg:p-5 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
       >
         <AnimatePresence mode="wait">
           {isSidebarCollapsed ? (
