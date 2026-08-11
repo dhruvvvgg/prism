@@ -303,11 +303,11 @@ export default function Discover({ initialSelectedId, permissions }: DiscoverPro
                   </div>
 
                   {/* Tags section for tax & risk */}
-                  <div className="flex flex-wrap gap-2 mt-5">
-                    <span className={`text-[10px] font-sans font-bold px-3 py-1 rounded-full border ${getRiskBadgeStyles(instrument.riskLevel)}`}>
+                  <div className="flex flex-wrap gap-2 mt-4 sm:mt-5">
+                    <span className={`text-[10px] font-sans font-bold px-2.5 sm:px-3 py-1 rounded-full border ${getRiskBadgeStyles(instrument.riskLevel)}`}>
                       Risk: {instrument.riskLevel}
                     </span>
-                    <span className="text-[10px] font-sans font-bold px-3 py-1 rounded-full border bg-slate-50 dark:bg-[#262626] text-[#334155] dark:text-slate-300 border-slate-200 dark:border-slate-800 truncate max-w-[180px]">
+                    <span className="text-[10px] font-sans font-bold px-2.5 sm:px-3 py-1 rounded-full border bg-slate-50 dark:bg-[#262626] text-[#334155] dark:text-slate-300 border-slate-200 dark:border-slate-800">
                       Tax: {instrument.taxLabel.split(' (')[0]}
                     </span>
                   </div>
@@ -320,15 +320,15 @@ export default function Discover({ initialSelectedId, permissions }: DiscoverPro
         /* Detailed View & Governance Snapshot Screen */
         <div className="animate-fadeIn">
           {/* Header with Back button */}
-          <div className="border-b border-[#E2E8F0] dark:border-slate-800 px-6 py-4 bg-white/45 dark:bg-transparent backdrop-blur-sm sticky top-16 z-30 flex items-center space-x-4">
+          <div className="border-b border-[#E2E8F0] dark:border-slate-800 px-4 sm:px-6 py-3.5 sm:py-4 bg-white/45 dark:bg-transparent backdrop-blur-sm sticky top-16 z-30 flex items-center space-x-3 sm:space-x-4">
             <button 
               onClick={() => { setSelectedId(null); setIsHowItWorksOpen(false); }}
-              className="p-2 rounded-xl bg-white dark:bg-[#1E1E1E] hover:bg-slate-50 dark:hover:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 transition-all cursor-pointer"
+              className="p-2 rounded-xl bg-white dark:bg-[#1E1E1E] hover:bg-slate-50 dark:hover:bg-[#262626] border border-[#E2E8F0] dark:border-slate-800 transition-all cursor-pointer shadow-sm"
             >
               <ArrowLeft className="h-4 w-4 text-[#0F172A] dark:text-slate-300" />
             </button>
             <div>
-              <h1 className="text-sm font-serif font-bold text-[#0F172A] dark:text-slate-100">
+              <h1 className="text-xs sm:text-sm font-serif font-bold text-[#0F172A] dark:text-slate-100">
                 {currentInstrument.shortName} Analysis
               </h1>
               <p className="text-[10px] text-[#64748B] dark:text-slate-400">
@@ -337,7 +337,7 @@ export default function Discover({ initialSelectedId, permissions }: DiscoverPro
             </div>
           </div>
 
-          <div className="px-6 pt-6 flex flex-col gap-8 md:grid md:grid-cols-12 md:gap-8">
+          <div className="px-4 sm:px-6 pt-4 sm:pt-6 flex flex-col gap-6 sm:gap-8 md:grid md:grid-cols-12 md:gap-8">
             
             {/* Left Column: Specs & Overview */}
             <div className="flex flex-col gap-6 md:col-span-6">
@@ -346,49 +346,49 @@ export default function Discover({ initialSelectedId, permissions }: DiscoverPro
                 <span className="text-[10px] font-bold tracking-widest text-blue-600 dark:text-blue-400 uppercase block">
                   INSTRUMENT OVERVIEW
                 </span>
-                <h2 className="text-2xl font-display font-black text-[#0F172A] dark:text-slate-50 tracking-tight mt-1">
+                <h2 className="text-xl sm:text-2xl font-display font-black text-[#0F172A] dark:text-slate-50 tracking-tight mt-1">
                   {currentInstrument.name}
                 </h2>
-                <p className="text-xs text-[#64748B] dark:text-slate-400 leading-relaxed mt-2">
+                <p className="text-xs sm:text-sm text-[#64748B] dark:text-slate-400 leading-relaxed mt-2">
                   {currentInstrument.description}
                 </p>
               </div>
 
-              {/* Quick specifications grid - Premium layout */}
+              {/* Quick specifications grid - Responsive Mobile Layout */}
               <div className="bg-white dark:bg-[#1E1E1E] border border-[#E2E8F0] dark:border-slate-800 rounded-[24px] overflow-hidden divide-y divide-[#E2E8F0] dark:divide-slate-800 shadow-sm transition-colors duration-300">
-                <div className="grid grid-cols-2 divide-x divide-[#E2E8F0] dark:divide-slate-800 p-5">
-                  <div className="pb-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0] dark:divide-slate-800 p-4 sm:p-5 gap-3 sm:gap-0">
+                  <div className="pb-2 sm:pb-0">
                     <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 block uppercase tracking-wider">
                       Yield Potential
                     </span>
-                    <span className="text-sm font-bold text-[#0F172A] dark:text-slate-100 mt-1 block">
+                    <span className="text-sm font-bold text-[#0F172A] dark:text-slate-100 mt-0.5 sm:mt-1 block">
                       {currentInstrument.yieldPotential.split(' (')[0]}
                     </span>
                   </div>
-                  <div className="pl-5 pb-2">
+                  <div className="pt-2 sm:pt-0 sm:pl-5">
                     <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 block uppercase tracking-wider">
                       Min Investment
                     </span>
-                    <span className="text-sm font-bold text-[#0F172A] dark:text-slate-100 mt-1 block">
+                    <span className="text-sm font-bold text-[#0F172A] dark:text-slate-100 mt-0.5 sm:mt-1 block">
                       {currentInstrument.minInvestment}
                     </span>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 divide-x divide-[#E2E8F0] dark:divide-slate-800 p-5">
-                  <div className="pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0] dark:divide-slate-800 p-4 sm:p-5 gap-3 sm:gap-0">
+                  <div className="pb-2 sm:pb-0">
                     <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 block uppercase tracking-wider">
                       Liquidity Profile
                     </span>
-                    <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 mt-1 block">
+                    <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 mt-0.5 sm:mt-1 block">
                       {currentInstrument.liquidity}
                     </span>
                   </div>
-                  <div className="pl-5 pt-2">
+                  <div className="pt-2 sm:pt-0 sm:pl-5">
                     <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 block uppercase tracking-wider">
                       Risk Category
                     </span>
-                    <span className={`text-xs font-bold ${currentInstrument.riskLevel === 'Low' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} mt-1 block`}>
+                    <span className={`text-xs font-bold ${currentInstrument.riskLevel === 'Low' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} mt-0.5 sm:mt-1 block`}>
                       {currentInstrument.riskLabel}
                     </span>
                   </div>

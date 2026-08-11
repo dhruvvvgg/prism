@@ -237,15 +237,15 @@ export default function WorkspaceView({
       exit={{ opacity: 0 }}
       className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-140px)] lg:min-h-[600px] select-none py-2 font-sans"
     >
-      {/* LEFT COLUMN: Sidebar Navigation Panel with Fluid Motion Sizing */}
+      {/* LEFT COLUMN: Sidebar Navigation Panel with Responsive Mobile & Widescreen Motion Sizing */}
       <motion.div 
-        animate={{ width: isSidebarCollapsed ? 80 : 280 }}
+        animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? '100%' : (isSidebarCollapsed ? 80 : 280) }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 flex flex-col justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
+        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-3.5 sm:p-4 flex flex-col justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
       >
         <AnimatePresence mode="wait">
           {isSidebarCollapsed ? (
-            /* COLLAPSED RAIL VIEW (Compact Icon Mode) */
+            /* COLLAPSED RAIL VIEW (Compact Icon Mode for Desktop) */
             <motion.div
               key="collapsed-rail"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -291,49 +291,54 @@ export default function WorkspaceView({
                 </nav>
               </div>
 
-              {/* Expand Sidebar Button at the bottom of compact rail */}
+              {/* Expand Sidebar Button (Desktop Only) */}
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsSidebarCollapsed(false)}
-                className="p-3 rounded-xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
+                className="hidden lg:flex p-3 rounded-xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
                 title="Expand Sidebar"
               >
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
             </motion.div>
           ) : (
-            /* EXPANDED FULL SIDEBAR VIEW */
+            /* EXPANDED FULL SIDEBAR VIEW (Responsive Layout) */
             <motion.div
               key="expanded-sidebar"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col justify-between h-full space-y-5"
+              className="flex flex-col justify-between h-full space-y-3.5 sm:space-y-5"
             >
-              <div className="space-y-5">
-                {/* Active Profile Info Card (Matching Tab Button & Bottom Bar Inset) */}
-                <div className="p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
+              <div className="space-y-3 sm:space-y-4">
+                {/* Active Profile Info Card - Responsive Banner */}
+                <div className="p-3 sm:p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
                   <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
                     Active Investment Profile
                   </span>
-                  <h3 className="text-lg font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
-                    {activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Linked Portfolio'}
-                  </h3>
+                  <div className="flex items-center justify-between lg:block">
+                    <h3 className="text-base sm:text-lg font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+                      {activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Linked Portfolio'}
+                    </h3>
+                    <span className="lg:hidden text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                      AA Verified
+                    </span>
+                  </div>
                   <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-relaxed transition-colors duration-300">
                     {activePersona ? activePersona.persona_tagline : 'Linked via Account Aggregator secure Sandbox mode.'}
                   </p>
                 </div>
 
-                {/* Navigation Tabs */}
-                <nav className="flex flex-col gap-2">
+                {/* Navigation Tabs - Horizontal Scrollable Pill Strip on Mobile, Vertical List on Desktop */}
+                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2 pb-1 lg:pb-0">
                   {[
-                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-4 h-4" /> },
-                    { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-4 h-4" /> },
-                    { id: 'coach' as const, label: 'Suitability Coach', icon: <MessageSquare className="w-4 h-4" /> },
-                    { id: 'checklist' as const, label: 'Compliance Checklist', icon: <CheckSquare className="w-4 h-4" /> },
-                    { id: 'settings' as const, label: 'Privacy & Settings', icon: <Settings className="w-4 h-4" /> }
+                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4" /> },
+                    { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4" /> },
+                    { id: 'coach' as const, label: 'Suitability Coach', shortLabel: 'Coach', icon: <MessageSquare className="w-4 h-4" /> },
+                    { id: 'checklist' as const, label: 'Compliance Checklist', shortLabel: 'Checklist', icon: <CheckSquare className="w-4 h-4" /> },
+                    { id: 'settings' as const, label: 'Privacy & Settings', shortLabel: 'Settings', icon: <Settings className="w-4 h-4" /> }
                   ].map((tab) => (
                     <motion.button
                       key={tab.id}
@@ -341,21 +346,22 @@ export default function WorkspaceView({
                       whileTap={{ scale: 0.98 }}
                       transition={{ duration: 0.15, ease: 'easeOut' }}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
                         activeTab === tab.id
-                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-l-2 border-blue-500 shadow-sm'
+                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-b-2 lg:border-b-0 lg:border-l-2 border-blue-500 shadow-sm'
                           : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
                       }`}
                     >
                       {tab.icon}
-                      <span>{tab.label}</span>
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="sm:hidden">{tab.shortLabel}</span>
                     </motion.button>
                   ))}
                 </nav>
               </div>
 
-              {/* Clean Minimalist Regulatory Footer & Bottom Shrink Sidebar Button */}
-              <div className="space-y-3.5 pt-4 border-t border-[#FAF9F6] dark:border-[#2E2D2A]">
+              {/* Regulatory Footer & Shrink Button (Desktop Widescreen Only) */}
+              <div className="hidden lg:block space-y-3.5 pt-4 border-t border-[#FAF9F6] dark:border-[#2E2D2A]">
                 <div className="px-3 text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A] flex items-center justify-between">
                   <span>SEBI & RBI Framework</span>
                   <span className="text-emerald-600 dark:text-emerald-400 font-bold">● Active</span>
@@ -612,26 +618,31 @@ export default function WorkspaceView({
 
               {/* Detailed Holdings List */}
               <div className="space-y-3">
-                <h4 className="text-base font-serif font-bold text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
-                  Individual Holdings Audit
-                </h4>
-                <div className="border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl overflow-hidden bg-[#FAF9F6]/20 dark:bg-[#1C1B19]/20">
-                  <table className="w-full text-left border-collapse text-sm">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-base font-serif font-bold text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+                    Individual Holdings Audit
+                  </h4>
+                  <span className="text-[10px] font-mono text-[#71706C] dark:text-[#A19F9A] sm:hidden">
+                    Scroll horizontally ↔
+                  </span>
+                </div>
+                <div className="border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl overflow-x-auto scrollbar-thin bg-[#FAF9F6]/20 dark:bg-[#1C1B19]/20">
+                  <table className="w-full text-left border-collapse text-sm min-w-[540px] sm:min-w-full">
                     <thead>
                       <tr className="bg-[#FAF9F6] dark:bg-[#252422] border-b border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] font-bold text-xs uppercase tracking-wider">
-                        <th className="p-3.5">Instrument</th>
-                        <th className="p-3.5">Category</th>
-                        <th className="p-3.5 text-right">Holdings</th>
-                        <th className="p-3.5 text-right">Value</th>
+                        <th className="p-3 sm:p-3.5">Instrument</th>
+                        <th className="p-3 sm:p-3.5">Category</th>
+                        <th className="p-3 sm:p-3.5 text-right">Holdings</th>
+                        <th className="p-3 sm:p-3.5 text-right">Value</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#E6E5E0] dark:divide-[#2E2D2A] text-[#51504B] dark:text-[#D2CFC9]">
                       {holdingsList.map((h, i) => (
                         <tr key={i} className="hover:bg-[#FAF9F6]/50 dark:hover:bg-[#252422]/50 transition-colors">
-                          <td className="p-3.5 font-bold text-[#1C1C1A] dark:text-[#F5F4F0] text-sm">{h.instrument_name}</td>
-                          <td className="p-3.5 text-neutral-500 dark:text-neutral-400 text-xs font-semibold">{h.category}</td>
-                          <td className="p-3.5 text-right font-mono text-xs font-medium">{h.units_or_quantity}</td>
-                          <td className="p-3.5 text-right font-bold text-[#1C1C1A] dark:text-[#F5F4F0] text-sm">₹{h.value.toLocaleString('en-IN')}</td>
+                          <td className="p-3 sm:p-3.5 font-bold text-[#1C1C1A] dark:text-[#F5F4F0] text-xs sm:text-sm">{h.instrument_name}</td>
+                          <td className="p-3 sm:p-3.5 text-neutral-500 dark:text-neutral-400 text-[11px] sm:text-xs font-semibold">{h.category}</td>
+                          <td className="p-3 sm:p-3.5 text-right font-mono text-[11px] sm:text-xs font-medium">{h.units_or_quantity}</td>
+                          <td className="p-3 sm:p-3.5 text-right font-bold text-[#1C1C1A] dark:text-[#F5F4F0] text-xs sm:text-sm">₹{h.value.toLocaleString('en-IN')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -991,12 +1002,12 @@ export default function WorkspaceView({
                     </div>
                     
                     <div className="flex-1 space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className={`text-xs font-bold transition-all duration-200 ${item.checked ? 'text-emerald-800 dark:text-emerald-400 line-through opacity-70' : 'text-[#1C1C1A] dark:text-[#F5F4F0]'}`}>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <span className={`text-xs sm:text-sm font-bold transition-all duration-200 ${item.checked ? 'text-emerald-800 dark:text-emerald-400 line-through opacity-70' : 'text-[#1C1C1A] dark:text-[#F5F4F0]'}`}>
                           {item.text}
                         </span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[8px] font-mono font-bold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded">
+                        <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+                          <span className="text-[9px] font-mono font-bold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded">
                             {item.category}
                           </span>
                           {/* Feature 10: Interactive SEBI Circular Tooltip Button */}
@@ -1008,9 +1019,10 @@ export default function WorkspaceView({
                               const matchKey = keys.find(k => sebiCircularsData[k].category.toLowerCase().includes(item.category.toLowerCase())) || keys[0];
                               setActiveCircular(sebiCircularsData[matchKey]);
                             }}
-                            className="text-[9px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full hover:bg-amber-500/20 transition-all"
+                            className="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-lg hover:bg-amber-500/20 transition-all cursor-pointer flex items-center gap-1 shrink-0 shadow-sm"
                           >
-                            SEBI Circular 📜
+                            <span>SEBI Circular</span>
+                            <span>📜</span>
                           </button>
                         </div>
                       </div>

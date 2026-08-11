@@ -88,11 +88,11 @@ export default function FeaturesSection() {
 
           <div className="mt-6 space-y-2">
             <div className="bg-[#FAF9F6] dark:bg-[#252422] p-3.5 rounded-xl border border-[#E6E5E0] dark:border-[#2E2D2A] space-y-1">
-              <div className="flex items-center justify-between text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">
+              <div className="flex flex-wrap items-center justify-between gap-1 text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">
                 <span className="font-bold">SEBI Circular Reference</span>
                 <ArrowUpRight className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
               </div>
-              <p className="text-xs font-mono font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">SEBI/HO/DDHS/P/2023/115</p>
+              <p className="text-xs font-mono font-bold text-[#1C1C1A] dark:text-[#F5F4F0] break-all">SEBI/HO/DDHS/P/2023/115</p>
             </div>
           </div>
         </BentoStaggeredCard>
