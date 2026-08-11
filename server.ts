@@ -13,17 +13,14 @@ app.use(express.json());
 
 // Lazy-initialize Gemini client to prevent crash on startup if key is missing
 const getGeminiClient = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.API_KEY || process.env.GOOGLE_API_KEY;
   if (!apiKey) {
     console.log("[INFO] GEMINI_API_KEY is not defined in the environment. Falling back to local data.");
+  } else {
+    console.log(`[INFO] GEMINI_API_KEY detected (length: ${apiKey.length}). Initializing GoogleGenAI client.`);
   }
   return new GoogleGenAI({
     apiKey: apiKey || "placeholder_for_startup",
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      }
-    }
   });
 };
 
@@ -36,7 +33,10 @@ app.get("/api/health", (req, res) => {
 app.get("/api/debug/env", (req, res) => {
   const cid = process.env.SETU_CLIENT_ID;
   const secret = process.env.SETU_CLIENT_SECRET;
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.API_KEY || process.env.GOOGLE_API_KEY;
   res.json({
+    GEMINI_API_KEY_present: !!geminiKey,
+    GEMINI_API_KEY_length: geminiKey ? geminiKey.length : 0,
     SETU_CLIENT_ID_present: !!cid,
     SETU_CLIENT_ID_length: cid ? cid.length : 0,
     SETU_CLIENT_ID_val: cid ? (cid.includes("[paste") ? "contains [paste" : "valid format") : "missing",
@@ -826,11 +826,11 @@ Strict Rules:
     return data;
   };
 
-  // 1. Try Gemini 3.6 Flash
+  // 1. Try Gemini 2.5 Flash
   try {
     const ai = getGeminiClient();
     const result = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -840,7 +840,7 @@ Strict Rules:
     });
 
     const text = result.text;
-    if (!text) throw new Error("No response text received from Gemini 3.6 Flash");
+    if (!text) throw new Error("No response text received from Gemini 2.5 Flash");
 
     const rawData = JSON.parse(text);
     const groundingSources: Array<{ title: string; url: string }> = [];
@@ -857,14 +857,14 @@ Strict Rules:
 
     const data = processGroundedMetrics(rawData, chunks);
     return res.json({ metrics: data, groundingSources });
-  } catch (error36: any) {
-    console.log("[INFO] Gemini 3.6 Flash failed/rate-limited, trying Gemini 3.1 Flash Lite:", error36.message || error36);
+  } catch (error25: any) {
+    console.log("[INFO] Gemini 2.5 Flash failed/rate-limited, trying Gemini 1.5 Flash:", error25.message || error25);
 
-    // 2. Try Gemini 3.1 Flash Lite
+    // 2. Try Gemini 1.5 Flash
     try {
       const ai = getGeminiClient();
       const result = await ai.models.generateContent({
-        model: "gemini-3.1-flash-lite",
+        model: "gemini-1.5-flash",
         contents: prompt,
         config: {
           responseMimeType: "application/json",
@@ -1069,11 +1069,11 @@ Strict Category-Level Rules:
     };
   };
 
-  // 1. Try Gemini 3.6 Flash
+  // 1. Try Gemini 2.5 Flash
   try {
     const ai = getGeminiClient();
     const result = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -1083,7 +1083,7 @@ Strict Category-Level Rules:
     });
 
     const text = result.text;
-    if (!text) throw new Error("No response text received from Gemini 3.6 Flash");
+    if (!text) throw new Error("No response text received from Gemini 2.5 Flash");
 
     const rawData = JSON.parse(text);
     const groundingSources: Array<{ title: string; url: string }> = [];
@@ -1109,14 +1109,14 @@ Strict Category-Level Rules:
       },
       groundingSources
     });
-  } catch (error36: any) {
-    console.log("[INFO] Gemini 3.6 Flash failed/rate-limited for suitability, trying Gemini 3.1 Flash Lite:", error36.message || error36);
+  } catch (error25: any) {
+    console.log("[INFO] Gemini 2.5 Flash failed/rate-limited for suitability, trying Gemini 1.5 Flash:", error25.message || error25);
 
-    // 2. Try Gemini 3.1 Flash Lite
+    // 2. Try Gemini 1.5 Flash
     try {
       const ai = getGeminiClient();
       const result = await ai.models.generateContent({
-        model: "gemini-3.1-flash-lite",
+        model: "gemini-1.5-flash",
         contents: prompt,
         config: {
           responseMimeType: "application/json",
@@ -1539,7 +1539,7 @@ Strict Guidelines for your responses:
   try {
     const ai = getGeminiClient();
     const result = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-2.5-flash",
       contents: contents,
       config: {
         systemInstruction: systemInstruction,
@@ -1573,11 +1573,11 @@ Strict Guidelines for your responses:
     });
 
   } catch (err: any) {
-    console.warn("Gemini suitability primary model rate limit encountered, attempting fallback...");
+    console.warn("Gemini 2.5 Flash API error / rate-limit encountered:", err.message || err, "attempting fallback to Gemini 1.5 Flash...");
     try {
       const ai = getGeminiClient();
       const result = await ai.models.generateContent({
-        model: "gemini-3.1-flash-lite",
+        model: "gemini-1.5-flash",
         contents: contents,
         config: {
           systemInstruction: systemInstruction,
@@ -1610,7 +1610,7 @@ Strict Guidelines for your responses:
         groundingSources
       });
     } catch (errLite: any) {
-      console.warn("Fallback to Gemini-3.1-flash-lite rate limited, using high-fidelity local rule-based response engine.");
+      console.warn("Fallback to Gemini 1.5 Flash error / rate-limited:", errLite.message || errLite, "using high-fidelity local rule-based response engine.");
       const fallbackResponse = getRuleBasedFallbackResponse(userPersona, message, riskProfile);
       return res.json(fallbackResponse);
     }

@@ -310,7 +310,7 @@ export default function WorkspaceView({
       <motion.div 
         animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? '100%' : (isSidebarCollapsed ? 80 : 280) }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-3.5 lg:p-5 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
+        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] px-4 pt-4 pb-4 sm:px-5 sm:pt-5 sm:pb-5 lg:p-5 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-visible lg:overflow-hidden shrink-0"
       >
         <AnimatePresence mode="wait">
           {isSidebarCollapsed ? (
@@ -321,20 +321,16 @@ export default function WorkspaceView({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col items-center justify-between h-full w-full py-2 space-y-6"
+              className="flex flex-col items-center justify-between h-full py-2 space-y-6"
             >
-              <div className="flex flex-col items-center space-y-5">
-                {/* Profile Avatar Badge */}
-                <motion.div 
-                  whileHover={{ scale: 1.1 }}
-                  className="h-10 w-10 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer"
-                  title={activePersona ? `${activePersona.persona_name}'s Wealth` : 'My Portfolio'}
-                >
-                  {activePersona ? activePersona.persona_name[0] : 'P'}
-                </motion.div>
+              <div className="space-y-6 flex flex-col items-center w-full">
+                {/* Compact Logo Mark */}
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center font-serif font-black text-blue-600 dark:text-blue-400 text-lg">
+                  P
+                </div>
 
-                {/* Compact Nav Icon Rail */}
-                <nav className="flex flex-col gap-3">
+                {/* Vertical Icon Navigation */}
+                <nav className="flex flex-col items-center gap-3 w-full">
                   {[
                     { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-5 h-5" /> },
                     { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-5 h-5" /> },
@@ -401,7 +397,7 @@ export default function WorkspaceView({
                 </div>
 
                 {/* Navigation Tabs - Mobile Optimized Proportional Distance */}
-                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch">
+                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch py-1">
                   {[
                     { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
                     { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4 shrink-0" /> },
@@ -429,13 +425,8 @@ export default function WorkspaceView({
                 </nav>
               </div>
 
-              {/* Regulatory Footer & Shrink Button (Desktop Widescreen Only) */}
-              <div className="hidden lg:block space-y-3.5 pt-4 border-t border-[#FAF9F6] dark:border-[#2E2D2A]">
-                <div className="px-3 text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A] flex items-center justify-between">
-                  <span>SEBI & RBI Framework</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">● Active</span>
-                </div>
-
+              {/* Shrink Button Footer (Desktop Widescreen Only) - Cleaned up without Status line */}
+              <div className="hidden lg:block pt-3 mb-1 border-t border-[#FAF9F6] dark:border-[#2E2D2A]">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -1064,7 +1055,7 @@ export default function WorkspaceView({
                 {/* Bottom Controls Region: Single Divider Line with Balanced Spacing */}
                 <div className="border-t border-[#E6E5E0] dark:border-[#2E2D2A] pt-3.5 space-y-3 mt-auto transition-colors duration-300">
                   {/* Persona-Isolated Suggestions pills */}
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                  <div className="flex items-center gap-2 overflow-x-auto pt-2 pb-2 scrollbar-none">
                     <span className="text-[10px] font-bold text-[#71706C] dark:text-[#A19F9A] uppercase tracking-wider shrink-0 mr-1 select-none">
                       Quick Audits:
                     </span>

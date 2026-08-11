@@ -56,7 +56,7 @@ export default function RiskAssessmentView({
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
-      className="w-full max-w-4xl mx-auto space-y-4 py-2 select-none transition-colors duration-300 h-full flex flex-col justify-between overflow-y-auto scrollbar-thin px-2"
+      className="w-full max-w-5xl lg:max-w-6xl mx-auto space-y-4 py-2 select-none transition-colors duration-300 h-full flex flex-col justify-between overflow-y-auto overflow-x-hidden scrollbar-thin px-2"
     >
       {/* Header Title */}
       <div className="space-y-1 text-center shrink-0">
@@ -73,25 +73,25 @@ export default function RiskAssessmentView({
       </div>
 
       {/* Main Questionnaire Card */}
-      <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-5 sm:p-6 space-y-5 ballpark-shadow flex-1 flex flex-col justify-between min-h-0 overflow-y-auto scrollbar-thin">
+      <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 sm:p-6 space-y-5 ballpark-shadow flex-1 flex flex-col justify-between min-h-0 overflow-y-auto overflow-x-hidden scrollbar-thin">
         
         {/* Header bar with Live Score Badge & Preset Quick Toggles */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-4">
           <div className="flex items-center gap-2">
-            <Sliders className="w-4 h-4 text-blue-500" />
+            <Sliders className="w-4 h-4 text-blue-500 shrink-0" />
             <h3 className="text-xs font-bold text-[#1C1C1A] dark:text-[#F5F4F0] uppercase tracking-wider">
               Risk Profiling Questionnaire
             </h3>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
             {/* Quick Preset Buttons */}
-            <div className="flex items-center gap-1.5 bg-[#FAF9F6] dark:bg-[#252422] p-1 rounded-xl border border-[#E6E5E0] dark:border-[#2E2D2A]">
-              <span className="text-[9px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] px-1.5">Presets:</span>
+            <div className="flex items-center gap-1 bg-[#FAF9F6] dark:bg-[#252422] p-1 rounded-xl border border-[#E6E5E0] dark:border-[#2E2D2A] overflow-x-auto max-w-full">
+              <span className="text-[9px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] px-1 shrink-0">Presets:</span>
               <button
                 type="button"
                 onClick={() => handlePresetSelect('Rajesh')}
-                className={`text-[10px] font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-all cursor-pointer shrink-0 ${
                   computedRiskProfile.category === 'Conservative'
                     ? 'bg-emerald-500 text-white shadow-xs'
                     : 'text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
@@ -102,7 +102,7 @@ export default function RiskAssessmentView({
               <button
                 type="button"
                 onClick={() => handlePresetSelect('Ananya')}
-                className={`text-[10px] font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-all cursor-pointer shrink-0 ${
                   computedRiskProfile.category === 'Aggressive'
                     ? 'bg-blue-500 text-white shadow-xs'
                     : 'text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
@@ -113,9 +113,9 @@ export default function RiskAssessmentView({
             </div>
 
             {/* Score pill */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <span className="text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">Score: <strong className="text-[#1C1C1A] dark:text-[#F5F4F0] font-bold">{computedRiskProfile.score}/100</strong></span>
-              <span className={`text-[10px] font-bold font-mono px-3 py-1 rounded-full border ${
+              <span className={`text-[10px] font-bold font-mono px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border ${
                 computedRiskProfile.category === 'Conservative'
                   ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                   : computedRiskProfile.category === 'Moderate'
@@ -131,13 +131,13 @@ export default function RiskAssessmentView({
         {/* 4 Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
           {RISK_QUESTIONS.map((q) => (
-            <div key={q.id} className="space-y-2 bg-[#FAF9F6] dark:bg-[#252422]/70 p-3.5 rounded-2xl border border-[#E6E5E0] dark:border-[#2E2D2A]">
+            <div key={q.id} className="space-y-2 bg-[#FAF9F6] dark:bg-[#252422]/70 p-3.5 rounded-2xl border border-[#E6E5E0] dark:border-[#2E2D2A] overflow-hidden">
               <div>
                 <span className="text-xs font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0] block">{q.title}</span>
                 <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-tight mt-0.5">{q.subtitle}</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                 {q.options.map((opt, optIdx) => {
                   const isSelected = (riskAnswers[q.id] ?? 0) === optIdx;
                   return (
