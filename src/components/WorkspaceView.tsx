@@ -310,9 +310,9 @@ export default function WorkspaceView({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-5 sm:space-y-6"
+              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-3 lg:space-y-5"
             >
-              <div className="space-y-5 sm:space-y-6">
+              <div className="space-y-3 lg:space-y-5">
                 {/* Active Profile Info Card - Responsive Banner */}
                 <div className="p-3.5 sm:p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
                   <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
@@ -331,8 +331,8 @@ export default function WorkspaceView({
                   </p>
                 </div>
 
-                {/* Navigation Tabs - Generous Distance from Profile Subcard */}
-                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch pt-1">
+                {/* Navigation Tabs - Mobile Optimized Proportional Distance */}
+                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch">
                   {[
                     { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
                     { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4 shrink-0" /> },
