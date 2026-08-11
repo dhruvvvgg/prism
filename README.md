@@ -133,7 +133,7 @@ prism/
 │   │   ├── Header.tsx              # Top navigation bar
 │   │   ├── Hero.tsx                # Landing page hero section and product preview
 │   │   ├── IntakeView.tsx          # Account Aggregator linkage and consent setup
-│   │   ├── RiskAssessmentView.tsx # SEBI risk profile questionnaire
+│   │   ├── RiskAssessmentView.tsx  # SEBI risk profile questionnaire
 │   │   ├── WorkspaceView.tsx       # Main dashboard, risk, explorer, coach, and settings
 │   │   ├── SignatureOverlay.tsx    # AA linkage signature modal
 │   │   └── ui/                     # Shared UI components and parallax containers
