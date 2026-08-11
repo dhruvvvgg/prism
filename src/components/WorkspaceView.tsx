@@ -34,8 +34,8 @@ export default function WorkspaceView({
   onUpdatePermissions,
 }: WorkspaceViewProps) {
   const shouldReduceMotion = useReducedMotion();
-  // Tabs: 'dashboard' | 'discover' | 'coach' | 'checklist' | 'settings'
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'discover' | 'coach' | 'checklist' | 'settings'>('dashboard');
+  // Tabs: 'dashboard' | 'risk' | 'discover' | 'coach' | 'checklist' | 'settings'
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'risk' | 'discover' | 'coach' | 'checklist' | 'settings'>('dashboard');
 
   // Feature 1: Donut Chart Hover State
   const [hoveredSlice, setHoveredSlice] = useState<{ name: string; pct: number; color: string } | null>(null);
@@ -341,6 +341,7 @@ export default function WorkspaceView({
                 <nav className="flex flex-col items-center gap-2.5 w-full">
                   {[
                     { id: 'dashboard' as const, label: 'Portfolio Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
+                    { id: 'risk' as const, label: 'Risk & Exposure', icon: <Activity className="w-4 h-4 shrink-0" /> },
                     { id: 'discover' as const, label: 'Discover Assets', icon: <Compass className="w-4 h-4 shrink-0" /> },
                     { id: 'coach' as const, label: 'Suitability Coach', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
                     { id: 'checklist' as const, label: 'Compliance Checklist', icon: <CheckSquare className="w-4 h-4 shrink-0" /> },
@@ -365,12 +366,12 @@ export default function WorkspaceView({
               </div>
 
               {/* Expand Sidebar Button Footer matching shrink button baseline */}
-              <div className="hidden lg:flex justify-center pt-2 pb-1 mt-auto w-full">
+              <div className="hidden lg:flex justify-center mt-auto w-full">
                 <motion.button
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.92 }}
                   onClick={() => setIsSidebarCollapsed(false)}
-                  className="w-11 h-11 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] flex items-center justify-center transition-all cursor-pointer shadow-sm"
+                  className="w-11 p-3.5 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] hover:bg-white dark:hover:bg-[#1C1B19] flex items-center justify-center transition-all cursor-pointer shadow-sm"
                   title="Expand Sidebar"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -410,6 +411,7 @@ export default function WorkspaceView({
                 <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2.5 w-full items-center lg:items-stretch py-1">
                   {[
                     { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
+                    { id: 'risk' as const, label: 'Risk & Exposure', shortLabel: 'Risk', icon: <Activity className="w-4 h-4 shrink-0" /> },
                     { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4 shrink-0" /> },
                     { id: 'coach' as const, label: 'Suitability Coach', shortLabel: 'Coach', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
                     { id: 'checklist' as const, label: 'Compliance Checklist', shortLabel: 'Checklist', icon: <CheckSquare className="w-4 h-4 shrink-0" /> },
@@ -435,13 +437,13 @@ export default function WorkspaceView({
                 </nav>
               </div>
 
-              {/* Shrink Button Footer (Desktop Widescreen Only) - Clean floating button without top border line */}
-              <div className="hidden lg:block pt-2 pb-1 mt-auto">
+              {/* Shrink Button Footer (Desktop Widescreen Only) - Styled identically to Active Investment Profile subcard */}
+              <div className="hidden lg:block mt-auto w-full">
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: 1.015 }}
+                  whileTap={{ scale: 0.985 }}
                   onClick={() => setIsSidebarCollapsed(true)}
-                  className="w-full flex items-center justify-center gap-2 h-11 px-4 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 p-3.5 sm:p-4 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] hover:bg-white dark:hover:bg-[#1C1B19] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
                   title="Shrink sidebar for wider right content view"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -605,183 +607,6 @@ export default function WorkspaceView({
                 </motion.div>
               </div>
 
-              {/* NEW SECTION: RISK & EXPOSURE ANALYTICS */}
-              <div className="bg-[#FAF9F6] dark:bg-[#252422] border-2 border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-5 shadow-sm transition-colors duration-300">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Activity className="w-4 h-4 text-blue-500" />
-                    <h4 className="text-sm font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
-                      Risk & Exposure Analytics
-                    </h4>
-                  </div>
-                  <span className="text-[9px] font-mono font-bold text-emerald-500 uppercase bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                    Real Portfolio Analytics
-                  </span>
-                </div>
-
-                {/* Risk Analytics Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  
-                  {/* 1. Overall Diversification Index */}
-                  <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl p-4 space-y-3 flex flex-col justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase">
-                        <span>Diversification Index</span>
-                        <span>HHI Engine</span>
-                      </div>
-                      <div className="flex items-baseline gap-2 pt-1">
-                        <span className="text-3xl font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0]">
-                          {computedDiversificationScore}
-                        </span>
-                        <span className="text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">/ 100</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <div className="w-full bg-[#FAF9F6] dark:bg-[#252422] h-2.5 rounded-full overflow-hidden border border-[#E6E5E0] dark:border-[#2E2D2A]">
-                        <div 
-                          style={{ width: `${computedDiversificationScore}%` }} 
-                          className={`h-full rounded-full transition-all duration-500 ${
-                            computedDiversificationScore >= 70 ? 'bg-emerald-500' : computedDiversificationScore >= 50 ? 'bg-amber-500' : 'bg-rose-500'
-                          }`} 
-                        />
-                      </div>
-                      <span className="text-[10px] font-bold font-mono text-[#71706C] dark:text-[#A19F9A] block">
-                        Status: <strong className={computedDiversificationScore >= 70 ? 'text-emerald-500' : 'text-amber-500'}>{diversificationLabel}</strong>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* 2. Concentration Risk Indicators */}
-                  <div className="lg:col-span-2 bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl p-4 space-y-2.5">
-                    <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase">
-                      <span>Concentration Risk Flags</span>
-                      <span>35% Category / 15% Single Holding Threshold</span>
-                    </div>
-
-                    <div className="space-y-2 max-h-36 overflow-y-auto scrollbar-thin pr-1">
-                      {concentrationFlags.map((flag, i) => (
-                        <div key={i} className={`p-2.5 rounded-xl border flex items-start gap-2.5 text-xs ${
-                          flag.type === 'high' 
-                            ? 'bg-amber-500/5 border-amber-500/30 text-amber-700 dark:text-amber-300'
-                            : 'bg-blue-500/5 border-blue-500/20 text-blue-700 dark:text-blue-300'
-                        }`}>
-                          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                          <div className="flex-1">
-                            <span className="font-bold block">{flag.title}</span>
-                            <span className="text-[11px] opacity-90">{flag.desc}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sub breakdown metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1 border-t border-[#E6E5E0]/60 dark:border-[#2E2D2A]">
-                  <div className="p-3 bg-white dark:bg-[#1C1B19] rounded-2xl border border-[#E6E5E0] dark:border-[#2E2D2A] space-y-1">
-                    <span className="text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase block">
-                      Sovereign Backed vs Private/Corporate Risk
-                    </span>
-                    <div className="flex items-center justify-between text-xs font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
-                      <span>Sovereign (G-Secs & SGBs): <span className="text-emerald-500 font-mono">{sovereignAlloc}%</span></span>
-                      <span>Corporate/REIT: <span className="text-blue-500 font-mono">{100 - sovereignAlloc}%</span></span>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-white dark:bg-[#1C1B19] rounded-2xl border border-[#E6E5E0] dark:border-[#2E2D2A] space-y-1">
-                    <span className="text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase block">
-                      Onboarding Risk Profile Match
-                    </span>
-                    <div className="flex items-center justify-between text-xs font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
-                      <span>Profile Category: <span className="text-blue-500 font-mono">{effectiveRiskProfile.category}</span></span>
-                      <span className="font-mono text-[11px] text-[#71706C] dark:text-[#A19F9A]">Score: {effectiveRiskProfile.score}/100</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Feature 5: What-If Macro Stress Test & Inflation Simulator */}
-              <div className="bg-[#FAF9F6] dark:bg-[#252422] border-2 border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-4 shadow-sm transition-colors duration-300">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <RefreshCw className="w-4 h-4 text-blue-500" />
-                    <h4 className="text-sm font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
-                      Interactive "What-If" Macro Stress Test Simulator
-                    </h4>
-                  </div>
-                  <span className="text-[9px] font-mono font-bold text-blue-500 uppercase bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
-                    Real-Time Simulation
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                  {/* Interest Rate Delta Slider */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-bold text-[#51504B] dark:text-[#D2CFC9]">
-                      <span>RBI Repo Rate Change:</span>
-                      <span className="text-blue-600 dark:text-blue-400 font-mono">{stressRate > 0 ? `+${stressRate}%` : `${stressRate}%`}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="-2"
-                      max="3"
-                      step="0.5"
-                      value={stressRate}
-                      onChange={(e) => setStressRate(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-[#E6E5E0] dark:bg-[#1C1B19] rounded-lg appearance-none cursor-pointer accent-blue-600"
-                    />
-                    <div className="flex justify-between text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A]">
-                      <span>-2% (Rate Cuts)</span>
-                      <span>0% (Baseline)</span>
-                      <span>+3% (Tightening)</span>
-                    </div>
-                  </div>
-
-                  {/* Inflation Delta Slider */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-bold text-[#51504B] dark:text-[#D2CFC9]">
-                      <span>Inflation Shock Expectation:</span>
-                      <span className="text-amber-600 dark:text-amber-400 font-mono">+{stressInflation}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="6"
-                      step="1"
-                      value={stressInflation}
-                      onChange={(e) => setStressInflation(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-[#E6E5E0] dark:bg-[#1C1B19] rounded-lg appearance-none cursor-pointer accent-amber-600"
-                    />
-                    <div className="flex justify-between text-[9px] font-mono text-[#71706C] dark:text-[#A19F9A]">
-                      <span>0% (4% CPI target)</span>
-                      <span>+3% (Moderate)</span>
-                      <span>+6% (High CPI)</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Simulated Outcome Banner */}
-                <div className="p-4 bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                  <div>
-                    <span className="text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase block">
-                      SIMULATED PORTFOLIO YIELD IMPACT
-                    </span>
-                    <span className="font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0] text-sm">
-                      Projected Annual Return: {(7.8 - stressRate * 0.4 + stressInflation * 0.25).toFixed(2)}%
-                    </span>
-                  </div>
-
-                  <div className="text-right">
-                    <span className={`font-extrabold text-xs px-2.5 py-1 rounded-full border inline-block ${
-                      stressInflation > 2 ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                    }`}>
-                      {stressInflation > 2 ? '✓ SGBs & REITs Actively Hedging Inflation' : '✓ Standard Stable Payouts'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
               {/* Detailed Holdings List */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -813,6 +638,213 @@ export default function WorkspaceView({
                       ))}
                     </tbody>
                   </table>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* TAB 2: RISK & EXPOSURE ANALYTICS */}
+          {activeTab === 'risk' && (
+            <motion.div
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 1, transition: { staggerChildren: shouldReduceMotion ? 0 : 0.06 } }
+              }}
+              className="space-y-6"
+            >
+              {/* Header Hero Card */}
+              <div className="bg-[#FAF9F6] dark:bg-[#252422] border-2 border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 sm:p-7 space-y-4 shadow-sm transition-colors duration-300">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-4">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-500 block flex items-center gap-1.5">
+                      <Activity className="w-3.5 h-3.5 inline" />
+                      Dedicated Risk & Exposure Analytics Dashboard
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0]">
+                      Portfolio Diversification & Credit Stress Framework
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] font-mono font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                      Grounded: {activePersona ? activePersona.persona_name : 'Rajesh'} ({effectiveRiskProfile.category})
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-[#71706C] dark:text-[#A19F9A] leading-relaxed">
+                  Monitors category concentration against standard 35% safety caps, evaluates sovereign credit vs. private debt exposure, and runs real-time Herfindahl-Hirschman Index (HHI) concentration scoring.
+                </p>
+              </div>
+
+              {/* Risk Analytics Grid (Diversification Score & Concentration Flags) */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* 1. Overall Diversification Index */}
+                <div className="bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-4 flex flex-col justify-between shadow-sm">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase">
+                      <span>Diversification Score</span>
+                      <span className="text-blue-500 font-bold">HHI Engine</span>
+                    </div>
+                    <div className="flex items-baseline gap-2 pt-1">
+                      <span className="text-4xl font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0]">
+                        {computedDiversificationScore}
+                      </span>
+                      <span className="text-sm font-mono text-[#71706C] dark:text-[#A19F9A]">/ 100</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="w-full bg-white dark:bg-[#1C1B19] h-3 rounded-full overflow-hidden border border-[#E6E5E0] dark:border-[#2E2D2A]">
+                      <div 
+                        style={{ width: `${computedDiversificationScore}%` }} 
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          computedDiversificationScore >= 70 ? 'bg-emerald-500' : computedDiversificationScore >= 50 ? 'bg-amber-500' : 'bg-rose-500'
+                        }`} 
+                      />
+                    </div>
+                    <span className="text-xs font-bold font-mono text-[#71706C] dark:text-[#A19F9A] block">
+                      Status: <strong className={computedDiversificationScore >= 70 ? 'text-emerald-500' : 'text-amber-500'}>{diversificationLabel}</strong>
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2. Concentration Risk Flags */}
+                <div className="lg:col-span-2 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-4 shadow-sm">
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase">
+                    <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                      Concentration Risk Alerts
+                    </span>
+                    <span>Safety Threshold: 35% Category</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {concentrationFlags.length > 0 ? (
+                      concentrationFlags.map((flag, idx) => (
+                        <div key={idx} className="bg-white dark:bg-[#1C1B19] border border-amber-500/20 rounded-2xl p-4 flex items-start gap-3">
+                          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                          <div className="space-y-1">
+                            <h5 className="text-xs font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">{flag.title}</h5>
+                            <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-relaxed">{flag.desc}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="bg-white dark:bg-[#1C1B19] border border-emerald-500/20 rounded-2xl p-4 flex items-center gap-3">
+                        <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
+                        <div>
+                          <h5 className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Balanced Asset Spread</h5>
+                          <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A]">No single asset category exceeds the 35% concentration threshold.</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Sovereign Credit vs Corporate Exposure Breakdown */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase">
+                    <span>Sovereign & Govt Backed Exposure</span>
+                    <span className="text-emerald-500 font-bold">Zero Default Risk</span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-serif font-black text-emerald-600 dark:text-emerald-400">
+                      {sovereignPct}%
+                    </span>
+                    <span className="text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">of total portfolio</span>
+                  </div>
+                  <p className="text-xs text-[#71706C] dark:text-[#A19F9A] leading-relaxed">
+                    Comprises RBI G-Secs and Sovereign Gold Bonds backed directly by the Government of India sovereign guarantee.
+                  </p>
+                </div>
+
+                <div className="bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase">
+                    <span>Private & Market Credit Exposure</span>
+                    <span className="text-amber-500 font-bold">Market Volatility</span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-serif font-black text-amber-600 dark:text-amber-400">
+                      {corporatePct}%
+                    </span>
+                    <span className="text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">of total portfolio</span>
+                  </div>
+                  <p className="text-xs text-[#71706C] dark:text-[#A19F9A] leading-relaxed">
+                    Includes AAA Corporate Bonds, REITs, InvITs, and Equity mutual funds subject to underlying market price fluctuation.
+                  </p>
+                </div>
+              </div>
+
+              {/* What-If Macro Stress Test Simulator */}
+              <div className="bg-[#FAF9F6] dark:bg-[#252422] border-2 border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-4 shadow-sm transition-colors duration-300">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <RefreshCw className="w-4 h-4 text-blue-500" />
+                    <h4 className="text-sm font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
+                      Interactive "What-If" Macro Stress Test Simulator
+                    </h4>
+                  </div>
+                  <span className="text-[9px] font-mono font-bold text-blue-500 uppercase bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                    Real-Time Simulation
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-bold text-[#51504B] dark:text-[#D2CFC9]">
+                      <span>RBI Repo Rate Change:</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-mono">{stressRate > 0 ? `+${stressRate}%` : `${stressRate}%`}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="-2"
+                      max="3"
+                      step="0.5"
+                      value={stressRate}
+                      onChange={(e) => setStressRate(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-[#E6E5E0] dark:bg-[#1C1B19] rounded-lg appearance-none cursor-pointer accent-blue-600"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-bold text-[#51504B] dark:text-[#D2CFC9]">
+                      <span>Inflation Shock Expectation:</span>
+                      <span className="text-amber-600 dark:text-amber-400 font-mono">+{stressInflation}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="6"
+                      step="1"
+                      value={stressInflation}
+                      onChange={(e) => setStressInflation(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-[#E6E5E0] dark:bg-[#1C1B19] rounded-lg appearance-none cursor-pointer accent-amber-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                  <div>
+                    <span className="text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase block">
+                      SIMULATED PORTFOLIO YIELD IMPACT
+                    </span>
+                    <span className="font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0] text-sm">
+                      Projected Annual Return: {(7.8 - stressRate * 0.4 + stressInflation * 0.25).toFixed(2)}%
+                    </span>
+                  </div>
+
+                  <div className="text-right">
+                    <span className={`font-extrabold text-xs px-2.5 py-1 rounded-full border inline-block ${
+                      stressInflation > 2 ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                    }`}>
+                      {stressInflation > 2 ? '✓ SGBs & REITs Actively Hedging Inflation' : '✓ Standard Stable Payouts'}
+                    </span>
+                  </div>
                 </div>
               </div>
             </motion.div>

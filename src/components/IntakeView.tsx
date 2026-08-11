@@ -95,51 +95,6 @@ export default function IntakeView({
       {/* Input canvas */}
       <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-6 sm:p-7 space-y-6 ballpark-shadow h-auto shadow-md">
         
-        {/* Quick Preset Persona Selector */}
-        <div className="space-y-2.5 border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-5">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase tracking-wider">
-              Select Demo Investor Profile (Optional Quick-Fill)
-            </span>
-            <span className="text-[10px] font-mono text-blue-500 font-bold bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
-              AA Sandbox Ready
-            </span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {personas.map((p) => {
-              const isSelected = selectedPersona === p.name;
-              return (
-                <button
-                  key={p.name}
-                  type="button"
-                  onClick={() => handleSelectShortcut(p.name)}
-                  className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                    isSelected
-                      ? 'border-blue-500 bg-blue-500/10 dark:bg-blue-500/15 shadow-sm'
-                      : 'border-[#E6E5E0] dark:border-[#2E2D2A] bg-[#FAF9F6]/60 dark:bg-[#252422]/60 hover:bg-white dark:hover:bg-[#1C1B19]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0]">
-                      {p.name}
-                    </span>
-                    <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-md ${
-                      p.name === 'Rajesh'
-                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                        : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
-                    }`}>
-                      {p.name === 'Rajesh' ? 'Conservative' : 'Aggressive'}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-tight mt-1">
-                    {p.tagline}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Email, Phone, PAN Inputs Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="space-y-1.5">
