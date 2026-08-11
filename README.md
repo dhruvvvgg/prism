@@ -1,4 +1,4 @@
-# Prism — AI-Grounded Alternative Asset Aggregator & Suitability Platform
+# Prism: AI-Grounded Alternative Asset Aggregator and Suitability Platform
 
 [![Live App on Render](https://img.shields.io/badge/Deployment-Render-blueviolet?style=for-the-badge&logo=render)](https://prism-6psq.onrender.com)
 [![React](https://img.shields.io/badge/React-19.0.1-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
@@ -7,64 +7,64 @@
 [![Vite](https://img.shields.io/badge/Vite-6.2.3-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-> **Prism** is a state-of-the-art wealth platform engineered for Indian investors navigating alternative financial instruments—including **REITs, InvITs, Sovereign Gold Bonds (SGBs), Government Securities (G-Secs), Corporate Bonds, and Target Maturity Debt ETFs**. Built on the **RBI Account Aggregator (AA) Framework** and **SEBI regulatory guidelines**, Prism bridges portfolio aggregation, structural compliance auditing, and grounded AI suitability coaching.
+Prism is a wealth management platform designed for Indian investors navigating alternative financial instruments, including Real Estate Investment Trusts (REITs), Infrastructure Investment Trusts (InvITs), Sovereign Gold Bonds (SGBs), Government Securities (G-Secs), Corporate Bonds, and Target Maturity Debt ETFs. Built on the RBI Account Aggregator (AA) Framework and SEBI regulatory guidelines, Prism provides portfolio aggregation, structural compliance auditing, and grounded AI suitability coaching.
 
-🌐 **Live Hosted Demo**: [https://prism-6psq.onrender.com](https://prism-6psq.onrender.com)
+Hosted Application: [https://prism-6psq.onrender.com](https://prism-6psq.onrender.com)
 
 ---
 
-## ⚡ Key Features
+## Features
 
-* **🔗 RBI Account Aggregator (AA) Sandbox Linkage**:
-  Integrates via Setu AA Sandbox APIs (`/api/setu/consent` & `/api/setu/fetch-data`) to aggregate verified Financial Information (FI) feeds seamlessly without requiring manual PDF or Excel uploads.
+* **RBI Account Aggregator (AA) Sandbox Integration**:
+  Integrates via Setu AA Sandbox APIs (`/api/setu/consent` and `/api/setu/fetch-data`) to aggregate verified Financial Information (FI) feeds without requiring manual file uploads.
 
-* **🎯 Auto-Derived SEBI Risk Profiling Engine**:
-  Evaluates investment time horizon, drawdown loss tolerance, primary financial mandate, and market experience across a 100-point SEBI matrix. Auto-derives questionnaire responses from selected persona presets (**Rajesh** — Conservative / Near Retirement vs. **Ananya** — Aggressive Growth).
+* **Auto-Derived SEBI Risk Profiling Engine**:
+  Evaluates investment time horizon, drawdown loss tolerance, financial mandate, and market experience across a 100-point SEBI matrix. Auto-derives questionnaire responses from persona presets (Rajesh: Conservative / Near Retirement; Ananya: Aggressive Growth).
 
-* **📊 Comprehensive Portfolio Dashboard**:
-  Real-time aggregated net worth tracking, 24h PnL change metrics, category allocation distribution bars, and individual instrument ISIN readouts.
+* **Portfolio Allocation and Holdings Dashboard**:
+  Real-time portfolio net worth tracking, 24-hour PnL change metrics, category allocation distribution, and individual instrument ISIN readouts.
 
-* **🛡️ Dedicated Risk & Exposure Analytics**:
-  - **Herfindahl-Hirschman Diversification Index (HHI)**: Quantifies single-asset concentration risk (`93/100`).
-  - **Sovereign & Govt Guarantee Exposure**: Tracks percentage backed by absolute government guarantees (`40%`).
-  - **Private & Market Credit Exposure**: Monitors corporate bond and trust leverage exposure (`60%`).
+* **Dedicated Risk and Exposure Analytics**:
+  - **Herfindahl-Hirschman Diversification Index (HHI)**: Quantifies single-asset concentration risk (93/100).
+  - **Sovereign and Government Exposure**: Tracks percentage backed by government guarantees (40%).
+  - **Private and Market Credit Exposure**: Monitors corporate bond and trust leverage exposure (60%).
   - **Concentration Risk Alerts**: Identifies over-concentration in single sectors or issuers.
-  - **Interactive Macro Stress Test Simulator**: Simulates portfolio impacts under 3 real-world economic scenarios (*+50 bps RBI Rate Hike*, *-10% Commercial Rental Yield Compression*, *-15% Equity Volatility*).
+  - **Macro Stress Test Simulator**: Simulates portfolio impacts under three economic scenarios (+50 bps RBI Rate Hike, -10% Commercial Rental Yield Compression, -15% Equity Volatility).
 
-* **🧭 Alternative Asset Explorer (Discover)**:
-  Curated directory spanning REITs, InvITs, SGBs, AAA Corporate Bonds, G-Secs, and Debt ETFs featuring **Section 115UA tax treatment** and **SEBI ≥90% NDCF semi-annual distribution mandates**.
+* **Alternative Asset Explorer**:
+  Catalog spanning REITs, InvITs, SGBs, AAA Corporate Bonds, G-Secs, and Debt ETFs featuring Section 115UA tax treatment and SEBI distribution mandates (at least 90% NDCF distributed semi-annually).
 
-* **🤖 AI Suitability Coach (Gemini 2.5 Flash / 1.5 Flash)**:
-  - Context-aware AI coach trained on SEBI/RBI regulations and user portfolio numbers.
-  - **Precision Guardrail Engine**: Outright 2-sentence refusal for explicit buy/sell/hold transaction verdicts while allowing rich, factual explanations of named instrument structures.
-  - **Natural Chat Interface**: Adaptive message bubbles (user messages right-aligned in blue pills; coach messages left-aligned in structured cards) with quick-audit shortcut pills.
+* **AI Suitability Coach (Gemini 2.5 Flash / 1.5 Flash)**:
+  - Context-aware AI coach trained on SEBI and RBI regulations alongside user portfolio data.
+  - **Precision Guardrails**: Outright two-sentence refusal for explicit transaction verdicts while permitting factual explanations of named instrument structures.
+  - **Chat Interface**: Adaptive message layout with user messages right-aligned and coach responses left-aligned with quick-audit shortcuts.
 
-* **📋 SEBI / RBI Compliance Checkpoints**:
-  Interactive checklist auditing InvIT leverage caps (≤ 70% net debt-to-asset value), REIT commercial asset ratios (≥ 80% completed assets), board independence, and SGB maturity tax exemptions.
+* **SEBI and RBI Compliance Checkpoints**:
+  Interactive checklist auditing InvIT leverage caps (70% or lower net debt-to-asset value), REIT commercial asset ratios (80% or higher completed assets), board independence, and SGB maturity tax exemptions.
 
-* **⚙️ Granular Privacy & Consent Control Center**:
+* **Granular Privacy and Consent Control Center**:
   Live consent toggles (`View Balances`, `Analyse Portfolio`, `Recommend Products`) with zero forced default permissions.
 
 ---
 
-## 🛠️ Tech Stack Overview
+## Tech Stack
 
 | Category | Technologies |
 | :--- | :--- |
-| **Frontend Framework** | [React 18 / 19](https://react.dev), [TypeScript 5.8](https://www.typescriptlang.org/) |
-| **Build Tool & Bundler** | [Vite 6](https://vitejs.dev/), [ESBuild](https://esbuild.github.io/) |
-| **Styling & Design** | [Tailwind CSS v4](https://tailwindcss.com/), [Motion / Framer Motion](https://motion.dev/) |
-| **Backend & Server** | [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), [tsx](https://github.com/privatenumber/tsx) |
-| **AI LLM Integration** | [Google GenAI SDK (`@google/genai`)](https://www.npmjs.com/package/@google/genai) |
+| **Frontend Framework** | React 18 / 19, TypeScript 5.8 |
+| **Build Tool and Bundler** | Vite 6, ESBuild |
+| **Styling and Design** | Tailwind CSS v4, Motion / Framer Motion |
+| **Backend and Server** | Node.js, Express, tsx |
+| **AI LLM Integration** | Google GenAI SDK (`@google/genai`) |
 | **AA Integration** | Setu Account Aggregator Sandbox API |
-| **Icons & UI Assets** | [Lucide React](https://lucide.dev/) |
-| **Deployment Platform** | [Render Cloud](https://render.com/) |
+| **Icons and UI Assets** | Lucide React |
+| **Deployment Platform** | Render Cloud |
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
 
-Before running the project locally, ensure you have the following installed:
+Ensure the following dependencies are installed on your system before running locally:
 
 * **Node.js**: `v18.0.0` or higher
 * **npm**: `v9.0.0` or higher (or `yarn` / `pnpm`)
@@ -72,7 +72,7 @@ Before running the project locally, ensure you have the following installed:
 
 ---
 
-## 🚀 Installation & Running Locally
+## Installation and Setup
 
 ### 1. Clone the Repository
 ```bash
@@ -85,8 +85,8 @@ cd prism
 npm install
 ```
 
-### 3. Configure Environment Variables
-Create a `.env` file in the root directory of the project:
+### 3. Environment Configuration
+Create a `.env` file in the root directory:
 
 ```env
 # Server Port Configuration
@@ -100,87 +100,82 @@ SETU_CLIENT_ID=your_setu_client_id
 SETU_CLIENT_SECRET=your_setu_client_secret
 ```
 
-### 4. Start the Local Development Server
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
-Open your browser and navigate to **`http://localhost:3000`**.
+Navigate to `http://localhost:3000` in your web browser.
 
 ---
 
-## 📦 Production Build & Deployment
+## Production Build and Deployment
 
-To build and run the application in a production environment:
-
-### 1. Create Production Bundle
+### 1. Build Production Assets
 ```bash
 npm run build
 ```
-This compiles the Vite static assets into `dist/` and bundles `server.ts` into `dist/server.cjs` via ESBuild.
+Compiles Vite static assets into `dist/` and bundles `server.ts` into `dist/server.cjs` via ESBuild.
 
 ### 2. Start Production Server
 ```bash
 npm start
 ```
-The server will run on `http://localhost:3000` (or `process.env.PORT`).
+The server starts on `http://localhost:3000` or the port specified in `process.env.PORT`.
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 prism/
 ├── src/
 │   ├── components/
-│   │   ├── Header.tsx              # Floating top navigation bar
-│   │   ├── Hero.tsx                # Landing page hero copy & parallax product preview
-│   │   ├── IntakeView.tsx          # Step 1: AA linkage & consent setup
-│   │   ├── RiskAssessmentView.tsx # Step 2: 100-point SEBI risk profile questionnaire
-│   │   ├── WorkspaceView.tsx       # Step 3: Main dashboard, risk, explorer, coach & settings
+│   │   ├── Header.tsx              # Top navigation bar
+│   │   ├── Hero.tsx                # Landing page hero section and product preview
+│   │   ├── IntakeView.tsx          # Account Aggregator linkage and consent setup
+│   │   ├── RiskAssessmentView.tsx # SEBI risk profile questionnaire
+│   │   ├── WorkspaceView.tsx       # Main dashboard, risk, explorer, coach, and settings
 │   │   ├── SignatureOverlay.tsx    # AA linkage signature modal
-│   │   └── ui/                     # Shared UI components & parallax containers
+│   │   └── ui/                     # Shared UI components and parallax containers
 │   ├── utils/
-│   │   ├── riskProfiler.ts         # SEBI risk scoring matrix & persona answers
-│   │   └── data.ts                 # Initial portfolio data & asset Explorer definitions
-│   ├── App.tsx                     # Main React root & screen routing controller
-│   ├── index.css                   # Global Tailwind CSS styles & typography
+│   │   ├── riskProfiler.ts         # SEBI risk scoring matrix and preset persona answers
+│   │   └── data.ts                 # Portfolio data and asset explorer definitions
+│   ├── App.tsx                     # Main React root and view router
+│   ├── index.css                   # Global Tailwind CSS styles
 │   └── main.tsx                    # React DOM entrypoint
-├── server.ts                       # Express backend, Gemini AI SDK integration & Setu AA proxy
-├── package.json                    # Dependencies & build scripts
+├── server.ts                       # Express backend, Gemini AI SDK integration, and Setu AA proxy
+├── package.json                    # Project dependencies and scripts
 ├── tsconfig.json                   # TypeScript configuration
-└── vite.config.ts                  # Vite bundler configuration
+└── vite.config.ts                  # Vite configuration
 ```
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome! Please follow these steps to contribute:
-
-1. **Fork the Repository**: Click the `Fork` button at the top right of this page.
-2. **Create a Feature Branch**:
+1. **Fork the Repository**: Click `Fork` on GitHub.
+2. **Create a Branch**:
    ```bash
-   git checkout -b feature/amazing-feature
+   git checkout -b feature/your-feature-name
    ```
-3. **Commit your Changes**:
+3. **Commit Changes**:
    ```bash
-   git commit -m "Add amazing feature"
+   git commit -m "Add feature description"
    ```
-4. **Push to the Branch**:
+4. **Push Branch**:
    ```bash
-   git push origin feature/amazing-feature
+   git push origin feature/your-feature-name
    ```
-5. **Open a Pull Request**: Submit a PR describing your changes.
+5. **Submit Pull Request**: Open a pull request against the `main` branch.
 
 ---
 
-## 📜 License
+## License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for details.
 
 ---
 
-## 🌐 Hosted App
+## Deployment
 
-Access the live production deployment hosted on Render:  
-🔗 **[https://prism-6psq.onrender.com](https://prism-6psq.onrender.com)**
+Hosted on Render: [https://prism-6psq.onrender.com](https://prism-6psq.onrender.com)
