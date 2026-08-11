@@ -310,9 +310,9 @@ export default function WorkspaceView({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-3 sm:space-y-4"
+              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-3"
             >
-              <div className="space-y-2.5 sm:space-y-3">
+              <div className="space-y-3">
                 {/* Active Profile Info Card - Responsive Banner */}
                 <div className="p-3 sm:p-3.5 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
                   <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
@@ -331,37 +331,33 @@ export default function WorkspaceView({
                   </p>
                 </div>
 
-                {/* Navigation Tabs - Uniform Segmented Control Track on Mobile & Widescreen */}
-                <div className="bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] p-1.5 rounded-2xl transition-colors duration-300">
-                  <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-1.5 w-full items-center lg:items-stretch">
-                    {[
-                      { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
-                      { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4 shrink-0" /> },
-                      { id: 'coach' as const, label: 'Suitability Coach', shortLabel: 'Coach', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
-                      { id: 'checklist' as const, label: 'Compliance Checklist', shortLabel: 'Checklist', icon: <CheckSquare className="w-4 h-4 shrink-0" /> },
-                      { id: 'settings' as const, label: 'Privacy & Settings', shortLabel: 'Settings', icon: <Settings className="w-4 h-4 shrink-0" /> }
-                    ].map((tab) => (
-                      <motion.button
-                        key={tab.id}
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.97 }}
-                        transition={{ duration: 0.12, ease: 'easeOut' }}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center justify-center lg:justify-start gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 whitespace-nowrap border ${
-                          activeTab === tab.id
-                            ? 'bg-white dark:bg-[#1C1B19] text-blue-600 dark:text-blue-400 border-blue-500/40 dark:border-blue-500/40 shadow-sm font-extrabold'
-                            : 'bg-transparent text-[#71706C] dark:text-[#A19F9A] border-transparent hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] hover:bg-white/50 dark:hover:bg-[#1C1B19]/50'
-                        }`}
-                      >
-                        <span className={activeTab === tab.id ? 'text-blue-500' : 'text-[#71706C] dark:text-[#A19F9A]'}>
-                          {tab.icon}
-                        </span>
-                        <span className="hidden sm:inline">{tab.label}</span>
-                        <span className="sm:hidden">{tab.shortLabel}</span>
-                      </motion.button>
-                    ))}
-                  </nav>
-                </div>
+                {/* Navigation Tabs - Clean Direct Buttons (No inner card wrapper) */}
+                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2 w-full items-center lg:items-stretch">
+                  {[
+                    { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4 shrink-0" /> },
+                    { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4 shrink-0" /> },
+                    { id: 'coach' as const, label: 'Suitability Coach', shortLabel: 'Coach', icon: <MessageSquare className="w-4 h-4 shrink-0" /> },
+                    { id: 'checklist' as const, label: 'Compliance Checklist', shortLabel: 'Checklist', icon: <CheckSquare className="w-4 h-4 shrink-0" /> },
+                    { id: 'settings' as const, label: 'Privacy & Settings', shortLabel: 'Settings', icon: <Settings className="w-4 h-4 shrink-0" /> }
+                  ].map((tab) => (
+                    <motion.button
+                      key={tab.id}
+                      whileHover={{ x: shouldReduceMotion ? 0 : 4 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 sm:gap-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                        activeTab === tab.id
+                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 lg:border-none lg:border-l-2 lg:border-blue-500 shadow-sm'
+                          : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
+                      }`}
+                    >
+                      {tab.icon}
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="sm:hidden">{tab.shortLabel}</span>
+                    </motion.button>
+                  ))}
+                </nav>
               </div>
 
               {/* Regulatory Footer & Shrink Button (Desktop Widescreen Only) */}
