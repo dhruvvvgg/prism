@@ -157,7 +157,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] dark:bg-[#121211] text-[#1C1C1A] dark:text-[#F5F4F0] flex flex-col font-sans antialiased overflow-x-hidden relative transition-colors duration-300">
+    <div className={`min-h-screen bg-[#FAF9F6] dark:bg-[#121211] text-[#1C1C1A] dark:text-[#F5F4F0] flex flex-col font-sans antialiased relative transition-colors duration-300 ${currentView === 'workspace' || currentView === 'intake' ? 'h-screen overflow-hidden' : 'overflow-x-hidden'}`}>
       
       {/* Decorative Premium Ambient Radial Glows (only on header/hero, desaturated in dark mode) */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-500/[0.02] rounded-full blur-[120px] pointer-events-none z-0" />
@@ -181,7 +181,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-[1680px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-10 pt-28 md:pt-32 pb-16 flex flex-col justify-center relative z-10">
+      <main className={`flex-1 max-w-[1680px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-10 pt-20 md:pt-24 relative z-10 ${currentView === 'workspace' || currentView === 'intake' ? 'pb-3 h-[calc(100vh-1rem)] overflow-hidden flex flex-col justify-center' : 'pb-16 flex flex-col justify-center'}`}>
         
         <AnimatePresence mode="wait">
           
@@ -219,7 +219,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {/* VIEW: INTAKE (Consent Setup) */}
+          {/* VIEW: INTAKE (Consent Setup / Auth) */}
           {currentView === 'intake' && (
             <motion.div
               key="intake"
@@ -227,6 +227,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
+              className="w-full flex-1 flex flex-col justify-center min-h-0 h-full overflow-hidden"
             >
               <IntakeView
                 isSubmitting={isSubmitting}
@@ -249,6 +250,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
+              className="h-full flex flex-col min-h-0"
             >
               <WorkspaceView
                 selectedPersonaName={selectedPersonaName}

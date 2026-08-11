@@ -79,23 +79,23 @@ export default function IntakeView({
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
-      className="max-w-5xl lg:max-w-6xl mx-auto space-y-6 py-6 select-none transition-colors duration-300"
+      className="w-full max-w-5xl lg:max-w-6xl mx-auto space-y-3 sm:space-y-4 py-1 select-none transition-colors duration-300 h-full flex flex-col justify-between overflow-y-auto scrollbar-thin px-1"
     >
       {/* Title */}
-      <div className="space-y-2 text-center">
-        <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-500">
+      <div className="space-y-1 text-center shrink-0">
+        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-500 block">
           Account Aggregator Setup
         </span>
-        <h2 className="text-2xl sm:text-3xl font-serif font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+        <h2 className="text-xl sm:text-2xl font-serif font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
           Link Your Alternative Assets
         </h2>
-        <p className="text-sm sm:text-base text-[#71706C] dark:text-[#A19F9A] max-w-2xl mx-auto transition-colors duration-300 leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#71706C] dark:text-[#A19F9A] max-w-2xl mx-auto transition-colors duration-300 leading-relaxed">
           Establish a secure, encrypted consent artifact via the Account Aggregator framework Sandbox to fetch your bank deposits, mutual funds, REITs, and corporate bonds.
         </p>
       </div>
 
       {/* Input canvas */}
-      <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-6 space-y-6 ballpark-shadow">
+      <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 sm:p-5 space-y-4 ballpark-shadow flex-1 flex flex-col justify-between min-h-0 overflow-y-auto scrollbar-thin">
         
         {/* Email, Phone, PAN Inputs Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -240,7 +240,7 @@ export default function IntakeView({
 
       {/* Pre-seeded Persona Shortcuts */}
       {!isSubmitting && (
-        <div className="space-y-3">
+        <div className="space-y-2 shrink-0 pt-1">
           <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-[#71706C] dark:text-[#A19F9A] block text-center transition-colors duration-300">
             Or select a pre-seeded regulatory profile:
           </span>

@@ -235,7 +235,7 @@ export default function WorkspaceView({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-140px)] lg:min-h-[600px] select-none py-2 font-sans"
+      className="flex flex-col lg:flex-row gap-6 h-full min-h-0 select-none py-2 font-sans overflow-y-auto lg:overflow-hidden scrollbar-thin"
     >
       {/* LEFT COLUMN: Sidebar Navigation Panel with Responsive Mobile & Widescreen Motion Sizing */}
       <motion.div 
@@ -387,7 +387,7 @@ export default function WorkspaceView({
       <motion.div 
         layout="position"
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="flex-1 min-w-0 border border-[#E6E5E0] dark:border-[#2E2D2A] bg-white dark:bg-[#1C1B19] rounded-[2rem] flex flex-col h-[500px] md:h-[600px] lg:h-full overflow-hidden ballpark-shadow transition-colors duration-300"
+        className="flex-1 min-w-0 border border-[#E6E5E0] dark:border-[#2E2D2A] bg-white dark:bg-[#1C1B19] rounded-[2rem] flex flex-col h-full min-h-[450px] lg:min-h-0 overflow-hidden ballpark-shadow transition-colors duration-300"
       >
         
         {/* HEADER BAR FOR ACTIVE SCREEN */}
