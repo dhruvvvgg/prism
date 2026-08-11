@@ -56,7 +56,7 @@ export default function RiskAssessmentView({
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
-      className="w-full max-w-5xl lg:max-w-6xl mx-auto space-y-4 py-2 select-none transition-colors duration-300 h-full flex flex-col justify-between overflow-y-auto overflow-x-hidden scrollbar-thin px-2"
+      className="w-full max-w-4xl mx-auto space-y-6 py-4 sm:py-6 select-none transition-colors duration-300 h-auto px-4"
     >
       {/* Header Title */}
       <div className="space-y-1 text-center shrink-0">
@@ -73,7 +73,7 @@ export default function RiskAssessmentView({
       </div>
 
       {/* Main Questionnaire Card */}
-      <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 sm:p-6 space-y-5 ballpark-shadow flex-1 flex flex-col justify-between min-h-0 overflow-y-auto overflow-x-hidden scrollbar-thin">
+      <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-5 sm:p-7 space-y-6 ballpark-shadow h-auto shadow-md">
         
         {/* Header bar with Live Score Badge & Preset Quick Toggles */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-4">

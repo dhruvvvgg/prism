@@ -231,7 +231,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
-              className="w-full flex-1 flex flex-col justify-center min-h-0 h-auto lg:h-full lg:overflow-hidden"
+              className="w-full h-auto py-2 sm:py-4 flex flex-col justify-center"
             >
               <IntakeView
                 isSubmitting={isSubmitting}
@@ -256,7 +256,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
-              className="w-full flex-1 flex flex-col justify-center min-h-0 h-auto lg:h-full lg:overflow-hidden"
+              className="w-full h-auto py-2 sm:py-4 flex flex-col justify-center"
             >
               <RiskAssessmentView
                 selectedPersonaName={selectedPersonaName}

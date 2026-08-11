@@ -425,13 +425,13 @@ export default function WorkspaceView({
                 </nav>
               </div>
 
-              {/* Shrink Button Footer (Desktop Widescreen Only) - Cleaned up without Status line */}
-              <div className="hidden lg:block pt-3 mb-1 border-t border-[#FAF9F6] dark:border-[#2E2D2A]">
+              {/* Shrink Button Footer (Desktop Widescreen Only) - Balanced & Uniform Spacing */}
+              <div className="hidden lg:block pt-4 mt-auto border-t border-[#E6E5E0]/60 dark:border-[#2E2D2A]">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setIsSidebarCollapsed(true)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
                   title="Shrink sidebar for wider right content view"
                 >
                   <ChevronLeft className="w-4 h-4" />
