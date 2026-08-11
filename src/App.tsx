@@ -197,7 +197,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
-              className="space-y-24"
+              className="space-y-24 pt-4 sm:pt-6 md:pt-8"
             >
               <Hero
                 onLaunchPrism={handleLaunchPrism}

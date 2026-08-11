@@ -16,13 +16,13 @@ export default function Hero({
   return (
     <HeroParallaxContainer className="space-y-16 transition-colors duration-300">
       {/* Main Hero Copy - Layer 1: Heading & Action CTA */}
-      <HeroParallaxLayer speed={0.35} className="text-center space-y-6 max-w-6xl mx-auto pt-4 select-none">
-        <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif font-black tracking-tighter leading-[0.95] sm:leading-[0.9] text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
+      <HeroParallaxLayer speed={0.35} className="text-center space-y-6 max-w-6xl mx-auto pt-6 sm:pt-8 md:pt-10 select-none">
+        <h1 className="text-4xl sm:text-6xl md:text-8xl font-serif font-black tracking-tighter leading-[0.95] sm:leading-[0.9] text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
           Alternative Assets. <br className="hidden md:inline" />
           Fully <span className="animate-shine font-serif">Grounded.</span>
         </h1>
         
-        <p className="text-[#51504B] dark:text-[#A19F9A] text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-normal transition-colors duration-300">
+        <p className="text-[#51504B] dark:text-[#A19F9A] text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed font-normal transition-colors duration-300">
           Prism automates SEBI/RBI compliance monitoring, aggregates holdings via Account Aggregator Sandbox, and verifies suitability with a grounded AI Coach.
         </p>
         

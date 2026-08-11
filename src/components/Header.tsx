@@ -35,7 +35,7 @@ export default function Header({
 
   return (
     <>
-      <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-[1680px] z-50 rounded-xl bg-white/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border border-[#E6E5E0] dark:border-[#2E2D2A]/50 shadow-[0_8px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.35)] px-4 sm:px-6 py-3.5 flex items-center justify-between transition-all duration-300 select-none">
+      <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-6xl z-50 rounded-xl bg-white/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border border-[#E6E5E0] dark:border-[#2E2D2A]/50 shadow-[0_8px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.35)] px-4 sm:px-6 py-3.5 flex items-center justify-between transition-all duration-300 select-none">
         
         {/* Left Control: Desktop Light/Dark Toggle */}
         <div className="flex items-center gap-2">
