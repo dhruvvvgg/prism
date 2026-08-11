@@ -105,16 +105,16 @@ export default function RiskAssessmentView({
           </div>
         </div>
 
-        {/* 4 Questions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+        {/* 4 Questions Grid with Equal-Sized Selectable Option Buttons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 pt-1">
           {RISK_QUESTIONS.map((q) => (
-            <div key={q.id} className="space-y-2 bg-[#FAF9F6] dark:bg-[#252422]/70 p-3.5 rounded-2xl border border-[#E6E5E0] dark:border-[#2E2D2A] overflow-hidden">
-              <div>
-                <span className="text-xs font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0] block">{q.title}</span>
-                <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-tight mt-0.5">{q.subtitle}</p>
+            <div key={q.id} className="flex flex-col justify-between h-full bg-[#FAF9F6] dark:bg-[#252422]/70 p-4 sm:p-5 rounded-2xl border border-[#E6E5E0] dark:border-[#2E2D2A] space-y-4 overflow-hidden shadow-xs">
+              <div className="space-y-1 min-h-[44px] flex flex-col justify-start">
+                <span className="text-xs font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0] block leading-snug">{q.title}</span>
+                <p className="text-[11px] text-[#71706C] dark:text-[#A19F9A] leading-tight">{q.subtitle}</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <div className="grid grid-cols-2 gap-3 items-stretch w-full pt-1">
                 {q.options.map((opt, optIdx) => {
                   const isSelected = (riskAnswers[q.id] ?? 0) === optIdx;
                   return (
@@ -122,13 +122,13 @@ export default function RiskAssessmentView({
                       key={opt.label}
                       type="button"
                       onClick={() => handleOptionSelect(q.id, optIdx)}
-                      className={`text-left p-2.5 rounded-xl border transition-all text-xs cursor-pointer leading-snug flex flex-col justify-between ${
+                      className={`w-full min-h-[60px] h-full p-3 rounded-xl border transition-all text-xs font-bold leading-tight cursor-pointer flex items-center justify-start text-left ${
                         isSelected
-                          ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold shadow-xs'
-                          : 'border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:bg-white dark:hover:bg-[#1C1B19]'
+                          ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-blue-500/30'
+                          : 'border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:bg-white dark:hover:bg-[#1C1B19] hover:border-blue-500/40'
                       }`}
                     >
-                      <div className="font-extrabold">{opt.label}</div>
+                      <span className="block w-full">{opt.label}</span>
                     </button>
                   );
                 })}
