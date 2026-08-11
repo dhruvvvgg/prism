@@ -235,7 +235,7 @@ export default function WorkspaceView({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col lg:flex-row gap-6 h-full min-h-0 select-none py-2 font-sans overflow-y-auto lg:overflow-hidden scrollbar-thin"
+      className="flex flex-col lg:flex-row gap-6 h-auto lg:h-full min-h-0 select-none py-2 font-sans overflow-visible lg:overflow-hidden"
     >
       {/* LEFT COLUMN: Sidebar Navigation Panel with Responsive Mobile & Widescreen Motion Sizing */}
       <motion.div 
