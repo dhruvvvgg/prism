@@ -1365,7 +1365,7 @@ const getRuleBasedFallbackResponse = (
     responseText += `• **Total Portfolio**: ${formatINR(totalValue)}\n`;
     responseText += `• **REIT & InvIT Allocation**: You hold ${reitPct}% in REITs (${formatINR(reitValue)}) and ${invitPct}% in InvITs (${formatINR(invitValue)}).\n`;
     responseText += `• **Sovereign & Fixed Income**: You hold ${gsecPct}% in G-Secs (${formatINR(gsecValue)}), ${sgbPct}% in SGBs (${formatINR(sgbValue)}), and ${corpBondPct}% in Corporate Bonds (${formatINR(corpBondValue)}).\n\n`;
-    responseText += `*Note: Prism provides factual structural analysis and regulatory information only. For transaction decisions, please consult a SEBI-Registered Investment Adviser (RIA).*`;
+    responseText += `Note: Prism provides factual structural analysis and regulatory information only. For transaction decisions, please consult a SEBI-Registered Investment Adviser (RIA).`;
 
     return {
       text: responseText,

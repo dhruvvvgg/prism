@@ -74,38 +74,39 @@ export default function WorkspaceView({
   const [isChatLoading, setIsChatLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Helper to render bold markdown syntax (**text**) and clean up stray asterisks
+  // Helper to render bold markdown syntax (**text**) and strip ALL stray asterisks
   const renderChatMessageText = (text: string) => {
     if (!text) return null;
     
-    // Clean up bullet asterisks to bullet dots • and strip orphan single asterisks
+    // Clean up line-start bullet asterisks to bullet dots •
     const cleaned = text
       .replace(/^[\s]*\*\s+/gm, '• ')
-      .replace(/\n[\s]*\*\s+/g, '\n• ')
-      .replace(/([^\*])\*([^\*])/g, '$1$2');
+      .replace(/\n[\s]*\*\s+/g, '\n• ');
 
-    const parts = [];
+    const parts: any[] = [];
     const boldRegex = /\*\*(.*?)\*\*/g;
     let match;
     let lastIndex = 0;
     
     while ((match = boldRegex.exec(cleaned)) !== null) {
       if (match.index > lastIndex) {
-        parts.push(cleaned.substring(lastIndex, match.index));
+        const plainText = cleaned.substring(lastIndex, match.index).replace(/\*/g, '');
+        if (plainText) parts.push(plainText);
       }
       parts.push(
         <strong key={match.index} className="font-extrabold text-[#1C1C1A] dark:text-[#F5F4F0]">
-          {match[1]}
+          {match[1].replace(/\*/g, '')}
         </strong>
       );
       lastIndex = boldRegex.lastIndex;
     }
     
     if (lastIndex < cleaned.length) {
-      parts.push(cleaned.substring(lastIndex));
+      const remainingText = cleaned.substring(lastIndex).replace(/\*/g, '');
+      if (remainingText) parts.push(remainingText);
     }
     
-    return parts.length > 0 ? parts : cleaned;
+    return parts.length > 0 ? parts : cleaned.replace(/\*/g, '');
   };
 
   // Compute effective risk profile (from custom onboarding questionnaire, active persona, or pre-seeded preset)
