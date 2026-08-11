@@ -1,4 +1,5 @@
 import { Instrument, PortfolioAsset, HoldingDetail, Persona } from './types';
+import { calculateRiskProfile, PRESET_PERSONA_ANSWERS } from './utils/riskProfiler';
 
 export const mockPortfolioAssets: PortfolioAsset[] = [
   {
@@ -269,6 +270,7 @@ export const personasData: Persona[] = [
   {
     persona_name: "Rajesh",
     persona_tagline: "Conservative, income-focused, capital preservation near retirement",
+    risk_profile: calculateRiskProfile(PRESET_PERSONA_ANSWERS.Rajesh),
     total_portfolio_value: 6000000,
     total_change_24h: 0.18,
     asset_allocation: [
@@ -367,6 +369,7 @@ export const personasData: Persona[] = [
   {
     persona_name: "Ananya",
     persona_tagline: "Growth-oriented, high risk tolerance, aggressive capital appreciation",
+    risk_profile: calculateRiskProfile(PRESET_PERSONA_ANSWERS.Ananya),
     total_portfolio_value: 1200000,
     total_change_24h: 1.05,
     asset_allocation: [

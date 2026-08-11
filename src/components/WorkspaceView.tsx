@@ -4,15 +4,17 @@ import {
   TrendingUp, TrendingDown, Building2, Radio, ShieldCheck, ShieldAlert,
   Percent, Coins, HelpCircle, MessageSquare, Send, RefreshCw, 
   ExternalLink, CheckSquare, Settings, Compass, Info, Check, AlertTriangle, LogOut,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, Activity, Sliders, Layers
 } from 'lucide-react';
 import { instrumentsData, personasData, mockPortfolioAssets, mockTotalValue, mockTotalChange24h, sebiCircularsData } from '../data';
-import { Instrument, Persona, ConsentPermissions, SEBICircularInfo } from '../types';
+import { Instrument, Persona, ConsentPermissions, SEBICircularInfo, RiskProfile } from '../types';
+import { calculateRiskProfile, PRESET_PERSONA_ANSWERS } from '../utils/riskProfiler';
 import SettingsTabContent from './Settings';
 import InteractiveDonutChart from './DonutChart';
 
 interface WorkspaceViewProps {
   selectedPersonaName: 'Rajesh' | 'Ananya' | null;
+  customRiskProfile?: RiskProfile;
   onBackToModes: () => void;
   googleToken: string | null;
   onGoogleSignIn: () => void;
@@ -23,6 +25,7 @@ interface WorkspaceViewProps {
 
 export default function WorkspaceView({
   selectedPersonaName,
+  customRiskProfile,
   onBackToModes,
   googleToken,
   onGoogleSignIn,
@@ -101,17 +104,21 @@ export default function WorkspaceView({
     return parts.length > 0 ? parts : text;
   };
 
+  // Compute effective risk profile (from custom onboarding questionnaire, active persona, or pre-seeded preset)
+  const effectiveRiskProfile: RiskProfile = customRiskProfile || activePersona?.risk_profile || calculateRiskProfile(PRESET_PERSONA_ANSWERS[selectedPersonaName || 'Rajesh']);
+
   // Sync active persona and reset chat history for current persona
   useEffect(() => {
     if (selectedPersonaName) {
       const found = personasData.find(p => p.persona_name === selectedPersonaName);
       setActivePersona(found || null);
       const fullName = found?.persona_name || selectedPersonaName;
+      const prof = customRiskProfile || found?.risk_profile || calculateRiskProfile(PRESET_PERSONA_ANSWERS[selectedPersonaName]);
       setChatHistory([
         {
           id: `init-${selectedPersonaName}`,
           role: 'model',
-          text: `Welcome to the Prism Suitability Coach. I have initialized the grounded audit context for **${fullName}** (${found?.persona_tagline || 'Investor Profile'}). I am referencing verified SEBI & RBI regulatory guidelines to evaluate risk exposure and suitability.`
+          text: `Welcome to the Prism Suitability Coach. I have initialized the grounded audit context for **${fullName}** (Stated Profile: **${prof.category}**, Risk Score: **${prof.score}/100**). I am referencing verified SEBI & RBI regulatory guidelines to evaluate risk exposure and suitability for your **${prof.category}** mandate.`
         }
       ]);
     } else {
@@ -124,7 +131,7 @@ export default function WorkspaceView({
         }
       ]);
     }
-  }, [selectedPersonaName]);
+  }, [selectedPersonaName, customRiskProfile]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -176,7 +183,9 @@ export default function WorkspaceView({
         body: JSON.stringify({
           message: textToSend,
           persona: activePersona ? activePersona.persona_name : 'General Investor',
-          history: chatHistory.map(h => ({ role: h.role, text: h.text }))
+          personaName: activePersona ? activePersona.persona_name : (selectedPersonaName || 'Rajesh'),
+          history: chatHistory.map(h => ({ role: h.role, text: h.text })),
+          riskProfile: effectiveRiskProfile
         }),
       });
 
@@ -217,7 +226,6 @@ export default function WorkspaceView({
         percentage: a.percentage,
         change24h: a.change24h,
         count: a.count,
-        icon: a.icon || 'Coins'
       }))
     : mockPortfolioAssets;
 
@@ -229,6 +237,67 @@ export default function WorkspaceView({
         { instrument_name: "7.18% GOI 2033 Bond", category: "Corporate Bonds (Debt)", value: 110000, units_or_quantity: "1100 units" },
         { instrument_name: "Sovereign Gold Bond 2023-I", category: "Sovereign Gold Bonds", value: 76150, units_or_quantity: "12 grams" }
       ];
+
+  // -------------------------------------------------------------
+  // Dynamic Risk & Exposure Analytics Calculation Engine
+  // -------------------------------------------------------------
+  const totalVal = activePersona ? activePersona.total_portfolio_value : mockTotalValue;
+  const currentAssetAlloc = activePersona ? activePersona.asset_allocation : mockPortfolioAssets;
+  
+  // 1. Herfindahl-Hirschman Index (HHI) for Diversification Score (0-100)
+  const hhiIndex = currentAssetAlloc.reduce((sum, item) => {
+    const frac = item.percentage / 100;
+    return sum + (frac * frac);
+  }, 0);
+
+  // Scaled 0 to 100
+  const computedDiversificationScore = Math.min(100, Math.max(15, Math.round((1 - hhiIndex) * 125)));
+  const diversificationLabel = computedDiversificationScore >= 70 ? 'Optimal Diversification' : computedDiversificationScore >= 50 ? 'Moderate Balance' : 'Concentrated Risk';
+
+  // 2. Concentration Risk Flags (< 35% category, < 15% single holding)
+  const concentrationFlags: Array<{ title: string; desc: string; type: 'high' | 'medium' }> = [];
+
+  currentAssetAlloc.forEach((item) => {
+    if (item.percentage >= 35) {
+      concentrationFlags.push({
+        title: `High Category Concentration: ${item.name}`,
+        desc: `${item.name} represents ${item.percentage}% of your total asset allocation, exceeding the 35% category safety threshold.`,
+        type: 'high',
+      });
+    } else if (item.percentage >= 20) {
+      concentrationFlags.push({
+        title: `Elevated Exposure: ${item.name}`,
+        desc: `${item.name} accounts for ${item.percentage}% of portfolio value.`,
+        type: 'medium',
+      });
+    }
+  });
+
+  // Check single instrument holdings
+  const currentHoldings = activePersona ? activePersona.holdings_detail : holdingsList;
+  currentHoldings.forEach((h) => {
+    const pct = totalVal > 0 ? (h.value / totalVal) * 100 : 0;
+    if (pct >= 15) {
+      concentrationFlags.push({
+        title: `Single Holding Concentration: ${h.instrument_name}`,
+        desc: `${h.instrument_name} comprises ${pct.toFixed(1)}% of your total net worth (₹${h.value.toLocaleString('en-IN')}).`,
+        type: 'high',
+      });
+    }
+  });
+
+  if (concentrationFlags.length === 0) {
+    concentrationFlags.push({
+      title: 'Balanced Allocation Profile',
+      desc: 'No single asset class or individual instrument exceeds concentration risk thresholds.',
+      type: 'medium',
+    });
+  }
+
+  // 3. Sovereign vs Commercial Credit Exposure
+  const sovereignAlloc = currentAssetAlloc
+    .filter(a => a.name.toLowerCase().includes('government') || a.name.toLowerCase().includes('gold') || a.name.toLowerCase().includes('sgb'))
+    .reduce((sum, a) => sum + a.percentage, 0);
 
   return (
     <motion.div
@@ -533,6 +602,102 @@ export default function WorkspaceView({
                     </p>
                   </div>
                 </motion.div>
+              </div>
+
+              {/* NEW SECTION: RISK & EXPOSURE ANALYTICS */}
+              <div className="bg-[#FAF9F6] dark:bg-[#252422] border-2 border-[#E6E5E0] dark:border-[#2E2D2A] rounded-3xl p-6 space-y-5 shadow-sm transition-colors duration-300">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Activity className="w-4 h-4 text-blue-500" />
+                    <h4 className="text-sm font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
+                      Risk & Exposure Analytics
+                    </h4>
+                  </div>
+                  <span className="text-[9px] font-mono font-bold text-emerald-500 uppercase bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    Real Portfolio Analytics
+                  </span>
+                </div>
+
+                {/* Risk Analytics Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  
+                  {/* 1. Overall Diversification Index */}
+                  <div className="bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl p-4 space-y-3 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase">
+                        <span>Diversification Index</span>
+                        <span>HHI Engine</span>
+                      </div>
+                      <div className="flex items-baseline gap-2 pt-1">
+                        <span className="text-3xl font-serif font-black text-[#1C1C1A] dark:text-[#F5F4F0]">
+                          {computedDiversificationScore}
+                        </span>
+                        <span className="text-xs font-mono text-[#71706C] dark:text-[#A19F9A]">/ 100</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="w-full bg-[#FAF9F6] dark:bg-[#252422] h-2.5 rounded-full overflow-hidden border border-[#E6E5E0] dark:border-[#2E2D2A]">
+                        <div 
+                          style={{ width: `${computedDiversificationScore}%` }} 
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            computedDiversificationScore >= 70 ? 'bg-emerald-500' : computedDiversificationScore >= 50 ? 'bg-amber-500' : 'bg-rose-500'
+                          }`} 
+                        />
+                      </div>
+                      <span className="text-[10px] font-bold font-mono text-[#71706C] dark:text-[#A19F9A] block">
+                        Status: <strong className={computedDiversificationScore >= 70 ? 'text-emerald-500' : 'text-amber-500'}>{diversificationLabel}</strong>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 2. Concentration Risk Indicators */}
+                  <div className="lg:col-span-2 bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl p-4 space-y-2.5">
+                    <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase">
+                      <span>Concentration Risk Flags</span>
+                      <span>35% Category / 15% Single Holding Threshold</span>
+                    </div>
+
+                    <div className="space-y-2 max-h-36 overflow-y-auto scrollbar-thin pr-1">
+                      {concentrationFlags.map((flag, i) => (
+                        <div key={i} className={`p-2.5 rounded-xl border flex items-start gap-2.5 text-xs ${
+                          flag.type === 'high' 
+                            ? 'bg-amber-500/5 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                            : 'bg-blue-500/5 border-blue-500/20 text-blue-700 dark:text-blue-300'
+                        }`}>
+                          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                          <div className="flex-1">
+                            <span className="font-bold block">{flag.title}</span>
+                            <span className="text-[11px] opacity-90">{flag.desc}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sub breakdown metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1 border-t border-[#E6E5E0]/60 dark:border-[#2E2D2A]">
+                  <div className="p-3 bg-white dark:bg-[#1C1B19] rounded-2xl border border-[#E6E5E0] dark:border-[#2E2D2A] space-y-1">
+                    <span className="text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase block">
+                      Sovereign Backed vs Private/Corporate Risk
+                    </span>
+                    <div className="flex items-center justify-between text-xs font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
+                      <span>Sovereign (G-Secs & SGBs): <span className="text-emerald-500 font-mono">{sovereignAlloc}%</span></span>
+                      <span>Corporate/REIT: <span className="text-blue-500 font-mono">{100 - sovereignAlloc}%</span></span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-white dark:bg-[#1C1B19] rounded-2xl border border-[#E6E5E0] dark:border-[#2E2D2A] space-y-1">
+                    <span className="text-[10px] font-mono font-bold text-[#71706C] dark:text-[#A19F9A] uppercase block">
+                      Onboarding Risk Profile Match
+                    </span>
+                    <div className="flex items-center justify-between text-xs font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
+                      <span>Profile Category: <span className="text-blue-500 font-mono">{effectiveRiskProfile.category}</span></span>
+                      <span className="font-mono text-[11px] text-[#71706C] dark:text-[#A19F9A]">Score: {effectiveRiskProfile.score}/100</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Feature 5: What-If Macro Stress Test & Inflation Simulator */}

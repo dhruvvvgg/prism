@@ -1251,13 +1251,18 @@ const detectSpecificSecurityRecommendation = (text: string): boolean => {
 // Dynamic rule-based fallback generator in case of Gemini quota limit or fallback requirements
 const getRuleBasedFallbackResponse = (
   portfolio: { name: string; tagline: string; totalValue: number; allocation: any[]; holdings: any[] },
-  query: string
+  query: string,
+  riskProfile?: any
 ): { text: string; groundingSources: Array<{ title: string; url: string }> } => {
   const norm = query.toLowerCase();
   const name = portfolio.name;
   const tagline = portfolio.tagline;
   const totalValue = portfolio.totalValue;
   const allocation = portfolio.allocation || [];
+
+  const riskLabel = riskProfile 
+    ? `${riskProfile.category} (Score: ${riskProfile.score}/100)`
+    : (tagline.toLowerCase().includes('conservative') ? 'Conservative' : 'Aggressive');
 
   const formatINR = (num: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -1476,22 +1481,26 @@ const getRuleBasedFallbackResponse = (
   };
 };
 
-// API: Suitability Coach open chat endpoint with context grounding & safety validation
-app.post("/api/suitability-chat", async (req, res) => {
-  const { personaName, message, history } = req.body;
+const handleSuitabilityChatRequest = async (req: any, res: any) => {
+  const { personaName, persona, message, history, riskProfile } = req.body;
+  const targetName = personaName || persona || "Rajesh";
 
-  if (!personaName || !message) {
-    return res.status(400).json({ error: "Missing personaName or message" });
+  if (!message) {
+    return res.status(400).json({ error: "Missing message parameter" });
   }
 
-  const persona = PERSONAS_PORTFOLIOS[personaName] || PERSONAS_PORTFOLIOS.Rajesh;
+  const userPersona = PERSONAS_PORTFOLIOS[targetName] || PERSONAS_PORTFOLIOS.Rajesh;
 
-  // Pre-check for specific security query to immediately redirect without wasting API key quota
+  // Pre-check for specific security query
   const isDirectSecurityQuery = detectSpecificSecurityRecommendation(message);
   if (isDirectSecurityQuery) {
-    const fallbackResponse = getRuleBasedFallbackResponse(persona, message);
+    const fallbackResponse = getRuleBasedFallbackResponse(userPersona, message, riskProfile);
     return res.json(fallbackResponse);
   }
+
+  const riskLabel = riskProfile 
+    ? `${riskProfile.category} (Computed Score: ${riskProfile.score}/100, Horizon: ${riskProfile.horizon}, Loss Tolerance: ${riskProfile.lossTolerance})`
+    : userPersona.tagline;
 
   // Build high-fidelity system prompt
   const systemInstruction = `You are the Prism Suitability Coach, an expert, objective AI financial coach specializing in Indian alternative asset classes (REITs, InvITs, Corporate Bonds, Sovereign Gold Bonds, Government Securities, Debt ETFs).
@@ -1499,16 +1508,16 @@ app.post("/api/suitability-chat", async (req, res) => {
 Your goal is to help the user understand how these alternative asset classes fit their specific risk tolerance, retirement/growth goals, and their existing portfolio.
 
 Here is the logged-in user's profile and real portfolio data:
-User Name: ${persona.name}
-User Profile: ${persona.tagline}
-Total Portfolio Value: INR ${persona.totalValue.toLocaleString('en-IN')}
+User Name: ${userPersona.name}
+User Stated Risk Profile: ${riskLabel}
+User Portfolio Value: INR ${userPersona.totalValue.toLocaleString('en-IN')}
 Current Asset Allocation:
-${JSON.stringify(persona.allocation, null, 2)}
+${JSON.stringify(userPersona.allocation, null, 2)}
 Current Holdings Detail:
-${JSON.stringify(persona.holdings, null, 2)}
+${JSON.stringify(userPersona.holdings, null, 2)}
 
 Strict Guidelines for your responses:
-1. Ground your answers in this user's real situation. Tailor your discussion to how asset classes fit their specific profile. E.g., Rajesh is highly conservative near retirement, with a large G-Sec (40%) and Sovereign Gold Bond (15%) allocation. Ananya is aggressive, growth-oriented, with high risk tolerance, and has meaningful REIT/InvIT exposure.
+1. Ground your answers in this user's real situation. Explicitly reference their stated risk profile (e.g., "Given your ${riskProfile ? riskProfile.category : 'stated'} risk profile and existing allocation...").
 2. STRICT SECURITY-LEVEL CONSTRAINT: Never recommend buying, selling, or holding a specific named instrument (such as "Embassy Office Parks REIT", "IndiGrid", "REC Ltd", "SBI Bluechip", etc.). If asked about a specific security, you MUST politely decline to comment on it and explain that Prism provides category-level education only, and suggest the user consult a registered investment adviser for specific security recommendations. You may then discuss the broad category (REITs, InvITs, corporate bonds, etc.) in general and how they relate to their stated goals and existing portfolio shape.
 3. Discuss only the broad asset categories: Real Estate Investment Trusts (REITs), Infrastructure Investment Trusts (InvITs), Sovereign Gold Bonds (SGBs), Corporate Bonds, Government Securities (G-Secs), and Debt ETFs.
 4. Keep all responses clear, helpful, grounded, and professional. Use markdown paragraphs and lists for clear readability.`;
@@ -1542,7 +1551,7 @@ Strict Guidelines for your responses:
 
     if (detectSpecificSecurityRecommendation(generatedText)) {
       console.warn("[GUARDRAIL] Specific security recommendation detected in model output! Discarding response and returning fallback.");
-      const fallbackResponse = getRuleBasedFallbackResponse(persona, message);
+      const fallbackResponse = getRuleBasedFallbackResponse(userPersona, message, riskProfile);
       return res.json(fallbackResponse);
     }
 
@@ -1559,6 +1568,7 @@ Strict Guidelines for your responses:
 
     return res.json({
       text: generatedText,
+      reply: generatedText,
       groundingSources
     });
 
@@ -1579,7 +1589,7 @@ Strict Guidelines for your responses:
 
       if (detectSpecificSecurityRecommendation(generatedText)) {
         console.warn("[GUARDRAIL] Specific security recommendation detected in model output! Discarding response and returning fallback.");
-        const fallbackResponse = getRuleBasedFallbackResponse(persona, message);
+        const fallbackResponse = getRuleBasedFallbackResponse(userPersona, message, riskProfile);
         return res.json(fallbackResponse);
       }
 
@@ -1596,17 +1606,20 @@ Strict Guidelines for your responses:
 
       return res.json({
         text: generatedText,
+        reply: generatedText,
         groundingSources
       });
     } catch (errLite: any) {
       console.warn("Fallback to Gemini-3.1-flash-lite rate limited, using high-fidelity local rule-based response engine.");
-      
-      // Return highly polished local response grounding on user situation
-      const fallbackResponse = getRuleBasedFallbackResponse(persona, message);
+      const fallbackResponse = getRuleBasedFallbackResponse(userPersona, message, riskProfile);
       return res.json(fallbackResponse);
     }
   }
-});
+};
+
+// API: Suitability Coach open chat endpoint
+app.post("/api/suitability-chat", handleSuitabilityChatRequest);
+app.post("/api/chat", handleSuitabilityChatRequest);
 
 // Vite middleware / Static serving setup
 async function startServer() {

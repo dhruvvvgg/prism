@@ -8,6 +8,7 @@ import IntakeView from './components/IntakeView';
 import PipelineView from './components/PipelineView';
 import WorkspaceView from './components/WorkspaceView';
 import SignatureTransitionOverlay from './components/SignatureTransitionOverlay';
+import { RiskProfile } from './types';
 
 export default function App() {
   // Navigation views: 'home' | 'modes' | 'intake' | 'pipeline' | 'workspace'
@@ -33,6 +34,7 @@ export default function App() {
   ]);
   const [logs, setLogs] = useState<string[]>([]);
   const activeRunId = useRef<number>(0);
+  const [activeRiskProfile, setActiveRiskProfile] = useState<RiskProfile | undefined>(undefined);
 
   // Dark mode states
   const [darkMode, setDarkMode] = useState(() => {
@@ -231,8 +233,9 @@ export default function App() {
             >
               <IntakeView
                 isSubmitting={isSubmitting}
-                onSubmit={(phone, permissions, selectedPersona) => {
+                onSubmit={(phone, permissions, selectedPersona, riskProfile) => {
                   setSelectedPersonaName(selectedPersona);
+                  if (riskProfile) setActiveRiskProfile(riskProfile);
                   handleStartPipeline(phone, permissions);
                 }}
                 onCancel={() => setCurrentView('home')}
@@ -254,6 +257,7 @@ export default function App() {
             >
               <WorkspaceView
                 selectedPersonaName={selectedPersonaName}
+                customRiskProfile={activeRiskProfile}
                 onBackToModes={handleBackToModes}
                 googleToken={googleToken}
                 onGoogleSignIn={handleGoogleSignIn}

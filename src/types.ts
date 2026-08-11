@@ -69,6 +69,17 @@ export interface HoldingDetail {
   units_or_quantity: string;
 }
 
+export interface RiskProfile {
+  score: number; // 0 - 100
+  category: 'Conservative' | 'Moderate' | 'Aggressive';
+  horizon: string;
+  lossTolerance: string;
+  incomeStability: string;
+  experience: string;
+  rawPoints: number;
+  answers: Record<string, number>;
+}
+
 export interface Persona {
   persona_name: string;
   persona_tagline: string;
@@ -76,6 +87,7 @@ export interface Persona {
   total_change_24h: number;
   asset_allocation: PortfolioAsset[];
   holdings_detail: HoldingDetail[];
+  risk_profile?: RiskProfile;
 }
 
 export type TabType = 'dashboard' | 'discover' | 'coach' | 'settings' | 'onboarding';
