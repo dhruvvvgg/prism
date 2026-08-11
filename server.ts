@@ -1210,34 +1210,39 @@ const PERSONAS_PORTFOLIOS: Record<string, { name: string; tagline: string; total
   }
 };
 
-// Post-generation validation layer: scanning for specific security recommendation patterns
+// Post-generation validation layer: scanning for explicit buy/sell/hold recommendation verdicts on named securities
 const detectSpecificSecurityRecommendation = (text: string): boolean => {
   const normalized = text.toLowerCase();
   
   const specificSecurities = [
     "embassy office parks", "embassy reit", "mindspace business parks", "mindspace reit", "nexus select", "brookfield india",
-    "india grid", "indigrid", "powergrid", "pginvit", "irb invit", "national highways invit", "nhai",
+    "india grid", "indigrid", "powergrid invit", "pginvit", "irb invit", "national highways invit", "nhai invit",
     "nippon india etf", "sbi bluechip", "itc limited", "itc", "rec ltd", "rec limited",
     "parag parikh", "quant small cap", "hdfc bank", "hdfc", "larsen & toubro", "l&t",
     "bharat bond", "bharat bond etf"
   ];
   
-  const actionKeywords = [
-    "buy", "sell", "hold", "purchase", "invest in", "accumulate", "exit", "liquidate", "avoid", 
-    "recommend", "subscribe", "redeem", "underweight", "overweight"
+  // Specific recommendation verdict phrases paired with a named instrument
+  const recommendationPhrases = [
+    "should buy", "should sell", "should invest in", "should purchase", "should hold", "should avoid",
+    "recommend buying", "recommend selling", "recommend investing in", "recommend holding", "recommend avoiding", "recommend purchasing",
+    "advise buying", "advise selling", "advise investing in", "advise holding", "advise avoiding",
+    "buy this", "sell this", "purchase this", "invest in this",
+    "strong buy", "strong sell", "must buy", "must sell", "must invest",
+    "you ought to buy", "you ought to sell", "you should add"
   ];
   
   const sentences = normalized.split(/[.!?\n]+/);
   for (const sentence of sentences) {
     for (const security of specificSecurities) {
       if (sentence.includes(security)) {
-        for (const keyword of actionKeywords) {
-          if (sentence.includes(keyword)) {
-            const index = sentence.indexOf(keyword);
-            const sub = sentence.substring(Math.max(0, index - 30), index);
-            const isNegated = /\b(not|cannot|can't|never|unable|avoid recommending|don't|do not|no recommendation|refrain from|educational only|any recommendations|any recommendation|no specific|neither)\b/.test(sub);
+        for (const phrase of recommendationPhrases) {
+          if (sentence.includes(phrase)) {
+            const index = sentence.indexOf(phrase);
+            const sub = sentence.substring(Math.max(0, index - 35), index);
+            const isNegated = /\b(not|cannot|can't|never|unable|do not|don't|no recommendation|refrain|disclaimer|educational|without issuing|does not recommend|no buy\/sell|cannot issue)\b/.test(sub);
             if (!isNegated) {
-              return true; // Un-negated specific security advice detected!
+              return true; // Active recommendation verdict on a named instrument detected!
             }
           }
         }
@@ -1331,11 +1336,29 @@ const getRuleBasedFallbackResponse = (
   }
 
   if (mentionedSecurity) {
+    let categoryExplanation = "";
+    if (norm.includes("reit") || norm.includes("embassy") || norm.includes("mindspace")) {
+      categoryExplanation = `**${mentionedSecurity}** is a Real Estate Investment Trust (REIT) holding Grade-A commercial office parks in India. Under **SEBI (REIT) Regulations 2014**, REITs are mandated to distribute at least **90% of their Net Distributable Cash Flows (NDCF)** semi-annually to unitholders. Under **Section 115UA** of the Income Tax Act, dividend distributions from REITs enjoy tax-exempt status in the hands of unitholders if the SPV has not opted for the lower tax regime.`;
+    } else if (norm.includes("invit") || norm.includes("indigrid") || norm.includes("powergrid")) {
+      categoryExplanation = `**${mentionedSecurity}** is an Infrastructure Investment Trust (InvIT) backed by operational power transmission or road infrastructure assets. Under **SEBI (InvIT) Regulations 2014**, InvITs are mandated to distribute at least **90% of Net Distributable Cash Flows (NDCF)** to unitholders twice a year. InvITs typically offer regular cash distributions (~7-9% yields) backed by long-term concession tariffs.`;
+    } else if (norm.includes("bharat bond")) {
+      categoryExplanation = `**${mentionedSecurity}** is a Target Maturity Debt ETF investing exclusively in AAA-rated public sector (PSU) bonds (such as REC, PFC, and PowerGrid). It offers predictable yield-to-maturity (YTM) with low credit risk and indexation benefits.`;
+    } else {
+      categoryExplanation = `**${mentionedSecurity}** represents a specific financial instrument in your portfolio universe.`;
+    }
+
+    let responseText = `Here are the factual characteristics and SEBI regulatory framework governing **${mentionedSecurity}**:\n\n* ${categoryExplanation}\n\n`;
+    responseText += `**Grounded Portfolio Context for ${name} (${riskLabel})**:\n`;
+    responseText += `* **Total Portfolio**: ${formatINR(totalValue)}\n`;
+    responseText += `* **REIT & InvIT Allocation**: You hold ${reitPct}% in REITs (${formatINR(reitValue)}) and ${invitPct}% in InvITs (${formatINR(invitValue)}).\n`;
+    responseText += `* **Sovereign & Fixed Income**: You hold ${gsecPct}% in G-Secs (${formatINR(gsecValue)}), ${sgbPct}% in SGBs (${formatINR(sgbValue)}), and ${corpBondPct}% in Corporate Bonds (${formatINR(corpBondValue)}).\n\n`;
+    responseText += `*Note: Prism provides factual structural analysis and regulatory information only. For buy, sell, or portfolio rebalancing decisions regarding specific named securities, please consult a SEBI-Registered Investment Adviser (RIA).*`;
+
     return {
-      text: `I cannot comment on or recommend actions for specific commercial securities like **${mentionedSecurity}**. Prism provides category-level education only to help you understand asset classes in India. \n\nFor specific security buy, sell, or hold decisions, please consult a SEBI Registered Investment Adviser. \n\nIf you'd like, we can discuss the broad asset category (such as **InvITs** or **REITs**) in general, how they operate under SEBI guidelines, and how that category aligns with your overall goals and existing portfolio shape.`,
+      text: responseText,
       groundingSources: [
-        { title: "SEBI IA Regulations", url: "https://www.sebi.gov.in/" },
-        { title: "Prism Safety Guardrails", url: "https://www.sebi.gov.in/legal/regulations/jan-2020/sebi-investment-advisers-regulations-2013-last-amended-on-january-15-2020-_34619.html" }
+        { title: "SEBI REIT & InvIT Regulations", url: "https://www.sebi.gov.in/" },
+        { title: "Income Tax Act Sec 115UA", url: "https://incometaxindia.gov.in/" }
       ]
     };
   }
@@ -1491,36 +1514,33 @@ const handleSuitabilityChatRequest = async (req: any, res: any) => {
 
   const userPersona = PERSONAS_PORTFOLIOS[targetName] || PERSONAS_PORTFOLIOS.Rajesh;
 
-  // Pre-check for specific security query
-  const isDirectSecurityQuery = detectSpecificSecurityRecommendation(message);
-  if (isDirectSecurityQuery) {
-    const fallbackResponse = getRuleBasedFallbackResponse(userPersona, message, riskProfile);
-    return res.json(fallbackResponse);
-  }
-
   const riskLabel = riskProfile 
     ? `${riskProfile.category} (Computed Score: ${riskProfile.score}/100, Horizon: ${riskProfile.horizon}, Loss Tolerance: ${riskProfile.lossTolerance})`
     : userPersona.tagline;
 
-  // Build high-fidelity system prompt
+  // Build high-fidelity, portfolio-grounded system prompt
   const systemInstruction = `You are the Prism Suitability Coach, an expert, objective AI financial coach specializing in Indian alternative asset classes (REITs, InvITs, Corporate Bonds, Sovereign Gold Bonds, Government Securities, Debt ETFs).
 
-Your goal is to help the user understand how these alternative asset classes fit their specific risk tolerance, retirement/growth goals, and their existing portfolio.
+Your goal is to help the user understand how these alternative asset classes fit their specific risk tolerance, retirement/growth goals, and existing portfolio.
 
-Here is the logged-in user's profile and real portfolio data:
+Logged-in user's profile and real portfolio data:
 User Name: ${userPersona.name}
 User Stated Risk Profile: ${riskLabel}
-User Portfolio Value: INR ${userPersona.totalValue.toLocaleString('en-IN')}
-Current Asset Allocation:
+User Total Portfolio Value: INR ${userPersona.totalValue.toLocaleString('en-IN')}
+Current Asset Allocation Breakdown:
 ${JSON.stringify(userPersona.allocation, null, 2)}
 Current Holdings Detail:
 ${JSON.stringify(userPersona.holdings, null, 2)}
 
 Strict Guidelines for your responses:
-1. Ground your answers in this user's real situation. Explicitly reference their stated risk profile (e.g., "Given your ${riskProfile ? riskProfile.category : 'stated'} risk profile and existing allocation...").
-2. STRICT SECURITY-LEVEL CONSTRAINT: Never recommend buying, selling, or holding a specific named instrument (such as "Embassy Office Parks REIT", "IndiGrid", "REC Ltd", "SBI Bluechip", etc.). If asked about a specific security, you MUST politely decline to comment on it and explain that Prism provides category-level education only, and suggest the user consult a registered investment adviser for specific security recommendations. You may then discuss the broad category (REITs, InvITs, corporate bonds, etc.) in general and how they relate to their stated goals and existing portfolio shape.
-3. Discuss only the broad asset categories: Real Estate Investment Trusts (REITs), Infrastructure Investment Trusts (InvITs), Sovereign Gold Bonds (SGBs), Corporate Bonds, Government Securities (G-Secs), and Debt ETFs.
-4. Keep all responses clear, helpful, grounded, and professional. Use markdown paragraphs and lists for clear readability.`;
+1. SUBSTANTIVE & PORTFOLIO-GROUNDED: Ground every response in this user's actual portfolio data (their exact INR holdings, percentage allocations, SGB interest payouts, REIT NDCF distribution rates, G-Sec sovereign guarantees) and computed SEBI risk profile (${riskLabel}). Provide specific, substantive explanations referencing real regulatory facts (e.g. SEBI 2014 Regulations requiring ≥ 90% NDCF semi-annual distributions for REITs/InvITs, Income Tax Act Sec 47 capital gains exemption for SGBs at maturity, Section 115UA tax treatment) rather than generic filler.
+
+2. FACTUAL MENTION vs. RECOMMENDATION VERDICT BOUNDARY:
+   - You MAY factually discuss a named instrument's real, objective characteristics (e.g., "IndiGrid is an Infrastructure Investment Trust (InvIT); InvITs are mandated by SEBI to distribute at least 90% of Net Distributable Cash Flows semi-annually" or "REITs like Embassy Office Parks are backed by Grade-A commercial office parks").
+   - What you MUST NOT do is issue a buy, sell, or hold verdict/recommendation on that specific instrument (e.g., NEVER say "you should buy IndiGrid", "avoid Embassy REIT", "I recommend investing in SBI Bluechip", or "sell your position in Parag Parikh").
+   - The strict boundary is issuing a recommendation or verdict, NOT mentioning the instrument. If asked for an explicit buy/sell/hold verdict on a specific security, politely state that you provide factual regulatory and structural analysis only, and advise consulting a SEBI-registered investment adviser (RIA) for specific security recommendations.
+
+3. Keep all responses clear, substantive, specific, and professional. Use markdown formatting with bullet points where appropriate.`;
 
   const contents: any[] = [];
   if (history && Array.isArray(history)) {
