@@ -49,7 +49,7 @@ export default function WorkspaceView({
   
   // Local permissions fallback sync with external prop
   const [localPermissions, setLocalPermissions] = useState<ConsentPermissions>(
-    externalPermissions || { viewPortfolio: true, analysePortfolio: true, recommendProducts: true }
+    externalPermissions || { viewPortfolio: true, analysePortfolio: false, recommendProducts: false }
   );
 
   useEffect(() => {

@@ -92,8 +92,8 @@ export default function App() {
     recommendProducts: boolean;
   }>({
     viewPortfolio: true,
-    analysePortfolio: true,
-    recommendProducts: true,
+    analysePortfolio: false,
+    recommendProducts: false,
   });
 
   // Launch Linkage Pipeline - skips execution linkage page, goes straight to signature overlay -> workspace

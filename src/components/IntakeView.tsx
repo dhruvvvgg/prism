@@ -28,8 +28,8 @@ export default function IntakeView({
 
   const [permissions, setPermissions] = useState({
     viewPortfolio: true,
-    analysePortfolio: true,
-    recommendProducts: true,
+    analysePortfolio: false,
+    recommendProducts: false,
   });
 
   const personas = [
@@ -58,8 +58,8 @@ export default function IntakeView({
     }
     setPermissions({
       viewPortfolio: true,
-      analysePortfolio: true,
-      recommendProducts: true,
+      analysePortfolio: false,
+      recommendProducts: false,
     });
   };
 
