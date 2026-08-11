@@ -1,16 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { ShieldAlert, RefreshCw, Sparkles, Check, Phone, Mail, CreditCard, Sliders, ShieldCheck, Zap, Activity } from 'lucide-react';
-import { RISK_QUESTIONS, PRESET_PERSONA_ANSWERS, calculateRiskProfile } from '../utils/riskProfiler';
-import { RiskProfile } from '../types';
+import { ShieldAlert, RefreshCw, Sparkles, Check, Phone, Mail, CreditCard, ShieldCheck } from 'lucide-react';
 
 interface IntakeViewProps {
   isSubmitting: boolean;
   onSubmit: (
     phone: string,
     permissions: { viewPortfolio: boolean; analysePortfolio: boolean; recommendProducts: boolean },
-    selectedPersona: 'Rajesh' | 'Ananya' | null,
-    riskProfile?: RiskProfile
+    selectedPersona: 'Rajesh' | 'Ananya' | null
   ) => void;
   onCancel: () => void;
   googleUser: any;
@@ -35,12 +32,6 @@ export default function IntakeView({
     recommendProducts: true,
   });
 
-  // Risk Questionnaire state (pre-seeded to Rajesh by default)
-  const [riskAnswers, setRiskAnswers] = useState<Record<string, number>>(PRESET_PERSONA_ANSWERS.Rajesh);
-  
-  // Dynamic computed risk profile from generic scoring function
-  const computedRiskProfile = calculateRiskProfile(riskAnswers);
-
   const personas = [
     {
       name: 'Rajesh' as const,
@@ -60,12 +51,10 @@ export default function IntakeView({
       setEmail('rajesh.gopal@gmail.com');
       setPhone('+91 98450 12345');
       setPan('ABCDE1234F');
-      setRiskAnswers(PRESET_PERSONA_ANSWERS.Rajesh);
     } else {
       setEmail('ananya.roy@gmail.com');
       setPhone('+91 91234 56789');
       setPan('XYZWY9876A');
-      setRiskAnswers(PRESET_PERSONA_ANSWERS.Ananya);
     }
     setPermissions({
       viewPortfolio: true,
@@ -74,20 +63,13 @@ export default function IntakeView({
     });
   };
 
-  const handleOptionSelect = (questionId: string, optionIdx: number) => {
-    setRiskAnswers((prev) => ({
-      ...prev,
-      [questionId]: optionIdx,
-    }));
-  };
-
   const togglePermission = (key: keyof typeof permissions) => {
     if (key === 'viewPortfolio') return;
     setPermissions(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleFormSubmit = () => {
-    onSubmit(`${phone} (${pan})`, permissions, selectedPersona, computedRiskProfile);
+    onSubmit(`${phone} (${pan})`, permissions, selectedPersona);
   };
 
   return (
@@ -100,13 +82,13 @@ export default function IntakeView({
       {/* Title */}
       <div className="space-y-1 text-center shrink-0">
         <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-500 block">
-          Account Aggregator Setup & Investor Risk Assessment
+          Step 1 of 2 — Account Aggregator Setup
         </span>
         <h2 className="text-xl sm:text-2xl font-serif font-extrabold tracking-tight text-[#1C1C1A] dark:text-[#F5F4F0] transition-colors duration-300">
-          Link Your Alternative Assets & Profile Suitability
+          Link Your Alternative Asset Portfolios
         </h2>
         <p className="text-xs sm:text-sm text-[#71706C] dark:text-[#A19F9A] max-w-2xl mx-auto transition-colors duration-300 leading-relaxed">
-          Establish encrypted Account Aggregator access and complete your risk profiling to ground suitability recommendations in your real financial capacity.
+          Establish encrypted Account Aggregator consent to map your verified asset holdings across banks, depositories, and registries.
         </p>
       </div>
 
@@ -165,63 +147,6 @@ export default function IntakeView({
                 className="w-full bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-xl pl-10 pr-3 py-2 text-xs text-[#1C1C1A] dark:text-[#F5F4F0] uppercase font-mono focus:outline-none focus:border-blue-500 transition-colors duration-300"
               />
             </div>
-          </div>
-        </div>
-
-        {/* RISK PROFILING QUESTIONNAIRE SECTION */}
-        <div className="bg-[#FAF9F6] dark:bg-[#252422]/60 border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl p-4 space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-2.5">
-            <div className="flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-blue-500" />
-              <h3 className="text-xs font-bold text-[#1C1C1A] dark:text-[#F5F4F0] uppercase tracking-wider">
-                Risk Assessment Questionnaire
-              </h3>
-            </div>
-            
-            {/* Live Computed Score Indicator */}
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono text-[#71706C] dark:text-[#A19F9A]">Score: <strong className="text-[#1C1C1A] dark:text-[#F5F4F0]">{computedRiskProfile.score}/100</strong></span>
-              <span className={`text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full border ${
-                computedRiskProfile.category === 'Conservative'
-                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                  : computedRiskProfile.category === 'Moderate'
-                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                  : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
-              }`}>
-                {computedRiskProfile.category.toUpperCase()} PROFILE
-              </span>
-            </div>
-          </div>
-
-          {/* Questions Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-            {RISK_QUESTIONS.map((q) => (
-              <div key={q.id} className="space-y-1.5 bg-white dark:bg-[#1C1B19] p-3 rounded-xl border border-[#E6E5E0] dark:border-[#2E2D2A]">
-                <div className="flex justify-between items-center">
-                  <span className="text-[11px] font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">{q.title}</span>
-                </div>
-                <p className="text-[10px] text-[#71706C] dark:text-[#A19F9A] leading-tight mb-2">{q.subtitle}</p>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {q.options.map((opt, optIdx) => {
-                    const isSelected = (riskAnswers[q.id] ?? 0) === optIdx;
-                    return (
-                      <button
-                        key={opt.label}
-                        type="button"
-                        onClick={() => handleOptionSelect(q.id, optIdx)}
-                        className={`text-left p-2 rounded-lg border transition-all text-[10px] cursor-pointer leading-snug ${
-                          isSelected
-                            ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold shadow-xs'
-                            : 'border-[#E6E5E0] dark:border-[#2E2D2A] text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422]'
-                        }`}
-                      >
-                        <div className="font-extrabold">{opt.label}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -297,8 +222,8 @@ export default function IntakeView({
                 </>
               ) : (
                 <>
-                  <ShieldAlert className="w-3.5 h-3.5" />
-                  <span>Sign Consent & Launch Dashboard</span>
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Proceed to Risk Assessment →</span>
                 </>
               )}
             </motion.button>

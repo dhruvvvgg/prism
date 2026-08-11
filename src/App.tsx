@@ -5,15 +5,17 @@ import Hero from './components/Hero';
 import ModesGrid from './components/ModesGrid';
 import FeaturesSection from './components/FeaturesSection';
 import IntakeView from './components/IntakeView';
+import RiskAssessmentView from './components/RiskAssessmentView';
 import PipelineView from './components/PipelineView';
 import WorkspaceView from './components/WorkspaceView';
 import SignatureTransitionOverlay from './components/SignatureTransitionOverlay';
 import { RiskProfile } from './types';
 
 export default function App() {
-  // Navigation views: 'home' | 'modes' | 'intake' | 'pipeline' | 'workspace'
-  const [currentView, setCurrentView] = useState<'home' | 'modes' | 'intake' | 'pipeline' | 'workspace'>('home');
+  // Navigation views: 'home' | 'modes' | 'intake' | 'risk-assessment' | 'pipeline' | 'workspace'
+  const [currentView, setCurrentView] = useState<'home' | 'modes' | 'intake' | 'risk-assessment' | 'pipeline' | 'workspace'>('home');
   const [selectedPersonaName, setSelectedPersonaName] = useState<'Rajesh' | 'Ananya' | null>(null);
+  const [pendingPhone, setPendingPhone] = useState<string>('+91 98450 12345 (ABCDE1234F)');
   const [showSignatureOverlay, setShowSignatureOverlay] = useState(false);
   
   // App states
@@ -221,7 +223,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {/* VIEW: INTAKE (Consent Setup / Auth) */}
+          {/* VIEW: INTAKE (Step 1: Consent Setup / Auth) */}
           {currentView === 'intake' && (
             <motion.div
               key="intake"
@@ -233,14 +235,38 @@ export default function App() {
             >
               <IntakeView
                 isSubmitting={isSubmitting}
-                onSubmit={(phone, permissions, selectedPersona, riskProfile) => {
+                onSubmit={(phone, newPermissions, selectedPersona) => {
                   setSelectedPersonaName(selectedPersona);
-                  if (riskProfile) setActiveRiskProfile(riskProfile);
-                  handleStartPipeline(phone, permissions);
+                  setPendingPhone(phone);
+                  if (newPermissions) setPermissions(newPermissions);
+                  setCurrentView('risk-assessment');
                 }}
                 onCancel={() => setCurrentView('home')}
                 googleUser={googleUser}
                 onGoogleSignIn={handleGoogleSignIn}
+              />
+            </motion.div>
+          )}
+
+          {/* VIEW: RISK ASSESSMENT (Step 2: Risk Profiling Questionnaire) */}
+          {currentView === 'risk-assessment' && (
+            <motion.div
+              key="risk-assessment"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3 }}
+              className="w-full flex-1 flex flex-col justify-center min-h-0 h-auto lg:h-full lg:overflow-hidden"
+            >
+              <RiskAssessmentView
+                selectedPersonaName={selectedPersonaName}
+                initialRiskProfile={activeRiskProfile}
+                onSubmit={(computedRiskProfile) => {
+                  setActiveRiskProfile(computedRiskProfile);
+                  handleStartPipeline(pendingPhone, permissions);
+                }}
+                onBack={() => setCurrentView('intake')}
+                isSubmitting={isSubmitting}
               />
             </motion.div>
           )}
