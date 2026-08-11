@@ -241,7 +241,7 @@ export default function WorkspaceView({
       <motion.div 
         animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? '100%' : (isSidebarCollapsed ? 80 : 280) }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-3.5 sm:p-4 flex flex-col justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
+        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-3 sm:p-4 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-hidden shrink-0"
       >
         <AnimatePresence mode="wait">
           {isSidebarCollapsed ? (
@@ -310,11 +310,11 @@ export default function WorkspaceView({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col justify-between h-full space-y-3.5 sm:space-y-5"
+              className="flex flex-col justify-start lg:justify-between h-auto lg:h-full space-y-3 sm:space-y-4"
             >
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-2.5 sm:space-y-3">
                 {/* Active Profile Info Card - Responsive Banner */}
-                <div className="p-3 sm:p-4 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
+                <div className="p-3 sm:p-3.5 bg-[#FAF9F6] dark:bg-[#252422] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl space-y-1 transition-colors duration-300">
                   <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-blue-500 block">
                     Active Investment Profile
                   </span>
@@ -332,7 +332,7 @@ export default function WorkspaceView({
                 </div>
 
                 {/* Navigation Tabs - Horizontal Scrollable Pill Strip on Mobile, Vertical List on Desktop */}
-                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2 pb-1 lg:pb-0">
+                <nav className="flex lg:flex-col overflow-x-auto scrollbar-none gap-2 py-0.5 lg:py-0 w-full items-center lg:items-stretch">
                   {[
                     { id: 'dashboard' as const, label: 'Portfolio Dashboard', shortLabel: 'Dashboard', icon: <Building2 className="w-4 h-4" /> },
                     { id: 'discover' as const, label: 'Discover Assets', shortLabel: 'Discover', icon: <Compass className="w-4 h-4" /> },
@@ -346,9 +346,9 @@ export default function WorkspaceView({
                       whileTap={{ scale: 0.98 }}
                       transition={{ duration: 0.15, ease: 'easeOut' }}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                      className={`flex items-center gap-2 sm:gap-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
                         activeTab === tab.id
-                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-b-2 lg:border-b-0 lg:border-l-2 border-blue-500 shadow-sm'
+                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 lg:border-none lg:border-l-2 lg:border-blue-500 shadow-sm'
                           : 'text-[#71706C] dark:text-[#A19F9A] hover:bg-[#FAF9F6] dark:hover:bg-[#252422] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0]'
                       }`}
                     >
@@ -691,13 +691,18 @@ export default function WorkspaceView({
               <div className="lg:col-span-7 bg-[#FAF9F6]/50 dark:bg-[#252422]/20 border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-2xl p-6 space-y-6 overflow-y-auto max-h-[420px] lg:max-h-[500px]">
                 {/* Header */}
                 <div className="border-b border-[#E6E5E0] dark:border-[#2E2D2A] pb-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-sans font-black uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full">
-                      {selectedInstrument.shortName} Rating
-                    </span>
-                    <div className="flex items-center gap-1.5 font-mono text-sm font-black text-[#1C1C1A] dark:text-[#F5F4F0]">
-                      <span>Governance score:</span>
-                      <span className="text-blue-500 text-lg">{selectedInstrument.governanceScore}/100</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-mono font-bold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 whitespace-nowrap shrink-0">
+                        {selectedInstrument.shortName} Rating
+                      </span>
+                      <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 whitespace-nowrap">
+                        AA Audited
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 font-mono text-xs sm:text-sm font-bold text-[#1C1C1A] dark:text-[#F5F4F0]">
+                      <span className="text-[#71706C] dark:text-[#A19F9A]">Governance Score:</span>
+                      <span className="text-blue-500 font-extrabold text-base sm:text-lg">{selectedInstrument.governanceScore}/100</span>
                     </div>
                   </div>
                   <h3 className="text-xl font-black text-[#1C1C1A] dark:text-[#F5F4F0] mt-2 leading-tight">
