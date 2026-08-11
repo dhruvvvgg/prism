@@ -310,7 +310,7 @@ export default function WorkspaceView({
       <motion.div 
         animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? '100%' : (isSidebarCollapsed ? 80 : 280) }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] px-4 pt-4 pb-4 sm:px-5 sm:pt-5 sm:pb-5 lg:p-5 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-visible lg:overflow-hidden shrink-0"
+        className="w-full lg:w-auto bg-white dark:bg-[#1C1B19] border border-[#E6E5E0] dark:border-[#2E2D2A] rounded-[2rem] p-4 sm:p-5 lg:px-5 lg:pt-5 lg:pb-6 flex flex-col justify-start lg:justify-between h-auto lg:h-full ballpark-shadow transition-colors duration-300 overflow-visible lg:overflow-hidden shrink-0"
       >
         <AnimatePresence mode="wait">
           {isSidebarCollapsed ? (
@@ -425,13 +425,13 @@ export default function WorkspaceView({
                 </nav>
               </div>
 
-              {/* Shrink Button Footer (Desktop Widescreen Only) - Balanced & Uniform Spacing */}
-              <div className="hidden lg:block pt-4 mt-auto border-t border-[#E6E5E0]/60 dark:border-[#2E2D2A]">
+              {/* Shrink Button Footer (Desktop Widescreen Only) - Clean floating button without top border line */}
+              <div className="hidden lg:block pt-2 pb-1 mt-auto">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setIsSidebarCollapsed(true)}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#FAF9F6] dark:bg-[#252422] hover:bg-slate-200 dark:hover:bg-[#2E2D2A] border border-[#E6E5E0] dark:border-[#2E2D2A] text-xs font-bold text-[#71706C] dark:text-[#A19F9A] hover:text-[#1C1C1A] dark:hover:text-[#F5F4F0] transition-all cursor-pointer shadow-sm"
                   title="Shrink sidebar for wider right content view"
                 >
                   <ChevronLeft className="w-4 h-4" />

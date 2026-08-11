@@ -77,7 +77,7 @@ export default function IntakeView({
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
-      className="w-full max-w-2xl mx-auto space-y-6 py-4 sm:py-6 select-none transition-colors duration-300 h-auto px-4"
+      className="w-full max-w-4xl mx-auto space-y-6 py-4 sm:py-6 select-none transition-colors duration-300 h-auto px-4"
     >
       {/* Title */}
       <div className="space-y-1.5 text-center shrink-0">
